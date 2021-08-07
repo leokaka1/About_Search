@@ -14,7 +14,7 @@ seg
 合同/ENTITY
 项目/ENTITY
 投标信息/ENTITY
-投标项目/RELATION
+投标项目
 招标项目/RELATION
 丙方/RELATION
 甲方/RELATION
