@@ -3,7 +3,7 @@ from Search_Demo_1.semanticGraph import createGrammerGraph
 
 """
 远光软件股份有限公司的投标项目的中标人
-远光软件股份有限公司的投标项目的中标人有哪些
+远光软件股份有限公司的投标的项目的中标的人
 远光软件股份有限公司的交付时间
 施工标的类合同有哪些
 中标最多的单位
@@ -21,6 +21,7 @@ from Search_Demo_1.semanticGraph import createGrammerGraph
 远光软件股份有限公司有投标施工类合同项目吗
 远光软件股份有限公司中标项目的类型
 远光软件股份有限公司有签服务标的类项目合同吗
+>远光软件股份有限公司的投标的实际的项目的中标人
 """
 if __name__ == '__main__':
     seg_pos = SegmentationAndPostag()
