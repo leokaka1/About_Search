@@ -12,7 +12,7 @@ class SegmentationAndPostag:
 
         # 分词
         seg_res = self.lac.run(question)
-        print("使用用户自定义词典分词结果:>>>>", seg_res)
+        # print("使用用户自定义词典分词结果:>>>>", seg_res)
         # 词语列表
         wordList = seg_res[0]
         # 词性列表
@@ -22,9 +22,11 @@ class SegmentationAndPostag:
         col_res = self.ddp.parse_seg([wordList])
 
         #组装成["word":[],"pos":[]."deprel":[]]  也就是词语，词性，和句法结构的组合
-        print(col_res)
-        segAndpos_list = [{'word':col_res[0]["word"],"pos":posList,"deprel":col_res[0]["deprel"]}]
-        print("返回最终的分词和词性分析的数组:>>>>>>",segAndpos_list)
+        # print(col_res)
+        # segAndpos_list = [{'word':col_res[0]["word"],"pos":posList,"deprel":col_res[0]["deprel"]}]
+        col_res[0]["pos"] = posList
+        print("返回最终的分词和词性分析的数组:>>>>>>",col_res)
 
-        return segAndpos_list
+
+        return col_res
 
