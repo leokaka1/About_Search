@@ -6,3 +6,10 @@ class SematicAnalysisModel:
         self.posModel = posModel
         self.vertextModel = vertexModel
 
+    def analysisNounsLastWord(self):
+        last_noun_word = self.posModel.nouns[-1]
+        last_noun_pos = self.vertextModel.wordForPos(last_noun_word)
+        print(last_noun_pos)
+
+
+

@@ -1,7 +1,6 @@
 from Search_Demo_1.semanticVertexModel import SemanticGraphVertexModel
 from Search_Demo_1.sematicSetting import posSetting
 from Search_Demo_1.sematicPosModel import SematicPosModel
-from Search_Demo_1.sematicAnalysisModel import SematicAnalysisModel
 
 # 构建句法分析返回结果
 # 创建语法结构层级
@@ -111,10 +110,7 @@ def createGrammerGraph(segAndPostList):
     else:
         print("数组为空，不予处理")
 
-    analysisModel = SematicAnalysisModel
-    analysisModel.posModel = pos_Model
-    analysisModel.vertextModel = sematic_Model
-    posSetting(analysisModel)
+    posSetting(pos_Model,sematic_Model)
 
 
 # 判断句式中是否含有属性问题
