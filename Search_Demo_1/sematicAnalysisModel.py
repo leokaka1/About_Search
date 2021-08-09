@@ -45,13 +45,15 @@ class SematicAnalysisModel:
 
     def assembleRelationshipWord(self):
         relation_word_list = []
+        temp_coos_list = []
+        coos_relations_list = []
         final_sequence_word_list = self.posModel.nouns.copy()
         # 远光软件股份有限公司投标的项目有哪些
         # 远光软件股份有限公司的投标的实际的项目的中标人
         # 1. 先找出n修饰了哪个v，v一般是中心词，所以head=0，只能有n来修饰v
         for verb in self.posModel.verbs:
-            target_index = self.vertexModel.wordForHead(verb)
-            target_word = self.vertexModel.word_list[target_index]
+            # target_index = self.vertexModel.wordForHead(verb)
+            target_word = self.vertexModel.wordForTargetWord(verb) ##.word_list[target_index]
             relation_word = verb + target_word
             relation_word_list.append(relation_word)
             # 删除noun中的target_index的词
@@ -62,7 +64,31 @@ class SematicAnalysisModel:
                 # print(target_word)
                 # print(final_sequence_word_list)
                 final_sequence_word_list.remove(target_word)
-        # final_sequence_word = self.posModel.nouns + relation_word_list
+
+        # 找到有没有并列的COO的词，如果是并列关系则会生成两条解析
+        for word in self.posModel.nouns:
+            if self.vertexModel.wordForDeprel(word) == "COO":
+                target_word = self.vertexModel.wordForTargetWord(word)
+                temp_coos_list.append(word)
+                temp_coos_list.append(target_word)
+                if target_word in final_sequence_word_list:
+                    final_sequence_word_list.remove(target_word)
+                final_sequence_word_list.remove(word)
+                # print(word)
+                # print(target_word)
+        temp_coos_list = set(temp_coos_list)
+        # print(temp_coos_list)
+        # print(final_sequence_word_list)
+
+        for word in temp_coos_list:
+            temp_list = final_sequence_word_list.copy()
+            temp_list.insert(0,word)
+            coos_relations_list.append(temp_list)
+            # print(coos_relations_list)
+
+        if self.vertexModel.isHasCOO:
+            final_sequence_word_list = coos_relations_list
+
         print("关系词有>>>>>",relation_word_list)
         print("剩下的名词有>>>>>",self.posModel.nouns)
         print("组装完成后的词序列>>>>>",final_sequence_word_list)

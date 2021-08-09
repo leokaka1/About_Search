@@ -11,14 +11,21 @@ class SemanticGraphVertexModel:
         self.deprel_list = sematicList[0]["deprel"]
         self.head_list = [index - 1 for index in sematicList[0]["head"]]
         self.wordLength = len(self.word_list)
+        self.isHasCOO = False
 
         # 取出HED对应的index
         for deprel in self.deprel_list:
             if deprel == "HED":
                 self.headID = self.deprel_list.index(deprel)
+            elif deprel == "COO":
+                # 判断有没有并列关系
+                self.isHasCOO = True
 
         # 判断hed是否在最后一位上
         self.hedLast = True if self.headID == len(self.word_list) - 1 else False
+
+
+
 
     def sematicResponse(self, word):
         for index, item in enumerate(self.word_list):
