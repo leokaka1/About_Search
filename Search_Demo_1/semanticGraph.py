@@ -1,28 +1,28 @@
-from Search_Demo_1.semanticGraphVertex import SemanticGraphVertex
-from Search_Demo_1.createCypher import createCypher
+from Search_Demo_1.semanticGraphVertexModel import SemanticGraphVertex
+from Search_Demo_1.sematicSetting import posSetting
+from Search_Demo_1.sematicPosModel import SematicPosModel
 
 
 # 构建句法分析返回结果
 # 创建语法结构层级
 def createGrammerGraph(segAndPostList):
-    sematic = SemanticGraphVertex(segAndPostList)
-
     # 名词词表
     nounList = []
+    # 并列关系的名词
     coo_list = []
     # 动词性词表
     verbList = []
     # 形容词表
     adjList = []
 
-    tempList = []
-    flagList = []
+    pos_Model = SematicPosModel()
 
     # print(sematic.headID)
     # print(sematic.head_list)
 
     # 区分属性句和非属性句
-    if not isContainAtrribute(sematic.pos_list):
+    if len(segAndPostList):
+        sematic = SemanticGraphVertex(segAndPostList)
         # 遍历句法分析表
         for word in sematic.word_list:
             sematic.sematicResponse(word)
@@ -43,15 +43,14 @@ def createGrammerGraph(segAndPostList):
                 pass
 
         # 处理并列关系 - 句中含有COO关系的找到其对应的targetword并做一个映射
-
         for nounWord in nounList:
             if sematic.wordForDeprel(nounWord) == "COO":
                 target_word = sematic.wordForTargetWord(nounWord)
                 if target_word in nounList:
                     coo_list.append(target_word)
                     coo_list.append(nounWord)
-                    nounList.remove(target_word)
-                    nounList.remove(nounWord)
+
+        pos_Model.isNone = False
         # print("temp_coo_list>>>>",coo_list)
         # print("nounList>>>>>",nounList)
 
@@ -60,51 +59,59 @@ def createGrammerGraph(segAndPostList):
         """
         example：远光软件股份有限公司的投标项目的中标人
         """
-        if sematic.headID == sematic.wordLength -1:
-            # 如果动词性数组中没有词直接输出
-            if not len(verbList) and not len(adjList):
-                pass
-            # 没有形容词修饰的时候 因为避免有最多等形容词
-            elif not len(adjList):
-                # 取出动词和与其修饰的中心词进行拼接
-                # 剔除 noun中的中心词 并且 追加新的 中心词
-                for word in verbList:
-                    index = sematic.wordForHead(word)
-                    for i, nounWord in enumerate(nounList):
-                        if sematic.word_list.index(nounWord) == index:
-                            word += nounWord
-                            flagList.append(i)
-                            tempList.append(word)
-                # print(tempList)
-                # print(flagList)
-                nounList = deleteAndAddInList(flagList,tempList,nounList)
-            else:
-                # 处理形容词应该就处理哪个名词指向形容词
-                print("有形容词修饰")
-                if not len(verbList):
-                    for word in nounList:
-                        index = sematic.wordForHead(word)
-                        for i, adjWord in enumerate(adjList):
-                            if sematic.wordForId(adjWord) == index:
-                                word = word + "/" + adjWord
-                                flagList.append(i)
-                                tempList.append(word)
-                    print(tempList)
-                    print(flagList)
-                else:
-                    print("动词不为空，且有可能指向形容词")
-                nounList = deleteAndAddInList(flagList,tempList,nounList)
-        else:
-            print("HED不在最后")
+        # if sematic.headID == sematic.wordLength -1:
+        #     # 如果动词性数组中没有词直接输出
+        #     # if not len(verbList) and not len(adjList):
+        #     #     pass
+        #     # 没有形容词修饰的时候 因为避免有最多等形容词
+        #     if not len(adjList):
+        #         # 取出动词和与其修饰的中心词进行拼接
+        #         # 剔除 noun中的中心词 并且 追加新的 中心词
+        #         for word in verbList:
+        #             index = sematic.wordForHead(word)
+        #             for i, nounWord in enumerate(nounList):
+        #                 if sematic.word_list.index(nounWord) == index:
+        #                     word += nounWord
+        #                     flagList.append(i)
+        #                     tempList.append(word)
+        #         # print(tempList)
+        #         # print(flagList)
+        #         nounList = deleteAndAddInList(flagList,tempList,nounList)
+        #     else:
+        #         # 处理形容词应该就处理哪个名词指向形容词
+        #         print("有形容词修饰")
+        #         if not len(verbList):
+        #             for word in nounList:
+        #                 index = sematic.wordForHead(word)
+        #                 for i, adjWord in enumerate(adjList):
+        #                     if sematic.wordForId(adjWord) == index:
+        #                         word = word + "/" + adjWord
+        #                         flagList.append(i)
+        #                         tempList.append(word)
+        #             print(tempList)
+        #             print(flagList)
+        #         else:
+        #             print("动词不为空，且有可能指向形容词")
+        #         nounList = deleteAndAddInList(flagList,tempList,nounList)
+        # else:
+        #     print("HED不在最后")
+
+        pos_Model.nouns = nounList
+        pos_Model.coos = coo_list
+        pos_Model.verbs = verbList
+        pos_Model.adjs = adjList
+
+        print("Step 2 返回词性:>>>>>>\n")
+        print("名词词性:>>>>>", nounList)
+        print("并列名词:>>>>>", coo_list)
+        print("动词词性:>>>>>", verbList)
+        print("形容词性:>>>>>", adjList)
+        print("--------------------------------------------")
 
     else:
-        print("包含属性，稍后处理")
+        print("数组为空，不予处理")
 
-    print("名词词性:>>>>>", nounList)
-    print("并列名词:>>>>>", coo_list)
-    print("动词词性:>>>>>", verbList)
-    print("形容词性:>>>>>", adjList)
-    createCypher(nounList,coo_list)
+    posSetting(pos_Model)
 
 
 # 判断句式中是否含有属性问题

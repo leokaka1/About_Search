@@ -10,23 +10,26 @@ class SegmentationAndPostag:
 
     def segAndPos(self,question):
 
-        # 分词
-        seg_res = self.lac.run(question)
-        # print("使用用户自定义词典分词结果:>>>>", seg_res)
-        # 词语列表
-        wordList = seg_res[0]
-        # 词性列表
-        posList = seg_res[1]
+        if question:
+            # 分词
+            seg_res = self.lac.run(question)
+            # print("使用用户自定义词典分词结果:>>>>", seg_res)
+            # 词语列表
+            wordList = seg_res[0]
+            # 词性列表
+            posList = seg_res[1]
 
-        # 对分词后的词语进行依存分析
-        col_res = self.ddp.parse_seg([wordList])
+            # 对分词后的词语进行依存分析
+            col_res = self.ddp.parse_seg([wordList])
 
-        #组装成["word":[],"pos":[]."deprel":[]]  也就是词语，词性，和句法结构的组合
-        # print(col_res)
-        # segAndpos_list = [{'word':col_res[0]["word"],"pos":posList,"deprel":col_res[0]["deprel"]}]
-        col_res[0]["pos"] = posList
-        print("返回最终的分词和词性分析的数组:>>>>>>",col_res)
-
+            # 组装成["word":[],"pos":[]."deprel":[]]  也就是词语，词性，和句法结构的组合
+            # print(col_res)
+            # segAndpos_list = [{'word':col_res[0]["word"],"pos":posList,"deprel":col_res[0]["deprel"]}]
+            col_res[0]["pos"] = posList
+            print("Step:1 分词和词性分析的数组:>>>>>>\n", col_res)
+            print("--------------------------------------------")
+        else:
+            col_res = []
 
         return col_res
 
