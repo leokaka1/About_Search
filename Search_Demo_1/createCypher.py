@@ -1,5 +1,8 @@
 
-def createCypher(wordList):
+def createCypher(wordList,coo_list = []):
+
+    print("并列的词性>>>>",coo_list)
+
     cypherstr = ""
 
     for index,item in enumerate(wordList):

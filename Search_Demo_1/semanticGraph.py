@@ -9,6 +9,7 @@ def createGrammerGraph(segAndPostList):
 
     # 名词词表
     nounList = []
+    coo_list = []
     # 动词性词表
     verbList = []
     # 形容词表
@@ -16,7 +17,6 @@ def createGrammerGraph(segAndPostList):
 
     tempList = []
     flagList = []
-    finalWordList = []
 
     # print(sematic.headID)
     # print(sematic.head_list)
@@ -42,14 +42,28 @@ def createGrammerGraph(segAndPostList):
             else:
                 pass
 
+        # 处理并列关系 - 句中含有COO关系的找到其对应的targetword并做一个映射
+
+        for nounWord in nounList:
+            if sematic.wordForDeprel(nounWord) == "COO":
+                target_word = sematic.wordForTargetWord(nounWord)
+                if target_word in nounList:
+                    coo_list.append(target_word)
+                    coo_list.append(nounWord)
+                    nounList.remove(target_word)
+                    nounList.remove(nounWord)
+        # print("temp_coo_list>>>>",coo_list)
+        # print("nounList>>>>>",nounList)
+
         # 第一种情况 - [HED在最后并且其他的都为ATT] 没有 SBV之类的主谓关系
+
         """
         example：远光软件股份有限公司的投标项目的中标人
         """
         if sematic.headID == sematic.wordLength -1:
             # 如果动词性数组中没有词直接输出
             if not len(verbList) and not len(adjList):
-                createCypher(nounList)
+                pass
             # 没有形容词修饰的时候 因为避免有最多等形容词
             elif not len(adjList):
                 # 取出动词和与其修饰的中心词进行拼接
@@ -87,9 +101,10 @@ def createGrammerGraph(segAndPostList):
         print("包含属性，稍后处理")
 
     print("名词词性:>>>>>", nounList)
+    print("并列名词:>>>>>", coo_list)
     print("动词词性:>>>>>", verbList)
     print("形容词性:>>>>>", adjList)
-    createCypher(nounList)
+    createCypher(nounList,coo_list)
 
 
 # 判断句式中是否含有属性问题
@@ -124,6 +139,14 @@ def isVerbWord(pos):
 # 判断一些程度描述性形容词，如"最多"等
 def isAdjWord(pos, word):
     if pos == "a" and isDegreeWord(word):
+        return True
+    else:
+        return False
+
+
+# 判断是都是Coo的并列关系
+def isCoo(deprel, word):
+    if deprel == "COO" and isDegreeWord(word):
         return True
     else:
         return False
