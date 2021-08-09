@@ -54,16 +54,27 @@ class SematicAnalysisModel:
         for verb in self.posModel.verbs:
             # target_index = self.vertexModel.wordForHead(verb)
             target_word = self.vertexModel.wordForTargetWord(verb) ##.word_list[target_index]
-            relation_word = verb + target_word
-            relation_word_list.append(relation_word)
+            # 如果中心词不在谓语列表中，说明在名词中，在谓语中则不拼接
+            if target_word not in self.posModel.verbs:
+                relation_word = verb + target_word
+                relation_word_list.append(relation_word)
+            else:
+                # 若谓词不是HED中心词就添加，是中心词则放弃
+                if self.vertexModel.wordForDeprel(verb) != "HED":
+                    relation_word_list.append(verb)
             # 删除noun中的target_index的词
             if target_word in self.posModel.nouns:
                 target_word_index_in_nouns = self.posModel.nouns.index(target_word)
                 final_sequence_word_list.insert(target_word_index_in_nouns,relation_word)
+            else:
+                # 如果targetword不在nouns有可能是动词自己创建关系，所以只添加除了中心词之外的谓词
+                final_sequence_word_list.append(verb)
+
             if target_word in final_sequence_word_list:
                 # print(target_word)
                 # print(final_sequence_word_list)
                 final_sequence_word_list.remove(target_word)
+
 
         # 找到有没有并列的COO的词，如果是并列关系则会生成两条解析
         for word in self.posModel.nouns:

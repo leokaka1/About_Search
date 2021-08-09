@@ -24,9 +24,6 @@ class SemanticGraphVertexModel:
         # 判断hed是否在最后一位上
         self.hedLast = True if self.headID == len(self.word_list) - 1 else False
 
-
-
-
     def sematicResponse(self, word):
         for index, item in enumerate(self.word_list):
             if word == item:
