@@ -1,7 +1,7 @@
-from Search_Demo_1.semanticGraphVertexModel import SemanticGraphVertex
+from Search_Demo_1.semanticVertexModel import SemanticGraphVertexModel
 from Search_Demo_1.sematicSetting import posSetting
 from Search_Demo_1.sematicPosModel import SematicPosModel
-
+from Search_Demo_1.sematicAnalysisModel import SematicAnalysisModel
 
 # 构建句法分析返回结果
 # 创建语法结构层级
@@ -22,7 +22,7 @@ def createGrammerGraph(segAndPostList):
 
     # 区分属性句和非属性句
     if len(segAndPostList):
-        sematic_Model = SemanticGraphVertex(segAndPostList)
+        sematic_Model = SemanticGraphVertexModel(segAndPostList)
         # 遍历句法分析表
         for word in sematic_Model.word_list:
             sematic_Model.sematicResponse(word)
@@ -111,7 +111,10 @@ def createGrammerGraph(segAndPostList):
     else:
         print("数组为空，不予处理")
 
-    posSetting(pos_Model,sematic_Model)
+    analysisModel = SematicAnalysisModel
+    analysisModel.posModel = pos_Model
+    analysisModel.vertextModel = sematic_Model
+    posSetting(analysisModel)
 
 
 # 判断句式中是否含有属性问题
