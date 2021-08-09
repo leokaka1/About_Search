@@ -107,10 +107,12 @@ def createGrammerGraph(segAndPostList):
         print("形容词性:>>>>>", adjList)
         print("--------------------------------------------")
 
+        posSetting(pos_Model, sematic_Model)
+
     else:
         print("数组为空，不予处理")
 
-    posSetting(pos_Model,sematic_Model)
+
 
 
 # 判断句式中是否含有属性问题

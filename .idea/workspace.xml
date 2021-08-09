@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43e13196-3b90-4094-90df-beddaa7a1642" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/Search_Demo_1/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_Demo_1/semanticGraph.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/semanticGraph.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_Demo_1/semanticVertexModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/semanticVertexModel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Search_Demo_1/sematicAnalysisModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/sematicAnalysisModel.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Search_Demo_1/sematicSetting.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/sematicSetting.py" afterDir="false" />
     </list>
@@ -16,7 +19,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="115">
+            <state relative-caret-position="120">
               <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" selection-end-column="19" />
               <folding>
                 <element signature="e#0#69#0" expanded="true" />
@@ -28,8 +31,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/semanticGraph.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="432">
-              <caret line="111" selection-start-line="111" selection-end-line="111" />
+            <state relative-caret-position="240">
+              <caret line="109" column="44" selection-start-line="109" selection-start-column="44" selection-end-line="109" selection-end-column="44" />
               <folding>
                 <element signature="e#0#70#0" expanded="true" />
               </folding>
@@ -49,8 +52,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/semanticVertexModel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="24">
-              <caret line="1" column="30" selection-start-line="1" selection-start-column="6" selection-end-line="1" selection-end-column="30" />
+            <state relative-caret-position="82">
+              <caret line="22" column="17" lean-forward="true" selection-start-line="22" selection-start-column="17" selection-end-line="22" selection-end-column="17" />
             </state>
           </provider>
         </entry>
@@ -58,8 +61,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicSetting.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="19" column="18" selection-start-line="19" selection-start-column="18" selection-end-line="19" selection-end-column="18" />
+            <state relative-caret-position="111">
+              <caret line="40" column="4" selection-start-line="40" selection-start-column="4" selection-end-line="40" selection-end-column="15" />
               <folding>
                 <element signature="e#0#57#0" expanded="true" />
               </folding>
@@ -70,8 +73,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicAnalysisModel.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="12" column="47" selection-start-line="12" selection-start-column="47" selection-end-line="12" selection-end-column="47" />
+            <state relative-caret-position="279">
+              <caret line="17" column="46" lean-forward="true" selection-start-line="17" selection-start-column="46" selection-end-line="17" selection-end-column="46" />
               <folding>
                 <element signature="e#0#70#0" expanded="true" />
               </folding>
@@ -93,6 +96,7 @@
       <find>代理机构</find>
       <find>服务类</find>
       <find>投标的人</find>
+      <find>lastNoun的词性</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -112,12 +116,13 @@
         <option value="$PROJECT_DIR$/Search_Demo_1/resources/relations.json" />
         <option value="$PROJECT_DIR$/Search_Demo_1/semanticGraphVertex.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/posSetting.py" />
-        <option value="$PROJECT_DIR$/Search_Demo_1/main.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/segmentationAndPostag.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/createCypher.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/sematicAnalsisModel.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/semanticGraphVertexModel.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/sematicPosModel.py" />
+        <option value="$PROJECT_DIR$/Search_Demo_1/semanticVertexModel.py" />
+        <option value="$PROJECT_DIR$/Search_Demo_1/main.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/semanticGraph.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/sematicAnalysisModel.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/sematicSetting.py" />
@@ -243,12 +248,12 @@
       <workItem from="1628229737961" duration="5519000" />
       <workItem from="1628317255058" duration="12594000" />
       <workItem from="1628388097643" duration="34258000" />
-      <workItem from="1628464200269" duration="19695000" />
+      <workItem from="1628464200269" duration="20934000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="73320000" />
+    <option name="totallyTimeSpent" value="74559000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
@@ -259,7 +264,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.35596934" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.42059144" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -282,7 +287,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/About_Search$wordSegmentation.coverage" NAME="wordSegmentation Coverage Results" MODIFIED="1628232343084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Code/seg" />
-    <SUITE FILE_PATH="coverage/About_Search$main.coverage" NAME="main Coverage Results" MODIFIED="1628496110113" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Search_Demo_1" />
+    <SUITE FILE_PATH="coverage/About_Search$main.coverage" NAME="main Coverage Results" MODIFIED="1628497460974" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Search_Demo_1" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Code/search_main.py" />
@@ -322,20 +327,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/semanticGraph.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" selection-end-column="19" />
+        <state relative-caret-position="240">
+          <caret line="109" column="44" selection-start-line="109" selection-start-column="44" selection-end-line="109" selection-end-column="44" />
           <folding>
-            <element signature="e#0#69#0" expanded="true" />
+            <element signature="e#0#70#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Search_Demo_1/semanticVertexModel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="24">
-          <caret line="1" column="30" selection-start-line="1" selection-start-column="6" selection-end-line="1" selection-end-column="30" />
         </state>
       </provider>
     </entry>
@@ -346,20 +344,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Search_Demo_1/semanticGraph.py">
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="111" selection-start-line="111" selection-end-line="111" />
+        <state relative-caret-position="120">
+          <caret line="5" lean-forward="true" selection-start-line="5" selection-end-line="5" selection-end-column="19" />
           <folding>
-            <element signature="e#0#70#0" expanded="true" />
+            <element signature="e#0#69#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/semanticVertexModel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="82">
+          <caret line="22" column="17" lean-forward="true" selection-start-line="22" selection-start-column="17" selection-end-line="22" selection-end-column="17" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicAnalysisModel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="12" column="47" selection-start-line="12" selection-start-column="47" selection-end-line="12" selection-end-column="47" />
+        <state relative-caret-position="279">
+          <caret line="17" column="46" lean-forward="true" selection-start-line="17" selection-start-column="46" selection-end-line="17" selection-end-column="46" />
           <folding>
             <element signature="e#0#70#0" expanded="true" />
           </folding>
@@ -368,8 +373,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicSetting.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="19" column="18" selection-start-line="19" selection-start-column="18" selection-end-line="19" selection-end-column="18" />
+        <state relative-caret-position="111">
+          <caret line="40" column="4" selection-start-line="40" selection-start-column="4" selection-end-line="40" selection-end-column="15" />
           <folding>
             <element signature="e#0#57#0" expanded="true" />
           </folding>
