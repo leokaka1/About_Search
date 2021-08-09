@@ -1,7 +1,7 @@
 
 def createCypher(wordList):
     cypherstr = ""
-    print("wordList>>>",wordList)
+
     for index,item in enumerate(wordList):
         if not index == len(wordList) - 1:
             temp = "[{}]->".format(item)
@@ -10,4 +10,5 @@ def createCypher(wordList):
             temp = "[{}]".format(item)
             cypherstr += temp
 
-    print(cypherstr)
+    # TODO：待处理最后的结构
+    print("模拟出的Cypher语句:>>>>>>>",cypherstr)

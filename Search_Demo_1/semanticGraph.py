@@ -1,6 +1,7 @@
 from Search_Demo_1.semanticGraphVertex import SemanticGraphVertex
 from Search_Demo_1.createCypher import createCypher
 
+
 # 构建句法分析返回结果
 # 创建语法结构层级
 def createGrammerGraph(segAndPostList):
@@ -12,6 +13,10 @@ def createGrammerGraph(segAndPostList):
     verbList = []
     # 形容词表
     adjList = []
+
+    tempList = []
+    flagList = []
+    finalWordList = []
 
     # print(sematic.headID)
     # print(sematic.head_list)
@@ -32,7 +37,7 @@ def createGrammerGraph(segAndPostList):
                     nounList.append(word)
             elif isVerbWord(sematic.pos):
                 verbList.append(word)
-            elif isAdjWord(sematic.pos):
+            elif isAdjWord(sematic.pos, word):
                 adjList.append(word)
             else:
                 pass
@@ -41,36 +46,42 @@ def createGrammerGraph(segAndPostList):
         """
         example：远光软件股份有限公司的投标项目的中标人
         """
-        if sematic.headID == sematic.wordLength - 1:
-            print("hed在句尾")
+        if sematic.headID == sematic.wordLength -1:
             # 如果动词性数组中没有词直接输出
-            if not len(verbList):
+            if not len(verbList) and not len(adjList):
                 createCypher(nounList)
-            else:
+            # 没有形容词修饰的时候 因为避免有最多等形容词
+            elif not len(adjList):
                 # 取出动词和与其修饰的中心词进行拼接
-                tempList = []
-                flagList = []
-                finalWordList = []
-
                 # 剔除 noun中的中心词 并且 追加新的 中心词
                 for word in verbList:
                     index = sematic.wordForHead(word)
-                    for i,nounWord in enumerate(nounList):
+                    for i, nounWord in enumerate(nounList):
                         if sematic.word_list.index(nounWord) == index:
                             word += nounWord
                             flagList.append(i)
                             tempList.append(word)
-
-                for flag in flagList:
-                    nounList[flag] = tempList[flagList.index(flag)]
-
-                createCypher(nounList)
+                # print(tempList)
+                # print(flagList)
+                nounList = deleteAndAddInList(flagList,tempList,nounList)
+            else:
+                # 处理形容词应该就处理哪个名词指向形容词
+                print("有形容词修饰")
+                if not len(verbList):
+                    for word in nounList:
+                        index = sematic.wordForHead(word)
+                        for i, adjWord in enumerate(adjList):
+                            if sematic.wordForId(adjWord) == index:
+                                word = word + "/" + adjWord
+                                flagList.append(i)
+                                tempList.append(word)
+                    print(tempList)
+                    print(flagList)
+                else:
+                    print("动词不为空，且有可能指向形容词")
+                nounList = deleteAndAddInList(flagList,tempList,nounList)
         else:
-            pass
-
-
-
-
+            print("HED不在最后")
 
     else:
         print("包含属性，稍后处理")
@@ -78,6 +89,7 @@ def createGrammerGraph(segAndPostList):
     print("名词词性:>>>>>", nounList)
     print("动词词性:>>>>>", verbList)
     print("形容词性:>>>>>", adjList)
+    createCypher(nounList)
 
 
 # 判断句式中是否含有属性问题
@@ -109,9 +121,31 @@ def isVerbWord(pos):
         return False
 
 
-# 判断一些描述性形容词，如"最多"等
-def isAdjWord(pos):
-    if pos == "a":
+# 判断一些程度描述性形容词，如"最多"等
+def isAdjWord(pos, word):
+    if pos == "a" and isDegreeWord(word):
         return True
     else:
         return False
+
+
+# 判断程度形容词
+def isDegreeWord(word):
+    # TODO:可以最后写成文件扩展
+    degreeList = ["最多", "最少", "最大", "最小"]
+
+    if word in degreeList:
+        return True
+    else:
+        return False
+
+
+# 删除元素并且替换数组
+def deleteAndAddInList(flagList,wordList,targetList):
+    for index, flag in enumerate(flagList):
+        if index > 0 and flagList[index] == flagList[index - 1]:
+            targetList.append(wordList[index])
+        else:
+            targetList[flag] = wordList[flagList.index(flag)]
+
+    return targetList

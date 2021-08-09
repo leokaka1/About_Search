@@ -3,6 +3,7 @@ class SemanticGraphVertex:
     def __init__(self,sematicList):
         self.head = 0
         self.deprel = ""
+        self.wordID = 0
         self.pos = ""
         self.word = ""
         self.headID = ""
@@ -35,3 +36,6 @@ class SemanticGraphVertex:
     def wordForPos(self,word):
         word_index = self.word_list.index(word)
         return self.pos_list[word_index]
+
+    def wordForId(self,word):
+        return self.word_list.index(word)
