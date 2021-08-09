@@ -26,7 +26,8 @@ class SegmentationAndPostag:
             # print(col_res)
             # segAndpos_list = [{'word':col_res[0]["word"],"pos":posList,"deprel":col_res[0]["deprel"]}]
             col_res[0]["pos"] = posList
-            print("Step:1 分词和词性分析的数组:>>>>>>\n", col_res)
+            print("Step:1 分词和词性分析的数组:>>>>>>\n")
+            print(col_res)
             print("--------------------------------------------")
         else:
             col_res = []

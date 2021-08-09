@@ -22,30 +22,30 @@ def createGrammerGraph(segAndPostList):
 
     # 区分属性句和非属性句
     if len(segAndPostList):
-        sematic = SemanticGraphVertex(segAndPostList)
+        sematic_Model = SemanticGraphVertex(segAndPostList)
         # 遍历句法分析表
-        for word in sematic.word_list:
-            sematic.sematicResponse(word)
+        for word in sematic_Model.word_list:
+            sematic_Model.sematicResponse(word)
             # print(sematic.deprel)
             # print(sematic.head)
             # print(sematic.pos)
 
             # 判断是名词性节点还是动词性节点
-            if isNounWord(sematic.pos):
+            if isNounWord(sematic_Model.pos):
                 # 如果不是虚词成分就加入数组
-                if not sematic.wordForDeprel(word) == "MT":
+                if not sematic_Model.wordForDeprel(word) == "MT":
                     nounList.append(word)
-            elif isVerbWord(sematic.pos):
+            elif isVerbWord(sematic_Model.pos):
                 verbList.append(word)
-            elif isAdjWord(sematic.pos, word):
+            elif isAdjWord(sematic_Model.pos, word):
                 adjList.append(word)
             else:
                 pass
 
         # 处理并列关系 - 句中含有COO关系的找到其对应的targetword并做一个映射
         for nounWord in nounList:
-            if sematic.wordForDeprel(nounWord) == "COO":
-                target_word = sematic.wordForTargetWord(nounWord)
+            if sematic_Model.wordForDeprel(nounWord) == "COO":
+                target_word = sematic_Model.wordForTargetWord(nounWord)
                 if target_word in nounList:
                     coo_list.append(target_word)
                     coo_list.append(nounWord)
@@ -111,7 +111,7 @@ def createGrammerGraph(segAndPostList):
     else:
         print("数组为空，不予处理")
 
-    posSetting(pos_Model)
+    posSetting(pos_Model,sematic_Model)
 
 
 # 判断句式中是否含有属性问题
