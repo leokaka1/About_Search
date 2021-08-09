@@ -48,6 +48,7 @@ class SematicAnalysisModel:
         temp_coos_list = []
         coos_relations_list = []
         final_sequence_word_list = self.posModel.nouns.copy()
+        flag_index = 0
         # 远光软件股份有限公司投标的项目有哪些
         # 远光软件股份有限公司的投标的实际的项目的中标人
         # 1. 先找出n修饰了哪个v，v一般是中心词，所以head=0，只能有n来修饰v
@@ -68,7 +69,15 @@ class SematicAnalysisModel:
                 final_sequence_word_list.insert(target_word_index_in_nouns,relation_word)
             else:
                 # 如果targetword不在nouns有可能是动词自己创建关系，所以只添加除了中心词之外的谓词
-                final_sequence_word_list.append(verb)
+                for index,word in enumerate(final_sequence_word_list):
+                    word_pos = self.vertexModel.wordForHead(word)
+                    verb_pos = self.vertexModel.wordForHead(verb)
+                    # print("word_pos",word_pos)
+                    # print("verb_pos",verb_pos)
+                    if word_pos == verb_pos:
+                        flag_index = index + 1
+                # print(flag_index)
+                final_sequence_word_list.insert(flag_index,verb)
 
             if target_word in final_sequence_word_list:
                 # print(target_word)
