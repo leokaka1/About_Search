@@ -39,7 +39,8 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
 # First situation
 # 远光软件股份有限公司的投标项目的中标人
 def firstSituation(analysisModel: SematicAnalysisModel):
-    final_sequence_word_list = analysisModel.posModel.nouns
+    # 先拷贝最终返回数组为名词数组
+    final_sequence_word_list = analysisModel.posModel.nouns.copy()
 
     # 不包含属性
     if not analysisModel.posModel.attriHasWords:
@@ -48,20 +49,17 @@ def firstSituation(analysisModel: SematicAnalysisModel):
             # 遍历名词性结构
             for verb in analysisModel.posModel.verbs:
                 if analysisModel.vertexModel.wordForDeprel(verb) != "HED":
-                    print(verb)
                     verb_target_word = analysisModel.vertexModel.wordForTargetWord(verb)
-
+                    # 如果谓词的目标词不在名词数组中，则解析其中的摆放位置
                     if verb_target_word not in final_sequence_word_list:
                         for index, noun in enumerate(final_sequence_word_list):
                             noun_target_word = analysisModel.vertexModel.wordForTargetWord(noun)
                             if noun_target_word == verb_target_word:
                                 flag_index = index + 1
                         final_sequence_word_list.insert(flag_index, verb)
-
                     else:
                         noun_index = final_sequence_word_list.index(verb_target_word)
                         final_sequence_word_list.insert(noun_index, verb)
-            print("分析后的三元组为>>>>", final_sequence_word_list)
 
         else:
             # 包含并列关系解法
@@ -71,4 +69,5 @@ def firstSituation(analysisModel: SematicAnalysisModel):
         # 包含属性的解法
         pass
 
+    print("分析后的三元组为>>>>", final_sequence_word_list)
     return final_sequence_word_list

@@ -51,6 +51,9 @@ def createGrammerGraph(segAndPostList):
                 if target_word in nounList:
                     coo_list.append(target_word)
                     coo_list.append(nounWord)
+                    # 删除名词里面相同的词，避免后期再次删除
+                    nounList.remove(target_word)
+                    nounList.remove(nounWord)
 
         # 处理属性值操作
 

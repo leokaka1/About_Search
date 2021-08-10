@@ -1,24 +1,6 @@
 from Search_Demo_1.segmentationAndPostag import SegmentationAndPostag
 from Search_Demo_1.semanticGraph import createGrammerGraph
-"""
-# 如果两个目标词不一致，说明会有动词关系存在,所以要遍历动词关系
-                        if cur_target_word != next_target_word:
-                            # 遍历谓词
-                            for verb in analysisModel.posModel.verbs:
-                                verb_target_word = analysisModel.vertexModel.wordForTargetWord(verb)
-                                if cur_target_word == verb_target_word:
-                                    temp_relations_list.append(word)
-                                    temp_relations_list.append(verb)
-                                    temp_relations_list.append(cur_target_word)
-                                    final_sequence_word_list.append(temp_relations_list)
 
-                        else:
-                            temp_relations_list.append(word)
-                            temp_relations_list.append(next_word)
-                            temp_relations_list.append(cur_target_word)
-                            # print(temp_relations_list)
-                            final_sequence_word_list.append(temp_relations_list)
-"""
 """
 # First Method
 HED 在最后 并且有并列的关系
