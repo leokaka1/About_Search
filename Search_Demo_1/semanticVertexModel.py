@@ -49,3 +49,7 @@ class SemanticGraphVertexModel:
     def wordForTargetWord(self, word):
         target_word_index = self.wordForHead(word)
         return self.word_list[target_word_index]
+
+    def posForWord(self,pos):
+        index = self.pos_list.index(pos)
+        return self.word_list[index]

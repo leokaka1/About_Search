@@ -54,7 +54,7 @@ class SematicAnalysisModel:
         # 1. 先找出n修饰了哪个v，v一般是中心词，所以head=0，只能有n来修饰v
         for verb in self.posModel.verbs:
             # target_index = self.vertexModel.wordForHead(verb)
-            target_word = self.vertexModel.wordForTargetWord(verb) ##.word_list[target_index]
+            target_word = self.vertexModel.wordForTargetWord(verb)
             # 如果中心词不在谓语列表中，说明在名词中，在谓语中则不拼接
             if target_word not in self.posModel.verbs:
                 relation_word = verb + target_word
@@ -66,10 +66,12 @@ class SematicAnalysisModel:
             # 删除noun中的target_index的词
             if target_word in self.posModel.nouns:
                 target_word_index_in_nouns = self.posModel.nouns.index(target_word)
-                final_sequence_word_list.insert(target_word_index_in_nouns,relation_word)
+                final_sequence_word_list.insert(target_word_index_in_nouns, relation_word)
             else:
-                # 如果targetword不在nouns有可能是动词自己创建关系，所以只添加除了中心词之外的谓词
-                for index,word in enumerate(final_sequence_word_list):
+                # 如果targeted不在nouns有可能是动词自己创建关系，所以只添加除了中心词之外的谓词
+                for index, word in enumerate(final_sequence_word_list):
+                    # 如果遇到剩下的谓词是VOB修饰中心词HED，那么调整一下VOB和SBV的位置
+                    # FIXME:施工标的类合同都有哪些公司中标
                     word_pos = self.vertexModel.wordForHead(word)
                     verb_pos = self.vertexModel.wordForHead(verb)
                     # print("word_pos",word_pos)
@@ -77,13 +79,12 @@ class SematicAnalysisModel:
                     if word_pos == verb_pos:
                         flag_index = index + 1
                 # print(flag_index)
-                final_sequence_word_list.insert(flag_index,verb)
+                final_sequence_word_list.insert(flag_index, verb)
 
             if target_word in final_sequence_word_list:
                 # print(target_word)
                 # print(final_sequence_word_list)
                 final_sequence_word_list.remove(target_word)
-
 
         # 找到有没有并列的COO的词，如果是并列关系则会生成两条解析
         for word in self.posModel.nouns:
@@ -102,16 +103,13 @@ class SematicAnalysisModel:
 
         for word in temp_coos_list:
             temp_list = final_sequence_word_list.copy()
-            temp_list.insert(0,word)
+            temp_list.insert(0, word)
             coos_relations_list.append(temp_list)
             # print(coos_relations_list)
 
         if self.vertexModel.isHasCOO:
             final_sequence_word_list = coos_relations_list
 
-        print("关系词有>>>>>",relation_word_list)
-        print("剩下的名词有>>>>>",self.posModel.nouns)
-        print("组装完成后的词序列>>>>>",final_sequence_word_list)
-
-
-
+        print("关系词有>>>>>", relation_word_list)
+        print("剩下的名词有>>>>>", self.posModel.nouns)
+        print("组装完成后的词序列>>>>>", final_sequence_word_list)

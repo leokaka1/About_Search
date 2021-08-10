@@ -13,6 +13,8 @@ def createGrammerGraph(segAndPostList):
     verbList = []
     # 形容词表
     adjList = []
+    # 存储属性值
+    attriLst = []
 
     pos_Model = SematicPosModel()
 
@@ -48,6 +50,11 @@ def createGrammerGraph(segAndPostList):
                 if target_word in nounList:
                     coo_list.append(target_word)
                     coo_list.append(nounWord)
+
+        # 处理属性值操作
+        for index,posWord in enumerate(sematic_Model.pos_list):
+            if posWord == "TIME" or posWord == "m" or posWord == "PER":
+                attriLst.append(sematic_Model.word_list[index])
 
         pos_Model.isNone = False
         # print("temp_coo_list>>>>",coo_list)
@@ -99,12 +106,14 @@ def createGrammerGraph(segAndPostList):
         pos_Model.coos = coo_list
         pos_Model.verbs = verbList
         pos_Model.adjs = adjList
+        pos_Model.attri = attriLst
 
         print("Step 2 返回词性:>>>>>>\n")
         print("名词词性:>>>>>", nounList)
         print("并列名词:>>>>>", coo_list)
         print("动词词性:>>>>>", verbList)
         print("形容词性:>>>>>", adjList)
+        print("属性值词:>>>>>", attriLst)
         print("--------------------------------------------")
 
         posSetting(pos_Model, sematic_Model)

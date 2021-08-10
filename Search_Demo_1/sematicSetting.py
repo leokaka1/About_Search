@@ -37,21 +37,34 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
 # First situation
 # 远光软件股份有限公司的投标项目的中标人
 def generateWordSequence(analysisModel:SematicAnalysisModel):
-    analysisModel.assembleRelationshipWord()
     final_sequence_word_list = []
+
+
+
+    # FIXME：这里暂时处理了组装的情况
+    analysisModel.assembleRelationshipWord()
+
+
+
+
+
+
+
+
+
     # 假设动词和形容词表没有词
-    if not analysisModel.posModel.adjsHasWords:
-        if not analysisModel.posModel.coosHasWords:
-            # FIXME: First Situation
-            # 如果最后一个名词是HED或者是SBV的话说明最后一个名词是中心词或者是中心词谓动词的主语(subject)
-            if analysisModel.isLastNounAndVerbObject():
-                if not analysisModel.posModel.verbsHasWords:
-                    # 如果没有动词的情况下直接赋值
-                    final_sequence_word_list = analysisModel.posModel.nouns
-                else:
-                    # 如果有动词的情况下需要考虑拼装动词和名词
-                    pass
-            elif not analysisModel.analysisVerbsLastWord() == "HED":
-                print("有动词但是不是HED的情况")
+    # if not analysisModel.posModel.adjsHasWords:
+    #     if not analysisModel.posModel.coosHasWords:
+    #         # FIXME: First Situation
+    #         # 如果最后一个名词是HED或者是SBV的话说明最后一个名词是中心词或者是中心词谓动词的主语(subject)
+    #         if analysisModel.isLastNounAndVerbObject():
+    #             if not analysisModel.posModel.verbsHasWords:
+    #                 # 如果没有动词的情况下直接赋值
+    #                 final_sequence_word_list = analysisModel.posModel.nouns
+    #             else:
+    #                 # 如果有动词的情况下需要考虑拼装动词和名词
+    #                 pass
+    #         elif not analysisModel.analysisVerbsLastWord() == "HED":
+    #             print("有动词但是不是HED的情况")
 
     return final_sequence_word_list
