@@ -42,8 +42,6 @@ def firstSituation(analysisModel: SematicAnalysisModel):
     # 先拷贝最终返回数组为名词数组
     final_sequence_word_list = analysisModel.posModel.nouns.copy()
 
-    print(analysisModel.posModel.coosHasWords)
-
     # 不包含属性
     if not analysisModel.posModel.attriHasWords:
         # 不包含并列关系
