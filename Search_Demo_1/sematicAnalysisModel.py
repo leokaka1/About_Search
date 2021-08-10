@@ -13,17 +13,19 @@ class SematicAnalysisModel:
 
     # 分析名词数组中最后一个词的词性
     def analysisNounsLastWord(self):
-        last_noun_word = self.posModel.nouns[-1]
-        last_noun_deprel = self.vertexModel.wordForDeprel(last_noun_word)
-        # print("lastNoun的词性", last_noun_deprel)
-        return last_noun_deprel
+        if self.posModel.nounsHasWords:
+            last_noun_word = self.posModel.nouns[-1]
+            last_noun_deprel = self.vertexModel.wordForDeprel(last_noun_word)
+            print("lastNoun的词性", last_noun_deprel)
+            return last_noun_deprel
 
     # 分析动词数组中最后一个词的词性
     def analysisVerbsLastWord(self):
-        last_verb_word = self.posModel.verbs[-1]
-        last_verb_deprel = self.vertexModel.wordForDeprel(last_verb_word)
-        # print("lastNoun的词性", last_noun_deprel)
-        return last_verb_deprel
+        if self.posModel.verbsHasWords:
+            last_verb_word = self.posModel.verbs[-1]
+            last_verb_deprel = self.vertexModel.wordForDeprel(last_verb_word)
+            print("lastNoun的词性", last_verb_deprel)
+            return last_verb_deprel
 
     def isLastNounObject(self):
         if self.analysisNounsLastWord() == "SBV" or self.analysisNounsLastWord() == "HED":
@@ -43,7 +45,7 @@ class SematicAnalysisModel:
         else:
             return False
 
-    def assembleRelationshipWord(self):
+    def assembleRelationshipWordAtHEDLast(self):
         relation_word_list = []
         temp_coos_list = []
         coos_relations_list = []
@@ -72,14 +74,18 @@ class SematicAnalysisModel:
                 for index, word in enumerate(final_sequence_word_list):
                     # 如果遇到剩下的谓词是VOB修饰中心词HED，那么调整一下VOB和SBV的位置
                     # FIXME:施工标的类合同都有哪些公司中标
-                    word_pos = self.vertexModel.wordForHead(word)
-                    verb_pos = self.vertexModel.wordForHead(verb)
-                    # print("word_pos",word_pos)
-                    # print("verb_pos",verb_pos)
-                    if word_pos == verb_pos:
-                        flag_index = index + 1
-                # print(flag_index)
-                final_sequence_word_list.insert(flag_index, verb)
+                    if word in self.vertexModel.word_list:
+                        word_pos = self.vertexModel.wordForHead(word)
+                        verb_pos = self.vertexModel.wordForHead(verb)
+                        # print("word_pos",word_pos)
+                        # print("verb_pos",verb_pos)
+                        # print(verb)
+                        if word_pos == verb_pos:
+                            flag_index = index + 1
+                    # print(flag_index)
+                # 这里保证如果谓语是"HED"中心词则不添加，避免加入其他词汇
+                if self.vertexModel.wordForDeprel(verb) != "HED":
+                    final_sequence_word_list.insert(flag_index, verb)
 
             if target_word in final_sequence_word_list:
                 # print(target_word)
@@ -113,3 +119,31 @@ class SematicAnalysisModel:
         print("关系词有>>>>>", relation_word_list)
         print("剩下的名词有>>>>>", self.posModel.nouns)
         print("组装完成后的词序列>>>>>", final_sequence_word_list)
+
+        return final_sequence_word_list
+
+    # 处理成三元组
+    def copeTripleRelations(self):
+        triple_ralation_list = []
+        # 遍历nouns
+        for index,nounWord in enumerate(self.posModel.nouns):
+            noun_target_word = self.vertexModel.wordForTargetWord(nounWord)
+
+            if self.vertexModel.wordForDeprel(nounWord) != "HED":
+                for verbWord in self.posModel.verbs:
+                    temp_triple_relation = []
+                    verb_target_word = self.vertexModel.wordForTargetWord(verbWord)
+                    # 如果名词和动词的目标词一致，则规划三元组
+                    if noun_target_word == verb_target_word:
+                        temp_triple_relation.append(nounWord)
+                        temp_triple_relation.append(verbWord)
+                        temp_triple_relation.append(verb_target_word)
+                        triple_ralation_list.append(temp_triple_relation)
+                    elif noun_target_word == verbWord:
+                        # 如果名词修饰动词，则直接规划三元组
+                        temp_triple_relation.append(nounWord)
+                        temp_triple_relation.append(verbWord)
+                        temp_triple_relation.append(verb_target_word)
+                        triple_ralation_list.append(temp_triple_relation)
+
+        print("构造出来的三元组合为:>>>>>",triple_ralation_list)

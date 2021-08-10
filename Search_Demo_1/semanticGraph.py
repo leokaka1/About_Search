@@ -2,6 +2,7 @@ from Search_Demo_1.semanticVertexModel import SemanticGraphVertexModel
 from Search_Demo_1.sematicSetting import posSetting
 from Search_Demo_1.sematicPosModel import SematicPosModel
 
+
 # 构建句法分析返回结果
 # 创建语法结构层级
 def createGrammerGraph(segAndPostList):
@@ -52,8 +53,9 @@ def createGrammerGraph(segAndPostList):
                     coo_list.append(nounWord)
 
         # 处理属性值操作
-        for index,posWord in enumerate(sematic_Model.pos_list):
-            if posWord == "TIME" or posWord == "m" or posWord == "PER":
+
+        for index, posWord in enumerate(sematic_Model.pos_list):
+            if posWord == "TIME" or posWord == "m" or posWord == "PER" or posWord == "LOC":
                 attriLst.append(sematic_Model.word_list[index])
 
         pos_Model.isNone = False
@@ -122,8 +124,6 @@ def createGrammerGraph(segAndPostList):
         print("数组为空，不予处理")
 
 
-
-
 # 判断句式中是否含有属性问题
 def isContainAtrribute(posList):
     for posTag in posList:
@@ -172,20 +172,9 @@ def isCoo(deprel, word):
 # 判断程度形容词
 def isDegreeWord(word):
     # TODO:可以最后写成文件扩展
-    degreeList = ["最多", "最少", "最大", "最小"]
+    degreeList = ["最多", "最少", "最大", "最小", "最高", "最低"]
 
     if word in degreeList:
         return True
     else:
         return False
-
-
-# 删除元素并且替换数组
-def deleteAndAddInList(flagList,wordList,targetList):
-    for index, flag in enumerate(flagList):
-        if index > 0 and flagList[index] == flagList[index - 1]:
-            targetList.append(wordList[index])
-        else:
-            targetList[flag] = wordList[flagList.index(flag)]
-
-    return targetList

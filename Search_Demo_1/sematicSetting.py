@@ -19,15 +19,17 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
     # 最终的顺序输出列表
     final_sequence_word_list = []
     # 将两个模型分发给分析模型
-    analysisModel = SematicAnalysisModel(vertexModel,posModel)
+    analysisModel = SematicAnalysisModel(vertexModel, posModel)
+    # first situation
+    final_sequence_word_list = firstSituation(analysisModel)
+
+    # analysisModel.assembleRelationshipWordAtHEDLast()
 
     # 先判断词性对象中是否为空，如果为空就不做处理
     if not analysisModel.posModel.isNone:
-
-        final_sequence_word_list = generateWordSequence(analysisModel)
-    else:
+        final_sequence_word_list = []
+        # First Situation - 句子末尾是名词，并且是HED中心词
         pass
-
 
     print(final_sequence_word_list)
     print("--------------------------------------------")
@@ -36,35 +38,37 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
 
 # First situation
 # 远光软件股份有限公司的投标项目的中标人
-def generateWordSequence(analysisModel:SematicAnalysisModel):
-    final_sequence_word_list = []
+def firstSituation(analysisModel: SematicAnalysisModel):
+    final_sequence_word_list = analysisModel.posModel.nouns
 
+    # 不包含属性
+    if not analysisModel.posModel.attriHasWords:
+        # 不包含并列关系
+        if not analysisModel.posModel.coosHasWords:
+            # 遍历名词性结构
+            for verb in analysisModel.posModel.verbs:
+                if analysisModel.vertexModel.wordForDeprel(verb) != "HED":
+                    print(verb)
+                    verb_target_word = analysisModel.vertexModel.wordForTargetWord(verb)
 
+                    if verb_target_word not in final_sequence_word_list:
+                        for index, noun in enumerate(final_sequence_word_list):
+                            noun_target_word = analysisModel.vertexModel.wordForTargetWord(noun)
+                            if noun_target_word == verb_target_word:
+                                flag_index = index + 1
+                        final_sequence_word_list.insert(flag_index, verb)
 
-    # FIXME：这里暂时处理了组装的情况
-    analysisModel.assembleRelationshipWord()
+                    else:
+                        noun_index = final_sequence_word_list.index(verb_target_word)
+                        final_sequence_word_list.insert(noun_index, verb)
+            print("分析后的三元组为>>>>", final_sequence_word_list)
 
+        else:
+            # 包含并列关系解法
+            pass
 
-
-
-
-
-
-
-
-    # 假设动词和形容词表没有词
-    # if not analysisModel.posModel.adjsHasWords:
-    #     if not analysisModel.posModel.coosHasWords:
-    #         # FIXME: First Situation
-    #         # 如果最后一个名词是HED或者是SBV的话说明最后一个名词是中心词或者是中心词谓动词的主语(subject)
-    #         if analysisModel.isLastNounAndVerbObject():
-    #             if not analysisModel.posModel.verbsHasWords:
-    #                 # 如果没有动词的情况下直接赋值
-    #                 final_sequence_word_list = analysisModel.posModel.nouns
-    #             else:
-    #                 # 如果有动词的情况下需要考虑拼装动词和名词
-    #                 pass
-    #         elif not analysisModel.analysisVerbsLastWord() == "HED":
-    #             print("有动词但是不是HED的情况")
+    else:
+        # 包含属性的解法
+        pass
 
     return final_sequence_word_list
