@@ -100,6 +100,7 @@ if __name__ == '__main__':
     seg_pos = SegmentationAndPostag()
 
     while(True):
+        print("--------------------------------------------")
         input_text = input("请输入用户的问题:>>>>>>>>")
         seg_res = seg_pos.segAndPos(input_text)
         createGrammerGraph(seg_res)

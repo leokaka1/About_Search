@@ -17,7 +17,7 @@ analysisModel - 词性语义分析模型
 def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel):
     print("Step:3 确定的语序数组为:>>>>>\n")
     # 最终的顺序输出列表
-    final_sequence_dict = {"inCludeValues": False, "sequence": []}
+    final_sequence_dict = {"includeValues": False, "sequence": []}
     # 将两个模型分发给分析模型
     analysisModel = SematicAnalysisModel(vertexModel, posModel)
 
@@ -40,14 +40,14 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
 
             else:
                 print("Situation: 有属性关系")
-                final_sequence_dict["inCludeValues"] = True
+                final_sequence_dict["includeValues"] = True
                 # TODO: 待完成
                 res = attributeRecombination(analysisModel)
                 final_sequence_dict["sequence"] = res
         else:
             if analysisModel.posModel.attriHasWords:
                 print("Situation: 并列关系中有属性关系")
-                final_sequence_dict["inCludeValues"] = True
+                final_sequence_dict["includeValues"] = True
             else:
                 print("Situation: 并列关系中无属性关系")
                 res = coosCombinationRelation(analysisModel)
@@ -113,8 +113,8 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
         else:
             final_relation_list.append(verb)
 
-    # 如果最后一个名词是HED，说明话没有HED谓语，那么则把noun添加到最后
-    if analysisModel.isLastNounObject():
+    # 如果最后一个名词是HED，说明话没有HED谓语，那么则把noun添加到最后(如果只有一个HED则不添加，说明就是实例本身)
+    if analysisModel.isLastNounObject() and len(analysisModel.posModel.nouns) != 1:
         final_relation_list.append(analysisModel.posModel.nouns[-1])
 
     # print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
@@ -141,7 +141,7 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
         # print(new_combination)
         final_combination_list.append(new_combination)
 
-    # print("重组关系之后的确定数组>>>>>", final_combination_list)
+    print("重组关系之后的确定数组>>>>>", final_combination_list)
     return final_combination_list
 
 

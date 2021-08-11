@@ -5,6 +5,7 @@ from Search_Demo_1.sematicPosModel import SematicPosModel
 词性语义分析模型
 """
 
+
 class SematicAnalysisModel:
     def __init__(self, vertexModel: SemanticGraphVertexModel, posModel: SematicPosModel):
         self.posModel = posModel
@@ -45,7 +46,7 @@ class SematicAnalysisModel:
             return False
 
     def isSBVword(self):
-        for index,deprel in enumerate(self.vertexModel.deprel_list):
+        for index, deprel in enumerate(self.vertexModel.deprel_list):
             if deprel == "SBV":
                 word = self.vertexModel.word_list[index]
 
