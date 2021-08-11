@@ -26,10 +26,9 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
     if analysisModel.posModel.nounsHasWords:
         # coos数组中无词，表示没有并列关系
         if analysisModel.posModel.coosHasWords:
-            print("无并列关系")
             # TODO:判断有点需要改进
             if not analysisModel.posModel.attriHasWords:
-                print("无属性关系")
+                print("Situation: 无属性关系")
                 # 先找到是否有实例
                 entity_word = findEntityAndIndex(analysisModel.posModel.nouns)
                 # print(entity_word)
@@ -39,14 +38,14 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
                 combinationNewRelation(entity_word, new_verbs, analysisModel)
 
             else:
-                print("有属性关系")
+                print("Situation: 有属性关系")
         else:
-            print("有并列关系")
             if analysisModel.posModel.attriHasWords:
-                print("并列关系中有属性关系")
+                print("Situation: 并列关系中有属性关系")
             else:
+                print("Situation: 并列关系中无属性关系")
                 coosCombinationRelation(analysisModel)
-                print("并列关系中无属性关系")
+
     else:
         print("为空")
 
@@ -136,9 +135,7 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
 
 def coosCombinationRelation(analysisModel: SematicAnalysisModel):
     coos_list = analysisModel.posModel.coos
-    print(coos_list)
     coo_words = findEntityAndIndex(coos_list)
-    # print(coo_words)
     verbs = verbInsteadNoun(analysisModel)
     combinationNewRelation(coo_words,verbs,analysisModel)
 
