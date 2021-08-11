@@ -12,3 +12,4 @@ class SematicPosModel:
         self.verbsHasWords = True if len(verbs) else False
         self.adjsHasWords = True if len(adjs) else False
         self.attriHasWords = True if len(attri) else False
+

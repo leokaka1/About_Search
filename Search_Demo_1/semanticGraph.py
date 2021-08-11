@@ -42,18 +42,15 @@ def createGrammerGraph(segAndPostList):
             else:
                 pass
 
-        # 处理并列关系 - 句中含有COO关系的找到其对应的targetword并做一个映射
+        # 处理并列关系 - 句中含有COO关系的找到其对应的target word并做一个映射
         for nounWord in nounList:
-            print(sematic_Model.wordForDeprel(nounWord))
             if sematic_Model.wordForDeprel(nounWord) == "COO":
-                print(nounWord)
                 target_word = sematic_Model.wordForTargetWord(nounWord)
                 if target_word in nounList:
                     coo_list.append(target_word)
                     coo_list.append(nounWord)
-                    # 删除名词里面相同的词，避免后期再次删除
-                    # nounList.remove(target_word)
-                    # nounList.remove(nounWord)
+
+        # 删除名词里面相同的词，避免后期再次删除
         for cooWord in coo_list:
             if cooWord in nounList:
                 nounList.remove(cooWord)
@@ -113,7 +110,7 @@ def createGrammerGraph(segAndPostList):
 
         print("Step 2 返回词性:>>>>>>\n")
         print("名词词性:>>>>>", nounList)
-        print("并列名词:>>>>>", set(coo_list))
+        print("并列名词:>>>>>", set(coo_list) if len(coo_list) else coo_list)
         print("动词词性:>>>>>", verbList)
         print("形容词性:>>>>>", adjList)
         print("属性值词:>>>>>", attriLst)

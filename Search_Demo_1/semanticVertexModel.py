@@ -53,3 +53,7 @@ class SemanticGraphVertexModel:
     def posForWord(self,pos):
         index = self.pos_list.index(pos)
         return self.word_list[index]
+
+    def removeVerbWordList(self,word):
+        self.word_list.remove(word)
+
