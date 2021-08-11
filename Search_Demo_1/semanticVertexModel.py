@@ -57,3 +57,10 @@ class SemanticGraphVertexModel:
     def removeVerbWordList(self,word):
         self.word_list.remove(word)
 
+    def wordisValue(self,word):
+        value_list = ["TIME","m","LOC","TIME"]
+        word_pos = self.wordForPos(word)
+        if word_pos in value_list:
+            return True
+        else:
+            return False

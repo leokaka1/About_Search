@@ -41,8 +41,9 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
             else:
                 print("Situation: 有属性关系")
                 final_sequence_dict["inCludeValues"] = True
-                res = attributeRecombination
-                final_sequence_dict["sequence"] = res
+                # TODO: 待完成
+                attributeRecombination(analysisModel)
+                # final_sequence_dict["sequence"] = res
         else:
             if analysisModel.posModel.attriHasWords:
                 print("Situation: 并列关系中有属性关系")
@@ -149,9 +150,39 @@ def coosCombinationRelation(analysisModel: SematicAnalysisModel):
     coos_list = analysisModel.posModel.coos
     coo_words = findEntityAndIndex(coos_list)
     verbs = verbInsteadNoun(analysisModel)
-    combinationNewRelation(coo_words, verbs, analysisModel)
+    final = combinationNewRelation(coo_words, verbs, analysisModel)
+    return final
 
 
 # 属性重组
-def attributeRecombination():
-    pass
+def attributeRecombination(analysisModel: SematicAnalysisModel):
+    # step 1 谓词解析，生成谓词的主语
+    instead_list = verbInsteadNoun(analysisModel)
+    print(instead_list)
+
+
+# 解析程度副词
+def judgeDegreeWord(verbList):
+    big = ["超过","大于","越过"]
+    small = ["少于","小于"]
+    equal = ["为","等于","是"]
+    biggest = ["最高","最大","第一"]
+    smallest = ["最少","最小","最后"]
+
+    for verb in verbList:
+        if verb in big:
+            chargeSymbol = ">"
+        elif verb in small:
+            chargeSymbol = "<"
+        elif verb in equal:
+            chargeSymbol = "="
+        elif verb in biggest:
+            chargeSymbol = "desc limit 1"
+        elif verb in smallest:
+            chargeSymbol = "limit 1"
+        else:
+            chargeSymbol = ""
+    return chargeSymbol
+
+
+
