@@ -59,7 +59,7 @@ def findEntityAndIndex(wordList):
     nouns = wordList
     entities = []
     entities_type = []
-    final_word_list= []
+    final_word_list = []
     # 读取实例的列表
     entities_list = open(r"G:\About_Search\Search_Demo_1\resources\entities", encoding="utf-8").readlines()
 
@@ -86,6 +86,7 @@ def findEntityAndIndex(wordList):
 
 # 重组谓语和名词的关系
 def verbInsteadNoun(analysisModel: SematicAnalysisModel):
+    hed_ver_list = ["有", "是", "包含", "为"]
     wordlist = analysisModel.vertexModel.word_list
     verbsList = analysisModel.posModel.verbs
     final_relation_list = []
@@ -93,7 +94,7 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
         verb_deprel = analysisModel.vertexModel.wordForDeprel(verb)
         verb_position = analysisModel.vertexModel.wordForId(verb)
         # 分析谓语是否是下列几个词，然后并且是HED中心词
-        if (verb == "有" or verb == "是" or verb == "包含") and verb_deprel == "HED":
+        if (verb in hed_ver_list) and verb_deprel == "HED":
             for word in wordlist:
                 word_head = analysisModel.vertexModel.wordForHead(word)
                 if word_head == verb_position:
@@ -133,15 +134,16 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
         # print(new_combination)
         final_combination_list.append(new_combination)
 
-    print("重组关系之后的确定数组>>>>>",final_combination_list)
+    print("重组关系之后的确定数组>>>>>", final_combination_list)
     return final_combination_list
+
 
 # 多层并列处理关系
 def coosCombinationRelation(analysisModel: SematicAnalysisModel):
     coos_list = analysisModel.posModel.coos
     coo_words = findEntityAndIndex(coos_list)
     verbs = verbInsteadNoun(analysisModel)
-    combinationNewRelation(coo_words,verbs,analysisModel)
+    combinationNewRelation(coo_words, verbs, analysisModel)
 
 
 # 属性重组
