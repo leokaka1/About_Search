@@ -15,7 +15,7 @@ class SematicAnalysisModel:
         if self.posModel.nounsHasWords:
             last_noun_word = self.posModel.nouns[-1]
             last_noun_deprel = self.vertexModel.wordForDeprel(last_noun_word)
-            print("lastNoun的词性", last_noun_deprel)
+            # print("lastNoun的词性", last_noun_deprel)
             return last_noun_deprel
 
     # 分析动词数组中最后一个词的词性
@@ -23,11 +23,11 @@ class SematicAnalysisModel:
         if self.posModel.verbsHasWords:
             last_verb_word = self.posModel.verbs[-1]
             last_verb_deprel = self.vertexModel.wordForDeprel(last_verb_word)
-            print("lastNoun的词性", last_verb_deprel)
+            # print("lastNoun的词性", last_verb_deprel)
             return last_verb_deprel
 
     def isLastNounObject(self):
-        if self.analysisNounsLastWord() == "SBV" or self.analysisNounsLastWord() == "HED":
+        if self.analysisNounsLastWord() == "HED":
             return True
         else:
             return False

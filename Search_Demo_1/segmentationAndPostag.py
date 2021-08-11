@@ -22,9 +22,6 @@ class SegmentationAndPostag:
             # 对分词后的词语进行依存分析
             col_res = self.ddp.parse_seg([wordList])
 
-            # 组装成["word":[],"pos":[]."deprel":[]]  也就是词语，词性，和句法结构的组合
-            # print(col_res)
-            # segAndpos_list = [{'word':col_res[0]["word"],"pos":posList,"deprel":col_res[0]["deprel"]}]
             col_res[0]["pos"] = posList
             print("Step:1 分词和词性分析的数组:>>>>>>\n")
             print(col_res)

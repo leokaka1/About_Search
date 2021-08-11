@@ -15,7 +15,7 @@ analysisModel - 词性语义分析模型
 
 
 def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel):
-    print("Step 3 确定的语序数组为:>>>>>\n")
+    print("Step:3 确定的语序数组为:>>>>>\n")
     # 最终的顺序输出列表
     final_sequence_word_list = []
     # 将两个模型分发给分析模型
@@ -105,6 +105,10 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
         else:
             final_relation_list.append(verb)
 
+    # 如果最后一个名词是HED，说明话没有HED谓语，那么则把noun添加到最后
+    if analysisModel.isLastNounObject():
+        final_relation_list.append(analysisModel.posModel.nouns[-1])
+
     print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
     return final_relation_list
 
@@ -132,12 +136,17 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
     print("重组关系之后的确定数组>>>>>",final_combination_list)
     return final_combination_list
 
-
+# 多层并列处理关系
 def coosCombinationRelation(analysisModel: SematicAnalysisModel):
     coos_list = analysisModel.posModel.coos
     coo_words = findEntityAndIndex(coos_list)
     verbs = verbInsteadNoun(analysisModel)
     combinationNewRelation(coo_words,verbs,analysisModel)
+
+
+# 属性重组
+def attributeRecombination():
+    pass
 
 # # First situation
 # # 远光软件股份有限公司的投标项目的中标人

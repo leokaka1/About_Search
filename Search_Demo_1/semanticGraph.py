@@ -56,59 +56,12 @@ def createGrammerGraph(segAndPostList):
                 nounList.remove(cooWord)
 
         # 处理属性值操作
-
         for index, posWord in enumerate(sematic_Model.pos_list):
             if posWord == "TIME" or posWord == "m" or posWord == "PER" or posWord == "LOC":
                 attriLst.append(sematic_Model.word_list[index])
 
-        # print("temp_coo_list>>>>",coo_list)
-        # print("nounList>>>>>",nounList)
-
-        # 第一种情况 - [HED在最后并且其他的都为ATT] 没有 SBV之类的主谓关系
-
-        """
-        example：远光软件股份有限公司的投标项目的中标人
-        """
-        # if sematic.headID == sematic.wordLength -1:
-        #     # 如果动词性数组中没有词直接输出
-        #     # if not len(verbList) and not len(adjList):
-        #     #     pass
-        #     # 没有形容词修饰的时候 因为避免有最多等形容词
-        #     if not len(adjList):
-        #         # 取出动词和与其修饰的中心词进行拼接
-        #         # 剔除 noun中的中心词 并且 追加新的 中心词
-        #         for word in verbList:
-        #             index = sematic.wordForHead(word)
-        #             for i, nounWord in enumerate(nounList):
-        #                 if sematic.word_list.index(nounWord) == index:
-        #                     word += nounWord
-        #                     flagList.append(i)
-        #                     tempList.append(word)
-        #         # print(tempList)
-        #         # print(flagList)
-        #         nounList = deleteAndAddInList(flagList,tempList,nounList)
-        #     else:
-        #         # 处理形容词应该就处理哪个名词指向形容词
-        #         print("有形容词修饰")
-        #         if not len(verbList):
-        #             for word in nounList:
-        #                 index = sematic.wordForHead(word)
-        #                 for i, adjWord in enumerate(adjList):
-        #                     if sematic.wordForId(adjWord) == index:
-        #                         word = word + "/" + adjWord
-        #                         flagList.append(i)
-        #                         tempList.append(word)
-        #             print(tempList)
-        #             print(flagList)
-        #         else:
-        #             print("动词不为空，且有可能指向形容词")
-        #         nounList = deleteAndAddInList(flagList,tempList,nounList)
-        # else:
-        #     print("HED不在最后")
-
-
         coo_list = set(coo_list) if len(coo_list)>0 else coo_list
-        print("Step 2 返回词性:>>>>>>\n")
+        print("Step:2 返回词性:>>>>>>\n")
         print("名词词性:>>>>>", nounList)
         print("并列名词:>>>>>", coo_list)
         print("动词词性:>>>>>", verbList)
