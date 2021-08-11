@@ -17,7 +17,7 @@ analysisModel - 词性语义分析模型
 def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel):
     print("Step:3 确定的语序数组为:>>>>>\n")
     # 最终的顺序输出列表
-    final_sequence_word_list = []
+    final_sequence_dict = {"inCludeValues":False,"sequence":[]}
     # 将两个模型分发给分析模型
     analysisModel = SematicAnalysisModel(vertexModel, posModel)
 
@@ -35,21 +35,27 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
 
                 # TODO:测试
                 new_verbs = verbInsteadNoun(analysisModel)
-                combinationNewRelation(entity_word, new_verbs, analysisModel)
+                res = combinationNewRelation(entity_word, new_verbs, analysisModel)
+                final_sequence_dict["sequence"] = res
 
             else:
                 print("Situation: 有属性关系")
+                final_sequence_dict["inCludeValues"] = True
+                res = attributeRecombination
+                final_sequence_dict["sequence"] = res
         else:
             if analysisModel.posModel.attriHasWords:
                 print("Situation: 并列关系中有属性关系")
+                final_sequence_dict["inCludeValues"] = True
             else:
                 print("Situation: 并列关系中无属性关系")
-                coosCombinationRelation(analysisModel)
+                res = coosCombinationRelation(analysisModel)
+                final_sequence_dict["sequence"] = res
 
     else:
         print("为空")
 
-    # print(final_sequence_word_list)
+    print(final_sequence_dict)
     print("--------------------------------------------")
     # createCypher(final_sequence_word_list)
 
@@ -110,7 +116,7 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
     if analysisModel.isLastNounObject():
         final_relation_list.append(analysisModel.posModel.nouns[-1])
 
-    print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
+    # print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
     return final_relation_list
 
 
@@ -134,7 +140,7 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
         # print(new_combination)
         final_combination_list.append(new_combination)
 
-    print("重组关系之后的确定数组>>>>>", final_combination_list)
+    # print("重组关系之后的确定数组>>>>>", final_combination_list)
     return final_combination_list
 
 
@@ -149,47 +155,3 @@ def coosCombinationRelation(analysisModel: SematicAnalysisModel):
 # 属性重组
 def attributeRecombination():
     pass
-
-# # First situation
-# # 远光软件股份有限公司的投标项目的中标人
-# def firstSituation(analysisModel: SematicAnalysisModel):
-#     # 先拷贝最终返回数组为名词数组
-#     final_sequence_word_list = []
-#
-#     # 不包含属性
-#     if not analysisModel.posModel.attriHasWords:
-#         temp_sequence_word_list = analysisModel.posModel.nouns.copy()
-#         # 不包含并列关系
-#         if not analysisModel.posModel.coosHasWords:
-#             # 遍历名词性结构
-#             for verb in analysisModel.posModel.verbs:
-#                 # 如果动词不为HED中心词或者动词在第一个词组位置出现时添加到最后的词组中
-#                 if analysisModel.vertexModel.wordForDeprel(verb) != "HED" and analysisModel.vertexModel.word_list.index(verb) != 0:
-#                     verb_target_word = analysisModel.vertexModel.wordForTargetWord(verb)
-#                     # 如果谓词的目标词不在名词数组中，则解析其中的摆放位置
-#                     if verb_target_word not in temp_sequence_word_list:
-#                         for index, noun in enumerate(temp_sequence_word_list):
-#                             noun_target_word = analysisModel.vertexModel.wordForTargetWord(noun)
-#                             if noun_target_word == verb_target_word:
-#                                 flag_index = index + 1
-#                         temp_sequence_word_list.insert(flag_index, verb)
-#
-#                     else:
-#                         noun_index = temp_sequence_word_list.index(verb_target_word)
-#                         temp_sequence_word_list.insert(noun_index, verb)
-#                         # analysisModel.vertexModel.removeVerbWordList(verb)
-#
-#
-#             final_sequence_word_list = temp_sequence_word_list
-#         else:
-#             # 包含并列关系解法
-#             print("包含COOs关系")
-#             pass
-#
-#     else:
-#         # 包含属性的解法
-#         print("包含属性--稍后判断")
-#         pass
-#
-#     print("分析后的三元组为>>>>", final_sequence_word_list)
-#     return final_sequence_word_list
