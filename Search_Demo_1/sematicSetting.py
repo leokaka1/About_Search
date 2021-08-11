@@ -42,8 +42,8 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
                 print("Situation: 有属性关系")
                 final_sequence_dict["inCludeValues"] = True
                 # TODO: 待完成
-                attributeRecombination(analysisModel)
-                # final_sequence_dict["sequence"] = res
+                res = attributeRecombination(analysisModel)
+                final_sequence_dict["sequence"] = res
         else:
             if analysisModel.posModel.attriHasWords:
                 print("Situation: 并列关系中有属性关系")
@@ -58,7 +58,7 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
 
     print(final_sequence_dict)
     print("--------------------------------------------")
-    # createCypher(final_sequence_word_list)
+    createCypher(final_sequence_dict)
 
 
 # 找到对应的实例
@@ -208,8 +208,5 @@ def attributeRecombination(analysisModel: SematicAnalysisModel):
                     final_sequence.append(attr_target_word)
                     final_sequence.append(attr)
 
-    print(final_sequence)
-
-
-def translateAttribute():
-    pass
+    # print(final_sequence)
+    return final_sequence

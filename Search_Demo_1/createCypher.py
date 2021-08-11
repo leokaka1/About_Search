@@ -1,18 +1,20 @@
 
-def createCypher(wordList):
+def createCypher(wordDict):
+    print("Step:4 把分解出的关系解释成Cypher语句\n")
+    print("wordDict为:>>>>>>",wordDict)
 
-    cypherstr = ""
-
-    for index,item in enumerate(wordList):
-        if not index == len(wordList) - 1:
-            temp = "[{}]->".format(item)
-            cypherstr += temp
-        else:
-            temp = "[{}]".format(item)
-            cypherstr += temp
-
-    # TODO：待处理最后的结构
-    print("模拟出的Cypher语句:>>>>>>>",cypherstr)
+    # cypherstr = ""
+    #
+    # for index,item in enumerate(wordList):
+    #     if not index == len(wordList) - 1:
+    #         temp = "[{}]->".format(item)
+    #         cypherstr += temp
+    #     else:
+    #         temp = "[{}]".format(item)
+    #         cypherstr += temp
+    #
+    # # TODO：待处理最后的结构
+    # print("模拟出的Cypher语句:>>>>>>>",cypherstr)
 
 # # 名词消歧
 # def nounsDisambiguration(analysisModel:SematicAnalysisModel):
