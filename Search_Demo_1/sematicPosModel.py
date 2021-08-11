@@ -5,7 +5,6 @@ class SematicPosModel:
         self.verbs = verbs
         self.adjs = adjs
         self.attri = attri
-        self.isNone = True
 
         self.nounsHasWords = True if len(nouns) else False
         self.coosHasWords = True if len(coos) else False

@@ -21,44 +21,48 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
     # 将两个模型分发给分析模型
     analysisModel = SematicAnalysisModel(vertexModel, posModel)
 
-    # 名词消歧
-    nounsDisambiguration(analysisModel)
 
 
-    # analysisModel.assembleRelationshipWordAtHEDLast()
-
+    # 1.找到句中有没有确定的entity
     # 先判断词性对象中是否为空，如果为空就不做处理
-    if not analysisModel.posModel.isNone:
-        final_sequence_word_list = []
-        # First Situation - 句子末尾是名词，并且是HED中心词
-        pass
+    if analysisModel.posModel.nounsHasWords:
+        # coos数组中无词，表示没有并列关系
+        if not analysisModel.posModel.coosHasWords:
+            print("无并列关系")
+            if not analysisModel.posModel.attriHasWords:
+                print("无属性关系")
+                # 先找到是否有实例
+                entity_word = findEntityAndIndex(analysisModel.posModel.nouns)
+                print(entity_word)
 
-    print(final_sequence_word_list)
+                # TODO:测试
+                new_verbs = verbInsteadNoun(analysisModel)
+                combinationNewRelation(entity_word,new_verbs,analysisModel)
+
+            else:
+                print("有属性关系")
+        else:
+            print("有并列关系")
+
+            if not analysisModel.posModel.attriHasWords:
+                print("并列关系中有属性关系")
+            else:
+                print("并列关系中无属性关系")
+    else:
+        print("为空")
+
+
+    # print(final_sequence_word_list)
     print("--------------------------------------------")
-    createCypher(final_sequence_word_list)
-
-# 名词消歧
-def nounsDisambiguration(analysisModel:SematicAnalysisModel):
-    # print("nouns:>>>>>",analysisModel.posModel.nouns)
-    nouns = analysisModel.posModel.nouns
-    disambiguration_list = open(r"G:\About_Search\Search_Demo_1\resources\disambiguation",encoding="utf-8").readlines()
-
-    for item in disambiguration_list:
-        item = item.strip().split("-")
-        cur_word = item[0]
-        dis_word = item[1]
-        if cur_word in nouns:
-            index = nouns.index(cur_word)
-            nouns.remove(cur_word)
-            nouns.insert(index,dis_word)
-
-    print(nouns)
+    # createCypher(final_sequence_word_list)
 
 
-def firstStep(analysisModel:SematicAnalysisModel):
-    nouns = analysisModel.posModel.nouns
+
+def findEntityAndIndex(wordList):
+    nouns = wordList
     entities = []
     entities_type = []
+    final_word = ""
     # 读取实例的列表
     entities_list = open(r"G:\About_Search\Search_Demo_1\resources\entities", encoding="utf-8").readlines()
 
@@ -77,10 +81,54 @@ def firstStep(analysisModel:SematicAnalysisModel):
         if noun in entities:
             index = entities.index(noun)
             e_type = entities_type[index]
-            print(noun)
-            print(e_type)
+            final_word = noun + "/" + e_type
+
+    return final_word
 
 
+def verbInsteadNoun(analysisModel:SematicAnalysisModel):
+    wordlist = analysisModel.vertexModel.word_list
+    verbsList = analysisModel.posModel.verbs
+    final_relation_list = []
+    for index,verb in enumerate(verbsList):
+        verb_deprel = analysisModel.vertexModel.wordForDeprel(verb)
+        verb_position = analysisModel.vertexModel.wordForId(verb)
+        # 分析谓语是否是下列几个词，然后并且是HED中心词
+        if (verb == "有" or verb == "是" or verb == "包含") and verb_deprel == "HED":
+            for word in wordlist:
+                word_head = analysisModel.vertexModel.wordForHead(word)
+                if word_head == verb_position:
+                    # 找到指向中心词的词之后判断一下是否是SBV，因为SBV是谓语的主语，所以找到主语
+                    # 替换HED为SBV
+                    if analysisModel.vertexModel.wordForDeprel(word) == "SBV":
+                        # print("SBV====",word)
+                        final_relation_list.append(word)
+        else:
+            final_relation_list.append(verb)
+
+    print("清除了HED关系动词之后的数组>>>>>>",final_relation_list)
+    return final_relation_list
+
+
+def combinationNewRelation(entity,new_verbs,analysisModel:SematicAnalysisModel):
+    new_combination = []
+
+    entity_word = entity.split("/")[0]
+    # 1号位置是实例
+    new_combination.append(entity)
+
+    # 2号位置是修饰实例的Verb
+    for verb in new_verbs:
+        verb_head = analysisModel.vertexModel.wordForTargetWord(verb)
+        if verb_head == entity_word:
+            new_combination.insert(1,verb)
+        else:
+            new_combination.append(verb)
+
+    print(new_combination)
+
+    # verbsList.insert(flag_index,noun_word)
+    # print(verbsList)
 
 # # First situation
 # # 远光软件股份有限公司的投标项目的中标人

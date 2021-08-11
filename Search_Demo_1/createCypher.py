@@ -13,3 +13,21 @@ def createCypher(wordList):
 
     # TODO：待处理最后的结构
     print("模拟出的Cypher语句:>>>>>>>",cypherstr)
+
+# # 名词消歧
+# def nounsDisambiguration(analysisModel:SematicAnalysisModel):
+#     # print("nouns:>>>>>",analysisModel.posModel.nouns)
+#     nouns = analysisModel.posModel.nouns
+#     # 消除歧义
+#     disambiguration_list = open(r"G:\About_Search\Search_Demo_1\resources\disambiguation",encoding="utf-8").readlines()
+#
+#     for item in disambiguration_list:
+#         item = item.strip().split("-")
+#         cur_word = item[0]
+#         dis_word = item[1]
+#         if cur_word in nouns:
+#             index = nouns.index(cur_word)
+#             nouns.remove(cur_word)
+#             nouns.insert(index,dis_word)
+#
+#     print(nouns)
