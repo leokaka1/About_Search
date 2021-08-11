@@ -7,8 +7,10 @@ class SematicPosModel:
         self.attri = attri
 
         self.nounsHasWords = True if len(nouns) else False
-        self.coosHasWords = True if len(coos) else False
+        self.coosHasWords = False if len(coos) else True
         self.verbsHasWords = True if len(verbs) else False
         self.adjsHasWords = True if len(adjs) else False
         self.attriHasWords = True if len(attri) else False
+
+
 

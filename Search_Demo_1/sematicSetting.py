@@ -21,48 +21,46 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
     # 将两个模型分发给分析模型
     analysisModel = SematicAnalysisModel(vertexModel, posModel)
 
-
-
     # 1.找到句中有没有确定的entity
     # 先判断词性对象中是否为空，如果为空就不做处理
     if analysisModel.posModel.nounsHasWords:
         # coos数组中无词，表示没有并列关系
-        if not analysisModel.posModel.coosHasWords:
+        if analysisModel.posModel.coosHasWords:
             print("无并列关系")
+            # TODO:判断有点需要改进
             if not analysisModel.posModel.attriHasWords:
                 print("无属性关系")
                 # 先找到是否有实例
                 entity_word = findEntityAndIndex(analysisModel.posModel.nouns)
-                print(entity_word)
+                # print(entity_word)
 
                 # TODO:测试
                 new_verbs = verbInsteadNoun(analysisModel)
-                combinationNewRelation(entity_word,new_verbs,analysisModel)
+                combinationNewRelation(entity_word, new_verbs, analysisModel)
 
             else:
                 print("有属性关系")
         else:
             print("有并列关系")
-
-            if not analysisModel.posModel.attriHasWords:
+            if analysisModel.posModel.attriHasWords:
                 print("并列关系中有属性关系")
             else:
+                coosCombinationRelation(analysisModel)
                 print("并列关系中无属性关系")
     else:
         print("为空")
-
 
     # print(final_sequence_word_list)
     print("--------------------------------------------")
     # createCypher(final_sequence_word_list)
 
 
-
+# 找到对应的实例
 def findEntityAndIndex(wordList):
     nouns = wordList
     entities = []
     entities_type = []
-    final_word = ""
+    final_word_list= []
     # 读取实例的列表
     entities_list = open(r"G:\About_Search\Search_Demo_1\resources\entities", encoding="utf-8").readlines()
 
@@ -82,15 +80,17 @@ def findEntityAndIndex(wordList):
             index = entities.index(noun)
             e_type = entities_type[index]
             final_word = noun + "/" + e_type
+            final_word_list.append(final_word)
 
-    return final_word
+    return final_word_list
 
 
-def verbInsteadNoun(analysisModel:SematicAnalysisModel):
+# 重组谓语和名词的关系
+def verbInsteadNoun(analysisModel: SematicAnalysisModel):
     wordlist = analysisModel.vertexModel.word_list
     verbsList = analysisModel.posModel.verbs
     final_relation_list = []
-    for index,verb in enumerate(verbsList):
+    for index, verb in enumerate(verbsList):
         verb_deprel = analysisModel.vertexModel.wordForDeprel(verb)
         verb_position = analysisModel.vertexModel.wordForId(verb)
         # 分析谓语是否是下列几个词，然后并且是HED中心词
@@ -106,29 +106,41 @@ def verbInsteadNoun(analysisModel:SematicAnalysisModel):
         else:
             final_relation_list.append(verb)
 
-    print("清除了HED关系动词之后的数组>>>>>>",final_relation_list)
+    print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
     return final_relation_list
 
 
-def combinationNewRelation(entity,new_verbs,analysisModel:SematicAnalysisModel):
-    new_combination = []
+# 重组关系
+def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisModel):
+    final_combination_list = []
 
-    entity_word = entity.split("/")[0]
-    # 1号位置是实例
-    new_combination.append(entity)
+    for entity_word in entities:
+        new_combination = []
+        entity = entity_word.split("/")[0]
+        # 1号位置是实例
+        new_combination.append(entity_word)
 
-    # 2号位置是修饰实例的Verb
-    for verb in new_verbs:
-        verb_head = analysisModel.vertexModel.wordForTargetWord(verb)
-        if verb_head == entity_word:
-            new_combination.insert(1,verb)
-        else:
-            new_combination.append(verb)
+        # 2号位置是修饰实例的Verb
+        for verb in new_verbs:
+            verb_head = analysisModel.vertexModel.wordForTargetWord(verb)
+            if verb_head == entity:
+                new_combination.insert(1, verb)
+            else:
+                new_combination.append(verb)
+        # print(new_combination)
+        final_combination_list.append(new_combination)
 
-    print(new_combination)
+    print("重组关系之后的确定数组>>>>>",final_combination_list)
+    return final_combination_list
 
-    # verbsList.insert(flag_index,noun_word)
-    # print(verbsList)
+
+def coosCombinationRelation(analysisModel: SematicAnalysisModel):
+    coos_list = analysisModel.posModel.coos
+    print(coos_list)
+    coo_words = findEntityAndIndex(coos_list)
+    # print(coo_words)
+    verbs = verbInsteadNoun(analysisModel)
+    combinationNewRelation(coo_words,verbs,analysisModel)
 
 # # First situation
 # # 远光软件股份有限公司的投标项目的中标人

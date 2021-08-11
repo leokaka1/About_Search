@@ -106,16 +106,17 @@ def createGrammerGraph(segAndPostList):
         # else:
         #     print("HED不在最后")
 
-        pos_Model = SematicPosModel(nounList,coo_list,verbList,adjList,attriLst)
 
+        coo_list = set(coo_list) if len(coo_list)>0 else coo_list
         print("Step 2 返回词性:>>>>>>\n")
         print("名词词性:>>>>>", nounList)
-        print("并列名词:>>>>>", set(coo_list) if len(coo_list) else coo_list)
+        print("并列名词:>>>>>", coo_list)
         print("动词词性:>>>>>", verbList)
         print("形容词性:>>>>>", adjList)
         print("属性值词:>>>>>", attriLst)
         print("--------------------------------------------")
 
+        pos_Model = SematicPosModel(nounList, coo_list, verbList, adjList, attriLst)
         posSetting(pos_Model, sematic_Model)
 
     else:
