@@ -43,3 +43,10 @@ class SematicAnalysisModel:
             return True
         else:
             return False
+
+    def isSBVword(self):
+        for index,deprel in enumerate(self.vertexModel.deprel_list):
+            if deprel == "SBV":
+                word = self.vertexModel.word_list[index]
+
+        return word

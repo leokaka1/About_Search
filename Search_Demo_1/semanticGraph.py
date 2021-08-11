@@ -57,7 +57,7 @@ def createGrammerGraph(segAndPostList):
 
         # 处理属性值操作
         for index, posWord in enumerate(sematic_Model.pos_list):
-            if posWord == "TIME" or posWord == "m" or posWord == "PER" or posWord == "LOC":
+            if posWord == "TIME" or posWord == "m" or posWord == "PER":
                 attriLst.append(sematic_Model.word_list[index])
 
         coo_list = set(coo_list) if len(coo_list)>0 else coo_list
@@ -79,7 +79,7 @@ def createGrammerGraph(segAndPostList):
 # 判断句式中是否含有属性问题
 def isContainAtrribute(posList):
     for posTag in posList:
-        if posTag == "TIME" or posTag == "m" or posTag == "PER" or posTag == "LOC":
+        if posTag == "TIME" or posTag == "m" or posTag == "PER":
             return True
         else:
             return False
@@ -87,7 +87,7 @@ def isContainAtrribute(posList):
 
 # 判断是否是名词词性的词
 def isNounWord(pos):
-    nounList = ["n", "nr", "nz", "nw", "ORG"]
+    nounList = ["n", "nr", "nz", "nw", "ORG","LOC"]
 
     if pos in nounList:
         return True

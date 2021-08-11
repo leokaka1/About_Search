@@ -17,7 +17,7 @@ analysisModel - 词性语义分析模型
 def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel):
     print("Step:3 确定的语序数组为:>>>>>\n")
     # 最终的顺序输出列表
-    final_sequence_dict = {"inCludeValues":False,"sequence":[]}
+    final_sequence_dict = {"inCludeValues": False, "sequence": []}
     # 将两个模型分发给分析模型
     analysisModel = SematicAnalysisModel(vertexModel, posModel)
 
@@ -155,13 +155,61 @@ def coosCombinationRelation(analysisModel: SematicAnalysisModel):
 
 
 # 属性重组
+# 总价为100万的合同有哪些
+# 合同总价为100万的有哪些
+# 2021年的项目有哪些
 def attributeRecombination(analysisModel: SematicAnalysisModel):
-    # step 1 谓词解析，生成谓词的主语
-    instead_list = verbInsteadNoun(analysisModel)
-    print(instead_list)
+    final_sequence = []
+    # step 1 谓词程度词解析
+    verbs = analysisModel.posModel.verbs
+    nouns = analysisModel.posModel.nouns
+    attris = analysisModel.posModel.attri
+    for verb in verbs:
+        # verb中心词
+        verb_deprel = analysisModel.vertexModel.wordForDeprel(verb)
+        verb_target_word = analysisModel.vertexModel.wordForTargetWord(verb)
+        attr_for_sbv_word = ""
+        if verb_deprel != "HED":
+            # verb位置
+            # verb_position = analysisModel.vertexModel.wordForId(verb)
+            # 遍历名词
+            """
+            如果名词和属性词都指代同一个动词，说明这个名词和属性词是有关联的，添加到一起
+            """
+            # 找出名词指代的指代词
+            for noun in nouns:
+                noun_target_word = analysisModel.vertexModel.wordForTargetWord(noun)
+                if noun_target_word == verb:
+                    flag_noun = noun
+
+            # 找出属性词对应的指代词
+            for attr in attris:
+                attr_target_word = analysisModel.vertexModel.wordForTargetWord(attr)
+                if attr_target_word == verb:
+                    flag_attr = attr
+                elif attr_target_word == analysisModel.isSBVword():
+                    attr_for_sbv_word = attr
+
+            # 保证加入的SBV等主语不是"的"等语气词
+            if analysisModel.vertexModel.wordForPos(verb_target_word) != "u":
+                final_sequence.append(verb_target_word)
+            final_sequence.append(flag_noun)
+            final_sequence.append(verb)
+            final_sequence.append(flag_attr)
+
+            # 如果有多属性指向sbv词才添加
+            if attr_for_sbv_word:
+                final_sequence.append(attr_for_sbv_word)
+        else:
+            if len(analysisModel.posModel.verbs) == 1:
+                # 如果谓词只有一个中心词 , 找主语和属性词的关系 - 2021年的项目有哪些
+                for attr in attris:
+                    attr_target_word = analysisModel.vertexModel.wordForTargetWord(attr)
+                    final_sequence.append(attr_target_word)
+                    final_sequence.append(attr)
+
+    print(final_sequence)
 
 
-
-
-
-
+def translateAttribute():
+    pass
