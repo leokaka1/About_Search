@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="43e13196-3b90-4094-90df-beddaa7a1642" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/Search_Demo_1/createCypher.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/createCypher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_Demo_1/resources/entities" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/resources/entities" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_Demo_1/sematicSetting.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/sematicSetting.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -43,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/createCypher.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="414">
-              <caret line="231" column="29" selection-start-line="231" selection-start-column="29" selection-end-line="231" selection-end-column="29" />
+            <state relative-caret-position="-1537">
+              <caret line="85" selection-start-line="85" selection-end-line="85" />
               <folding>
                 <element signature="e#486#1305#0" />
                 <element signature="e#1462#2182#0" />
@@ -59,8 +59,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="6" selection-start-line="6" selection-end-line="6" selection-end-column="18" />
+            <state relative-caret-position="216">
+              <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" selection-end-column="9" />
               <folding>
                 <element signature="e#0#69#0" expanded="true" />
               </folding>
@@ -68,11 +68,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicSetting.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1488">
-              <caret line="62" column="4" selection-start-line="62" selection-start-column="4" selection-end-line="62" selection-end-column="4" />
+            <state relative-caret-position="103">
+              <caret line="127" column="17" selection-start-line="127" selection-start-column="17" selection-end-line="127" selection-end-column="17" />
               <folding>
                 <element signature="e#0#57#0" expanded="true" />
               </folding>
@@ -118,7 +118,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>lastNoun的词性</find>
       <find>施工标的类</find>
       <find>中标人</find>
       <find>通用类型</find>
@@ -148,6 +147,7 @@
       <find>destination</find>
       <find>estimateRelationWordOrAttributeWord</find>
       <find>word</find>
+      <find>entity_word&gt;&gt;&gt;&gt;&gt;</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -183,10 +183,10 @@
         <option value="$PROJECT_DIR$/Search_Demo_1/resources/user_dicts" />
         <option value="$PROJECT_DIR$/Search_Demo_1/main.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/resources/disambiguation" />
-        <option value="$PROJECT_DIR$/Search_Demo_1/sematicSetting.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/resources/relations" />
         <option value="$PROJECT_DIR$/Search_Demo_1/resources/entities" />
         <option value="$PROJECT_DIR$/Search_Demo_1/createCypher.py" />
+        <option value="$PROJECT_DIR$/Search_Demo_1/sematicSetting.py" />
       </list>
     </option>
   </component>
@@ -318,12 +318,12 @@
       <workItem from="1628464200269" duration="36014000" />
       <workItem from="1628553421182" duration="38966000" />
       <workItem from="1628640661722" duration="41363000" />
-      <workItem from="1628724702314" duration="35955000" />
+      <workItem from="1628724702314" duration="38344000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="205923000" />
+    <option name="totallyTimeSpent" value="208312000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
@@ -334,7 +334,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.29901424" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.28587076" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3603505" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -357,7 +357,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/About_Search$wordSegmentation.coverage" NAME="wordSegmentation Coverage Results" MODIFIED="1628232343084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Code/seg" />
-    <SUITE FILE_PATH="coverage/About_Search$main.coverage" NAME="main Coverage Results" MODIFIED="1628770804519" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Search_Demo_1" />
+    <SUITE FILE_PATH="coverage/About_Search$main.coverage" NAME="main Coverage Results" MODIFIED="1628773154699" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Search_Demo_1" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Code/search_main.py" />
@@ -420,16 +420,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicSetting.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1488">
-          <caret line="62" column="4" selection-start-line="62" selection-start-column="4" selection-end-line="62" selection-end-column="4" />
-          <folding>
-            <element signature="e#0#57#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/relations">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
@@ -458,16 +448,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="6" selection-start-line="6" selection-end-line="6" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#69#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/type">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
@@ -489,13 +469,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" selection-end-column="9" />
+          <folding>
+            <element signature="e#0#69#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/createCypher.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="414">
-          <caret line="231" column="29" selection-start-line="231" selection-start-column="29" selection-end-line="231" selection-end-column="29" />
+        <state relative-caret-position="-1537">
+          <caret line="85" selection-start-line="85" selection-end-line="85" />
           <folding>
             <element signature="e#486#1305#0" />
             <element signature="e#1462#2182#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicSetting.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="103">
+          <caret line="127" column="17" selection-start-line="127" selection-start-column="17" selection-end-line="127" selection-end-column="17" />
+          <folding>
+            <element signature="e#0#57#0" expanded="true" />
           </folding>
         </state>
       </provider>

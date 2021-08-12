@@ -120,9 +120,9 @@ def deduceKeyWord(wordList):
                                                                                           relation_sequence_list[
                                                                                               flag_index])
 
-        print("relationword,",relation_word)
-        print("destinationword",destination_word)
-        print("infer_word",infer_word)
+        # print("relationword,",relation_word)
+        # print("destinationword",destination_word)
+        # print("infer_word",infer_word)
 
         # FIXME： 如果 infer_word 有值， 说明是需要系统推断出词的 eg:有中标人的项目
         if infer_word:
@@ -214,10 +214,6 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
             if instanceType == instance_type_word:
                 # print("匹配到第一个词")
                 if word == relation_word:
-                    # 如果有关系，则把关系变成替代词加入cypher_list数组
-                    # print(word)
-                    # print("instead_word",instead_word)
-                    # cypher_list.append(relation_cpyher_str)
                     destinationWord = target_word
                     return instead_word, destinationWord, infer_word
                 # 知道左边-右边->中间

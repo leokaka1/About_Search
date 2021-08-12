@@ -31,7 +31,7 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
                 print("Situation: 无属性关系")
                 # 先找到是否有实例
                 entity_word = findEntityAndIndex(analysisModel.posModel.nouns)
-                print("entity_word>>>>>",entity_word)
+                # print("entity_word>>>>>",entity_word)
 
                 # TODO:测试
                 new_verbs = verbInsteadNoun(analysisModel)
@@ -107,7 +107,7 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
                     if analysisModel.vertexModel.wordForDeprel(word) == "SBV":
                         # print("SBV====",word)
                         final_relation_list.append(word)
-        # FIXME: 谓词不能放在第一个，- eg:有 中标人的项目 则不添加
+        # FIXME: 谓词不能放在第一个，- eg:有中标人的项目 则不添加
         elif analysisModel.vertexModel.wordForId(verb) != 0:
             final_relation_list.append(verb)
 
@@ -125,21 +125,33 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
     new_combination =[]
     entity = ""
 
-    for entity_word in entities:
-        new_combination = []
-        entity = entity_word.split("/")[0]
-        # 1号位置是实例
-        new_combination.append(entity_word)
+    # 如果实例和动词库都有词
+    if len(entities) and len(new_verbs):
+        for entity_word in entities:
+            new_combination = []
+            entity = entity_word.split("/")[0]
+            # 1号位置是实例
+            new_combination.append(entity_word)
 
-    # 2号位置是修饰实例的Verb
-    for verb in new_verbs:
-        verb_head = analysisModel.vertexModel.wordForTargetWord(verb)
-        if verb_head == entity:
-            new_combination.insert(1, verb)
-        else:
+            # 2号位置是修饰实例的Verb
+            for verb in new_verbs:
+                verb_head = analysisModel.vertexModel.wordForTargetWord(verb)
+                if verb_head == entity:
+                    new_combination.insert(1, verb)
+                else:
+                    new_combination.append(verb)
+                # print(new_combination)
+            # FIXME: 不知道这里改动有没有影响，先记录
+            final_combination_list.append(new_combination)
+    # 如果动词库有词
+    elif len(new_verbs):
+        # 2号位置是修饰实例的Verb
+        for verb in new_verbs:
             new_combination.append(verb)
-    # print(new_combination)
-    final_combination_list.append(new_combination)
+        final_combination_list.append(new_combination)
+    else:
+        # FIXME: 如果动词和实例都没有则直接使用名词库里的词 eg:有乙方的单位
+        final_combination_list.append(analysisModel.posModel.nouns)
 
     print("重组关系之后的确定数组>>>>>", final_combination_list)
     return final_combination_list
