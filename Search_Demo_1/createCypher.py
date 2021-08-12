@@ -2,17 +2,20 @@ from Search_Demo_1.sematicAnalysisModel import SematicAnalysisModel
 
 def createCypher(wordDict,analysisModel:SematicAnalysisModel):
     print("Step:4 把分解出的关系解释成Cypher语句\n")
-    print("原始句子为:>>>>>>",wordDict["sequence"])
+    print("0.原始句子为:>>>>>>",wordDict["sequence"])
 
     includeValues = wordDict["includeValues"]
     sequences = wordDict["sequence"]
 
     # Step 1 主语谓语消歧
-    disambigurate_list = disambiguration(sequences,analysisModel)
+    disambigurate_list = disambiguration(sequences)
+
+    # Step 2 进行关系解析
+
 
 
 # 消歧
-def disambiguration(sequences,analysisModel:SematicAnalysisModel):
+def disambiguration(sequences):
     # print("nouns:>>>>>",analysisModel.posModel.nouns)
     # 消除歧义
     disambiguration_list = open(r"G:\About_Search\Search_Demo_1\resources\disambiguation",encoding="utf-8").readlines()
@@ -32,4 +35,4 @@ def disambiguration(sequences,analysisModel:SematicAnalysisModel):
                 # print("sequence>>>",sequence)
         change_sequence.append(sequence)
 
-    print("消除歧义之后的句子为:>>>>>>",change_sequence)
+    print("1.消除歧义之后的句子为:>>>>>>",change_sequence)
