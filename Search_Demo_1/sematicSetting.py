@@ -37,7 +37,6 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
                 new_verbs = verbInsteadNoun(analysisModel)
                 res = combinationNewRelation(entity_word, new_verbs, analysisModel)
                 final_sequence_dict["sequence"] = res
-
             else:
                 print("Situation: 有属性关系")
                 final_sequence_dict["includeValues"] = True
@@ -52,13 +51,12 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
                 print("Situation: 并列关系中无属性关系")
                 res = coosCombinationRelation(analysisModel)
                 final_sequence_dict["sequence"] = res
-
     else:
         print("为空")
 
-    print(final_sequence_dict)
+    print("重组关系之后的确定数组:",final_sequence_dict)
     print("--------------------------------------------")
-    createCypher(final_sequence_dict)
+    createCypher(final_sequence_dict,analysisModel)
 
 
 # 找到对应的实例
@@ -76,7 +74,6 @@ def findEntityAndIndex(wordList):
         # 用"-"分割
         entity = item[0]
         entity_type = item[1]
-
         # 将类型和type组装成词典
         entities.append(entity)
         entities_type.append(entity_type)
@@ -141,7 +138,7 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
         # print(new_combination)
         final_combination_list.append(new_combination)
 
-    print("重组关系之后的确定数组>>>>>", final_combination_list)
+    # print("重组关系之后的确定数组>>>>>", final_combination_list)
     return final_combination_list
 
 
