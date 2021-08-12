@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="43e13196-3b90-4094-90df-beddaa7a1642" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/Search_Demo_1/createCypher.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/createCypher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_Demo_1/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -37,11 +36,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/createCypher.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="194">
-              <caret line="106" column="85" lean-forward="true" selection-start-line="106" selection-start-column="85" selection-end-line="106" selection-end-column="85" />
+            <state relative-caret-position="487">
+              <caret line="63" column="4" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="4" />
               <folding>
                 <element signature="e#486#1305#0" />
-                <element signature="e#1462#2182#0" />
               </folding>
             </state>
           </provider>
@@ -51,7 +49,7 @@
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="288">
-              <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" selection-end-column="32" />
+              <caret line="24" selection-start-line="24" selection-end-line="24" selection-end-column="32" />
               <folding>
                 <element signature="e#0#69#0" expanded="true" />
               </folding>
@@ -330,12 +328,12 @@
       <workItem from="1628464200269" duration="36014000" />
       <workItem from="1628553421182" duration="38966000" />
       <workItem from="1628640661722" duration="41363000" />
-      <workItem from="1628724702314" duration="26015000" />
+      <workItem from="1628724702314" duration="26351000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="195983000" />
+    <option name="totallyTimeSpent" value="196319000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
@@ -345,7 +343,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3143483" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.26725084" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3603505" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -368,7 +366,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/About_Search$wordSegmentation.coverage" NAME="wordSegmentation Coverage Results" MODIFIED="1628232343084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Code/seg" />
-    <SUITE FILE_PATH="coverage/About_Search$main.coverage" NAME="main Coverage Results" MODIFIED="1628758874449" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Search_Demo_1" />
+    <SUITE FILE_PATH="coverage/About_Search$main.coverage" NAME="main Coverage Results" MODIFIED="1628759228385" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Search_Demo_1" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Code/search_main.py" />
@@ -493,7 +491,7 @@
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="288">
-          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" selection-end-column="32" />
+          <caret line="24" selection-start-line="24" selection-end-line="24" selection-end-column="32" />
           <folding>
             <element signature="e#0#69#0" expanded="true" />
           </folding>
@@ -502,11 +500,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/createCypher.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="106" column="85" lean-forward="true" selection-start-line="106" selection-start-column="85" selection-end-line="106" selection-end-column="85" />
+        <state relative-caret-position="487">
+          <caret line="63" column="4" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="4" />
           <folding>
             <element signature="e#486#1305#0" />
-            <element signature="e#1462#2182#0" />
           </folding>
         </state>
       </provider>
