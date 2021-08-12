@@ -1,6 +1,6 @@
 from Search_Demo_1.sematicAnalysisModel import SematicAnalysisModel
 
-cypher_list = []
+
 def createCypher(wordDict, analysisModel: SematicAnalysisModel):
     print("Step:4 把分解出的关系解释成Cypher语句\n")
     print("0.原始句子为:>>>>>>", wordDict["sequence"])
@@ -18,7 +18,7 @@ def createCypher(wordDict, analysisModel: SematicAnalysisModel):
     relationPasing(new_word_list)
 
 
-# 消歧
+# 1.消歧
 def disambiguration(sequences):
     # print("nouns:>>>>>",analysisModel.posModel.nouns)
     # 消除歧义
@@ -27,8 +27,8 @@ def disambiguration(sequences):
     for sequence in sequences:
         for item in disambiguration_list:
             item = item.strip().split("-")
-            cur_word = item[0]
-            dis_word = item[1]
+            cur_word = item[0].strip()
+            dis_word = item[1].strip()
             # print("cur_word>>>",cur_word)
             # print("dis_word>>>",dis_word)
 
@@ -43,15 +43,15 @@ def disambiguration(sequences):
     return change_sequence
 
 
-# 删除没有的关系词
+# 2.删除没有的关系词
 def deleteNoneRelationWord(sequences):
     relations_list = open(r"G:\About_Search\Search_Demo_1\resources\relations", encoding="utf-8").readlines()
     relation_list = []
     entity_list = []
     for sequence in sequences:
         for type_word in relations_list:
-            relation_list.append(type_word.split("-")[1])
-            entity_list.append(type_word.split("-")[2])
+            relation_list.append(type_word.split("-")[1].strip())
+            entity_list.append(type_word.split("-")[2].strip())
 
         # for entity_word in entity_list:
         #     instance_list.append(entity_word.split("-")[0])
@@ -72,8 +72,13 @@ def relationPasing(sequences):
 
 
 def deduceKeyWord(wordList):
+    flag_index = 0
+    cypher_list = []
     # 判断第一个词
     firstWord = wordList[0]
+
+    # 关系数组
+    relation_sequence_list = []
     if "/" in firstWord:
         # print("True")
         # 实体词
@@ -81,33 +86,53 @@ def deduceKeyWord(wordList):
         # 实体词的类型
         instanceType = firstWord.split("/")[1]
 
-        cypher_entity = replaceInstanceWord(instanceName,instanceType)
+        cypher_entity = replaceInstanceCypherStr(instanceName, instanceType)
         cypher_list.append(cypher_entity)
 
-    for word in wordList[1:]:
-        flag_index = 0
-        instanceType = estimateRelationWordOrAttributeWord(instanceType,word)
-        # print("instanceType",instanceType)
-        # print("lastword",wordList[-1])
-        if instanceType == wordList[-1]:
-            # print("是查询单词:>>>>",wordList[-1])
-            # cypher_str = replaceRelationWord()
-            cypher_list.append(replaceRelationWord(instanceType))
-            break
-        else:
-            # print("查询单词创建为最后的instanceType:>>>>",instanceType)
-            cypher_list.append(replaceRelationWord(instanceType))
+    # print(cypher_list)
 
-        if instanceType and flag_index == 0:
-            cypher_list.append(replaceRelationWord(word))
-        # print("instanceType=====>",instanceType)
+    for word in wordList[1:]:
+        relation_sequence_list.append(word)
+
+    # print(instanceType)
+    # print(relation_sequence_list)
+
+    while flag_index < len(relation_sequence_list):
+        relation_word, destination_word = estimateRelationWordOrAttributeWord(instanceType, relation_sequence_list[flag_index])
+
+        if destination_word:
+            # print("relation_word>>>>>>", relation_word)
+            relation_cypher = replaceCypherStr(relation_word)
+            # print("destination_word>>>>>>", destination_word,flag_index,len(relation_sequence_list))
+            destination_cpyher = replaceCypherStr(destination_word,destionation=True)
+            cypher_list.append(relation_cypher)
+
+        instanceType = destination_word
         flag_index += 1
 
+    # FIXME: 终点词，最后再添加(只添加一次)
+    cypher_list.append(destination_cpyher)
+
+    # for relation_word in relation_sequence_list:
+    #     real_relation_word,instanceType = estimateRelationWordOrAttributeWord(instanceType,relation_word)
+    #     if instanceType:
+    #         pass
+    # print("real_relation",real_relation_word)
+    # print("instanceType",instanceType)
+    #     # print("lastword",wordList[-1])
+    #     # print("relation",relation_sequence_list)
+    # print("wordlist",wordList)
+    # print("relation_sequence_list",relation_sequence_list)
+    # if relation_sequence_list[-1] == wordList[-1]:
+    #     print("关系最后一个词就是实体词>>>>" + wordList[-1])
+    # else:
+    #     print("关系最后一个词不是实体词,添加一个实体词>>>>" + relation_sequence_list[-1])
+    #
     print('3.转换为cypher_list数组后:>>>>>>>>',cypher_list)
 
 
 # 转换实例单词
-def replaceInstanceWord(instanceName, instanceType):
+def replaceInstanceCypherStr(instanceName, instanceType):
     # cypher_str = r"(i:{a}\{name:{b}\})".format(a=instanceType, b=instanceName)
     cypher_str = "(" + "i:{}".format(instanceType) + "{" + "name:" + instanceName + "}" + ")"
     # cypher_str = "i:" + '{}'
@@ -116,38 +141,55 @@ def replaceInstanceWord(instanceName, instanceType):
 
 
 # 转换关系词
-def replaceRelationWord(word):
+def replaceCypherStr(word,destionation=False):
+    # print("word>>>>>>>>>>>>>>>>>>>>", word)
     cypher_str = ""
     type_list = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
+    temp_save_list = []
     for typeline in type_list:
-        type = typeline.split("-")[0]
-        if type == word:
+        type_word = typeline.split("-")[0].strip()
+        temp_save_list.append(type_word)
+
+    if destionation:
+        if word in temp_save_list:
+            # print("word 在 temp 里")
+            cypher_str = "(d:{})".format(word)
+    else:
+        # print("temp_save_list",temp_save_list)
+        if word in temp_save_list:
+            # print("word 在 temp 里")
             cypher_str = "[r:{}]".format(word)
 
     return cypher_str
 
-
-def estimateRelationWordOrAttributeWord(instanceType,word):
-
-    relation_list = open(r"G:\About_Search\Search_Demo_1\resources\relations",encoding="utf-8").readlines()
+def estimateRelationWordOrAttributeWord(instanceType, word):
+    relation_list = open(r"G:\About_Search\Search_Demo_1\resources\relations", encoding="utf-8").readlines()
     # print("进来没有>>>",instanceType)
-    typeWord = ""
+    destinationWord = ""
+    relation_word = ""
     if instanceType:
         # 先判断在不在关系列表中
         for words in relation_list:
-            instance_type_word = words.split("-")[0]
-            relation_word = words.split("-")[1]
-            target_word = words.split("-")[2]
-            instead_word = words.split("-")[3]
+            # 实体词
+            instance_type_word = words.split("-")[0].strip()
+            # 关系词
+            relation_word = words.split("-")[1].strip()
+            # 目标词
+            target_word = words.split("-")[2].strip()
+            # 替代关系词
+            instead_word = words.split("-")[3].strip()
 
             if instanceType == instance_type_word:
+                # print("匹配到第一个词")
                 if word == relation_word:
-                    # print(target_word)
-                    # print(instead_word)
-                    typeWord = target_word
+                    # 如果有关系，则把关系变成替代词加入cypher_list数组
+                    # print(word)
+                    # print("instead_word",instead_word)
+                    # cypher_list.append(relation_cpyher_str)
+                    destinationWord = target_word
+                    return instead_word, destinationWord
 
     else:
-
         print("继续查询")
 
-    return typeWord
+    return relation_word, destinationWord
