@@ -8,14 +8,17 @@ def createCypher(wordDict, analysisModel: SematicAnalysisModel):
     includeValues = wordDict["includeValues"]
     sequences = wordDict["sequence"]
 
-    # Step 1 主语谓语消歧
-    disambigurate_list = disambiguration(sequences)
+    if not includeValues:
+        # Step 1 主语谓语消歧
+        disambigurate_list = disambiguration(sequences)
 
-    # Step 2 删除列表中没有的关系词
-    new_word_list = deleteNoneRelationWord(disambigurate_list)
+        # Step 2 删除列表中没有的关系词
+        new_word_list = deleteNoneRelationWord(disambigurate_list)
 
-    # Step 3 进行关系解析
-    relationPasing(new_word_list)
+        # Step 3 进行关系解析
+        relationPasing(new_word_list)
+    else:
+        print("含有属性值的另外计算")
 
 
 # 1.消歧
@@ -82,8 +85,13 @@ def deduceKeyWord(wordList):
     # 判断第一个词
     firstWord = wordList[0]
 
+    # destination_word = ""
+    # input_word = ""
+
     # 关系数组
     relation_sequence_list = []
+
+    # 如果第一个词是实例，那么就分解实例
     if "/" in firstWord:
         # print("True")
         # 实体词
@@ -93,7 +101,12 @@ def deduceKeyWord(wordList):
 
         cypher_entity = replaceInstanceCypherStr(instanceName, instanceType)
         cypher_list.append(cypher_entity)
+        # 第一个词如果可分就赋值
+        input_word = instanceType
+    else:
+        input_word = firstWord
 
+    # FIXME: 如果第一个不是实例，分开判断
     # print(cypher_list)
 
     for word in wordList[1:]:
@@ -101,23 +114,35 @@ def deduceKeyWord(wordList):
 
     # print(instanceType)
     # print(relation_sequence_list)
-
+    destination_word_list = []
     while flag_index < len(relation_sequence_list):
-        relation_word, destination_word = estimateRelationWordOrAttributeWord(instanceType,
-                                                                              relation_sequence_list[flag_index])
+        relation_word, destination_word, infer_word = estimateRelationWordOrAttributeWord(input_word,
+                                                                                          relation_sequence_list[
+                                                                                              flag_index])
 
-        if destination_word:
-            # print("relation_word>>>>>>", relation_word)
+        # FIXME： 如果 infer_word 有值， 说明是需要系统推断出词的 eg:有中标人的项目
+        if infer_word:
+            # print("infer_word有值", infer_word)
+            # 添加到cypher_list数组的第一个
+            infer_cypher = replaceCypherStr(infer_word,infer_word=True)
+            cypher_list.insert(0,infer_cypher)
+
+        # 保证正方向反方向都有词的时候添加
+        if destination_word and relation_word:
             relation_cypher = replaceCypherStr(relation_word)
-            # print("destination_word>>>>>>", destination_word,flag_index,len(relation_sequence_list))
-            destination_cpyher = replaceCypherStr(destination_word, destionation=True)
+            print("destination_word>>>>>>", destination_word, flag_index, len(relation_sequence_list))
+            print("relation_word>>>>>>", relation_word)
             cypher_list.append(relation_cypher)
+            # 还是用数组添加
+            destination_word_list.append(destination_word)
 
-        instanceType = destination_word
+        input_word = destination_word
         flag_index += 1
 
     # FIXME: 终点词，最后再添加(只添加一次)
-    cypher_list.append(destination_cpyher)
+    if len(destination_word_list):
+        destination_cpyher = replaceCypherStr(destination_word_list[-1], destionation=True)
+        cypher_list.append(destination_cpyher)
 
     return cypher_list
 
@@ -132,7 +157,7 @@ def replaceInstanceCypherStr(instanceName, instanceType):
 
 
 # 转换关系词
-def replaceCypherStr(word, destionation=False):
+def replaceCypherStr(word, destionation=False, infer_word=False):
     # print("word>>>>>>>>>>>>>>>>>>>>", word)
     cypher_str = ""
     type_list = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
@@ -151,6 +176,11 @@ def replaceCypherStr(word, destionation=False):
             # print("word 在 temp 里")
             cypher_str = "[r:{}]".format(word)
 
+    if infer_word:
+        if word in temp_save_list:
+            # print("word 在 temp 里")
+            cypher_str = "(n:{})".format(word)
+
     return cypher_str
 
 
@@ -158,8 +188,12 @@ def replaceCypherStr(word, destionation=False):
 def estimateRelationWordOrAttributeWord(instanceType, word):
     relation_list = open(r"G:\About_Search\Search_Demo_1\resources\relations", encoding="utf-8").readlines()
     # print("进来没有>>>",instanceType)
+    # 目的词
     destinationWord = ""
+    # 关系词
     relation_word = ""
+    # 推断词
+    infer_word = ""
     if instanceType:
         # 先判断在不在关系列表中
         for words in relation_list:
@@ -172,6 +206,7 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
             # 替代关系词
             instead_word = words.split("-")[3].strip()
 
+            # 正方向搜索 知道 左边-中间-> 右边
             if instanceType == instance_type_word:
                 # print("匹配到第一个词")
                 if word == relation_word:
@@ -180,9 +215,23 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
                     # print("instead_word",instead_word)
                     # cypher_list.append(relation_cpyher_str)
                     destinationWord = target_word
-                    return instead_word, destinationWord
-
+                    return instead_word, destinationWord, infer_word
+            # 反方向搜索 知道 右边-中->左边
+            elif instanceType == target_word:
+                if word == relation_word:
+                    destinationWord = instance_type_word
+                    return instead_word, destinationWord, infer_word
+            # 中间搜索 知道 中间-左边->右边 / 中间-右边->左边
+            elif instanceType == relation_word:
+                if word == instance_type_word:
+                    destinationWord = target_word
+                    infer_word = word
+                    return instead_word, destinationWord, infer_word
+                else:
+                    destinationWord = instance_type_word
+                    infer_word = word
+                    return instead_word, destinationWord, infer_word
     else:
         print("继续查询")
 
-    return relation_word, destinationWord
+    return relation_word, destinationWord, infer_word

@@ -31,7 +31,7 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
                 print("Situation: 无属性关系")
                 # 先找到是否有实例
                 entity_word = findEntityAndIndex(analysisModel.posModel.nouns)
-                # print(entity_word)
+                print("entity_word>>>>>",entity_word)
 
                 # TODO:测试
                 new_verbs = verbInsteadNoun(analysisModel)
@@ -107,7 +107,8 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
                     if analysisModel.vertexModel.wordForDeprel(word) == "SBV":
                         # print("SBV====",word)
                         final_relation_list.append(word)
-        else:
+        # FIXME: 谓词不能放在第一个，- eg:有 中标人的项目 则不添加
+        elif analysisModel.vertexModel.wordForId(verb) != 0:
             final_relation_list.append(verb)
 
     # 如果最后一个名词是HED，说明话没有HED谓语，那么则把noun添加到最后(如果只有一个HED则不添加，说明就是实例本身)
@@ -121,6 +122,8 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
 # 重组关系
 def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisModel):
     final_combination_list = []
+    new_combination =[]
+    entity = ""
 
     for entity_word in entities:
         new_combination = []
@@ -128,17 +131,17 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
         # 1号位置是实例
         new_combination.append(entity_word)
 
-        # 2号位置是修饰实例的Verb
-        for verb in new_verbs:
-            verb_head = analysisModel.vertexModel.wordForTargetWord(verb)
-            if verb_head == entity:
-                new_combination.insert(1, verb)
-            else:
-                new_combination.append(verb)
-        # print(new_combination)
-        final_combination_list.append(new_combination)
+    # 2号位置是修饰实例的Verb
+    for verb in new_verbs:
+        verb_head = analysisModel.vertexModel.wordForTargetWord(verb)
+        if verb_head == entity:
+            new_combination.insert(1, verb)
+        else:
+            new_combination.append(verb)
+    # print(new_combination)
+    final_combination_list.append(new_combination)
 
-    # print("重组关系之后的确定数组>>>>>", final_combination_list)
+    print("重组关系之后的确定数组>>>>>", final_combination_list)
     return final_combination_list
 
 
