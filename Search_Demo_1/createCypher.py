@@ -120,6 +120,10 @@ def deduceKeyWord(wordList):
                                                                                           relation_sequence_list[
                                                                                               flag_index])
 
+        print("relationword,",relation_word)
+        print("destinationword",destination_word)
+        print("infer_word",infer_word)
+
         # FIXME： 如果 infer_word 有值， 说明是需要系统推断出词的 eg:有中标人的项目
         if infer_word:
             # print("infer_word有值", infer_word)
@@ -130,8 +134,8 @@ def deduceKeyWord(wordList):
         # 保证正方向反方向都有词的时候添加
         if destination_word and relation_word:
             relation_cypher = replaceCypherStr(relation_word)
-            print("destination_word>>>>>>", destination_word, flag_index, len(relation_sequence_list))
-            print("relation_word>>>>>>", relation_word)
+            # print("destination_word>>>>>>", destination_word, flag_index, len(relation_sequence_list))
+            # print("relation_word>>>>>>", relation_word)
             cypher_list.append(relation_cypher)
             # 还是用数组添加
             destination_word_list.append(destination_word)
@@ -216,11 +220,19 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
                     # cypher_list.append(relation_cpyher_str)
                     destinationWord = target_word
                     return instead_word, destinationWord, infer_word
+                # 知道左边-右边->中间
+                elif word == target_word:
+                    destinationWord = word
+                    return instead_word,destinationWord,infer_word
             # 反方向搜索 知道 右边-中->左边
             elif instanceType == target_word:
                 if word == relation_word:
                     destinationWord = instance_type_word
                     return instead_word, destinationWord, infer_word
+                # 知道右边-左边->中间
+                elif word == instance_type_word:
+                    destinationWord = word
+                    return instead_word,destinationWord,infer_word
             # 中间搜索 知道 中间-左边->右边 / 中间-右边->左边
             elif instanceType == relation_word:
                 if word == instance_type_word:
