@@ -61,16 +61,21 @@ def deleteNoneRelationWord(sequences):
                 if word not in relation_list and word not in entity_list:
                     sequence.remove(word)
 
-        print("2.删除词表中关系词不存在的词汇:>>>>>", sequences)
+    print("2.删除词表中关系词不存在的词汇:>>>>>", sequences)
     return sequences
 
 
 # 进行关系解析
 def relationPasing(sequences):
+    cypher_final_sequence_list = []
     for sequence in sequences:
-        deduceKeyWord(sequence)
+        cypher_list = deduceKeyWord(sequence)
+        cypher_final_sequence_list.append(cypher_list)
+
+    print('3.转换为cypher_list数组后:>>>>>>>>', cypher_final_sequence_list)
 
 
+# 解析关键词
 def deduceKeyWord(wordList):
     flag_index = 0
     cypher_list = []
@@ -98,13 +103,14 @@ def deduceKeyWord(wordList):
     # print(relation_sequence_list)
 
     while flag_index < len(relation_sequence_list):
-        relation_word, destination_word = estimateRelationWordOrAttributeWord(instanceType, relation_sequence_list[flag_index])
+        relation_word, destination_word = estimateRelationWordOrAttributeWord(instanceType,
+                                                                              relation_sequence_list[flag_index])
 
         if destination_word:
             # print("relation_word>>>>>>", relation_word)
             relation_cypher = replaceCypherStr(relation_word)
             # print("destination_word>>>>>>", destination_word,flag_index,len(relation_sequence_list))
-            destination_cpyher = replaceCypherStr(destination_word,destionation=True)
+            destination_cpyher = replaceCypherStr(destination_word, destionation=True)
             cypher_list.append(relation_cypher)
 
         instanceType = destination_word
@@ -113,22 +119,7 @@ def deduceKeyWord(wordList):
     # FIXME: 终点词，最后再添加(只添加一次)
     cypher_list.append(destination_cpyher)
 
-    # for relation_word in relation_sequence_list:
-    #     real_relation_word,instanceType = estimateRelationWordOrAttributeWord(instanceType,relation_word)
-    #     if instanceType:
-    #         pass
-    # print("real_relation",real_relation_word)
-    # print("instanceType",instanceType)
-    #     # print("lastword",wordList[-1])
-    #     # print("relation",relation_sequence_list)
-    # print("wordlist",wordList)
-    # print("relation_sequence_list",relation_sequence_list)
-    # if relation_sequence_list[-1] == wordList[-1]:
-    #     print("关系最后一个词就是实体词>>>>" + wordList[-1])
-    # else:
-    #     print("关系最后一个词不是实体词,添加一个实体词>>>>" + relation_sequence_list[-1])
-    #
-    print('3.转换为cypher_list数组后:>>>>>>>>',cypher_list)
+    return cypher_list
 
 
 # 转换实例单词
@@ -141,7 +132,7 @@ def replaceInstanceCypherStr(instanceName, instanceType):
 
 
 # 转换关系词
-def replaceCypherStr(word,destionation=False):
+def replaceCypherStr(word, destionation=False):
     # print("word>>>>>>>>>>>>>>>>>>>>", word)
     cypher_str = ""
     type_list = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
@@ -162,6 +153,8 @@ def replaceCypherStr(word,destionation=False):
 
     return cypher_str
 
+
+# 分析关系，判断两个词之间的关系
 def estimateRelationWordOrAttributeWord(instanceType, word):
     relation_list = open(r"G:\About_Search\Search_Demo_1\resources\relations", encoding="utf-8").readlines()
     # print("进来没有>>>",instanceType)
