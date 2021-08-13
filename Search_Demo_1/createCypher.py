@@ -20,7 +20,7 @@ def createCypher(wordDict, analysisModel: SematicAnalysisModel):
         cypher_list = relationPasing(new_word_list)
     else:
         replaceAttributeValueSentence(sequences,analysisModel)
-        print("含有属性值的另外计算")
+        # print("含有属性值的另外计算")
 
 
 # 1.消歧
@@ -325,7 +325,7 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
 
 # 转换有属性值的
 def replaceAttributeValueSentence(sequences,analysisModel: SematicAnalysisModel):
-    print("sequences>>>>", sequences)
+    # print("sequences>>>>", sequences)
     # new_sequences = confirmAttributeWord(sequences)
     new_sequences = deleteNoneRelationWord(sequences,attribute=True)
     confirmAttributeWord(new_sequences,analysisModel)
@@ -362,4 +362,4 @@ def confirmAttributeWord(sequences,analysisModel:SematicAnalysisModel):
     end_cypher = "return e"
     final_cypher_list.append(end_cypher)
 
-    print(final_cypher_list)
+    print("3.简单的属性拼接之后的句子为:>>>>>>",final_cypher_list)
