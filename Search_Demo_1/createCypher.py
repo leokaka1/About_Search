@@ -91,6 +91,7 @@ def deduceKeyWord(wordList):
 
     # destination_word = ""
     # input_word = ""
+    attribute_word = ""
 
     # 关系数组
     relation_sequence_list = []
@@ -152,14 +153,15 @@ def deduceKeyWord(wordList):
     # print("destinationword",destination_word)
     # print("infer_word",infer_word)
 
-    if attribute_word:
-        # TODO：这里是生成结尾cpyer短语的地方，需要改进
-        end_cypher = addEndSearchDirection(cypher_list[-1], attributeWord=attribute_word)
-        cypher_list.append(end_cypher)
-    else:
-        # TODO：这里是生成结尾cpyer短语的地方，需要改进
-        end_cypher = addEndSearchDirection(cypher_list[-1])
-        cypher_list.append(end_cypher)
+    if len(cypher_list):
+        if attribute_word:
+            # TODO：这里是生成结尾cpyer短语的地方，需要改进
+            end_cypher = addEndSearchDirection(cypher_list[-1], attributeWord=attribute_word)
+            cypher_list.append(end_cypher)
+        else:
+            # TODO：这里是生成结尾cpyer短语的地方，需要改进
+            end_cypher = addEndSearchDirection(cypher_list[-1])
+            cypher_list.append(end_cypher)
 
     return cypher_list
 

@@ -117,7 +117,7 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
     if analysisModel.isLastNounObject() and len(analysisModel.posModel.nouns) != 1:
         final_relation_list.append(analysisModel.posModel.nouns[-1])
 
-    # print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
+    print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
     return final_relation_list
 
 
