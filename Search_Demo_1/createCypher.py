@@ -49,19 +49,23 @@ def disambiguration(sequences):
 # 2.删除没有的关系词
 def deleteNoneRelationWord(sequences):
     relations_list = open(r"G:\About_Search\Search_Demo_1\resources\relations", encoding="utf-8").readlines()
+    types_list = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
     relation_list = []
+    type_list = []
     entity_list = []
     for sequence in sequences:
+        # 关系词
         for type_word in relations_list:
             relation_list.append(type_word.split("-")[1].strip())
             entity_list.append(type_word.split("-")[2].strip())
 
-        # for entity_word in entity_list:
-        #     instance_list.append(entity_word.split("-")[0])
+        # 属性词
+        for type_word in types_list:
+            type_list.append(type_word.split("-")[0].strip())
 
         for word in sequence:
             if "/" not in word:
-                if word not in relation_list and word not in entity_list:
+                if word not in relation_list and word not in entity_list and word not in type_list:
                     sequence.remove(word)
 
     print("2.删除词表中关系词不存在的词汇:>>>>>", sequences)
@@ -128,8 +132,8 @@ def deduceKeyWord(wordList):
         if infer_word:
             # print("infer_word有值", infer_word)
             # 添加到cypher_list数组的第一个
-            infer_cypher = replaceCypherStr(infer_word,infer_word=True)
-            cypher_list.insert(0,infer_cypher)
+            infer_cypher = replaceCypherStr(infer_word, infer_word=True)
+            cypher_list.insert(0, infer_cypher)
 
         # 保证正方向反方向都有词的时候添加
         if destination_word and relation_word:
@@ -162,6 +166,13 @@ def replaceInstanceCypherStr(instanceName, instanceType):
 
 # 转换关系词
 def replaceCypherStr(word, destionation=False, infer_word=False):
+    """
+    转换关系词
+    :param word: 词
+    :param destionation:  目标词
+    :param infer_word: 推断词
+    :return: str
+    """
     # print("word>>>>>>>>>>>>>>>>>>>>", word)
     cypher_str = ""
     type_list = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
@@ -188,12 +199,36 @@ def replaceCypherStr(word, destionation=False, infer_word=False):
     return cypher_str
 
 
+# 生成最后一步的方向
+def addEndSearchDirection(lastword,attributeWord="",degreeWord="",valueWord=""):
+    # 表示应该是查询实体
+    if "d:" in lastword:
+        if attributeWord:
+            if degreeWord and valueWord:
+                cypher_word = "where d.{}{}{} return d".format(attributeWord,degreeWord,valueWord)
+            else:
+                cypher_word = "where d.{} return d".format(attributeWord)
+        else:
+            cypher_word = "return d"
+    elif "i:" in lastword:
+        # 表示应该查询的是查询实例
+        if attributeWord:
+            if degreeWord and valueWord:
+                cypher_word = "where i.{}{}{} return i".format(attributeWord, degreeWord, valueWord)
+            else:
+                cypher_word = "where i.{} return i".format(attributeWord)
+        else:
+            cypher_word = "return i"
+
+    return cypher_word
+
+
 # 分析关系，判断两个词之间的关系
 def estimateRelationWordOrAttributeWord(instanceType, word):
     relation_list = open(r"G:\About_Search\Search_Demo_1\resources\relations", encoding="utf-8").readlines()
     # print("进来没有>>>",instanceType)
     # 目的词
-    destinationWord = ""
+    destination_word = ""
     # 关系词
     relation_word = ""
     # 推断词
@@ -209,37 +244,36 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
             target_word = words.split("-")[2].strip()
             # 替代关系词
             instead_word = words.split("-")[3].strip()
-
             # 正方向搜索 知道 左边-中间-> 右边
             if instanceType == instance_type_word:
                 # print("匹配到第一个词")
                 if word == relation_word:
-                    destinationWord = target_word
-                    return instead_word, destinationWord, infer_word
+                    destination_word = target_word
+                    return instead_word, destination_word, infer_word
                 # 知道左边-右边->中间
                 elif word == target_word:
-                    destinationWord = word
-                    return instead_word,destinationWord,infer_word
+                    destination_word = word
+                    return instead_word, destination_word, infer_word
             # 反方向搜索 知道 右边-中->左边
             elif instanceType == target_word:
                 if word == relation_word:
-                    destinationWord = instance_type_word
-                    return instead_word, destinationWord, infer_word
+                    destination_word = instance_type_word
+                    return instead_word, destination_word, infer_word
                 # 知道右边-左边->中间
                 elif word == instance_type_word:
-                    destinationWord = word
-                    return instead_word,destinationWord,infer_word
+                    destination_word = word
+                    return instead_word, destination_word, infer_word
             # 中间搜索 知道 中间-左边->右边 / 中间-右边->左边
             elif instanceType == relation_word:
                 if word == instance_type_word:
-                    destinationWord = target_word
+                    destination_word = target_word
                     infer_word = word
-                    return instead_word, destinationWord, infer_word
+                    return instead_word, destination_word, infer_word
                 else:
-                    destinationWord = instance_type_word
+                    destination_word = instance_type_word
                     infer_word = word
-                    return instead_word, destinationWord, infer_word
+                    return instead_word, destination_word, infer_word
     else:
         print("继续查询")
 
-    return relation_word, destinationWord, infer_word
+    return relation_word, destination_word, infer_word

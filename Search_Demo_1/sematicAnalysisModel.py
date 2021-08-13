@@ -49,5 +49,7 @@ class SematicAnalysisModel:
         for index, deprel in enumerate(self.vertexModel.deprel_list):
             if deprel == "SBV":
                 word = self.vertexModel.word_list[index]
+            else:
+                word = ""
 
         return word

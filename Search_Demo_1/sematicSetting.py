@@ -85,6 +85,8 @@ def findEntityAndIndex(wordList):
             final_word = noun + "/" + e_type
             final_word_list.append(final_word)
 
+
+    # print("1. 搜索实例词，如果实例词在实例词库中，则构建成:>>>>>>>",final_word_list)
     return final_word_list
 
 
@@ -123,7 +125,6 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
 def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisModel):
     final_combination_list = []
     new_combination =[]
-    entity = ""
 
     # 如果实例和动词库都有词
     if len(entities) and len(new_verbs):
@@ -153,7 +154,7 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
         # FIXME: 如果动词和实例都没有则直接使用名词库里的词 eg:有乙方的单位
         final_combination_list.append(analysisModel.posModel.nouns)
 
-    print("重组关系之后的确定数组>>>>>", final_combination_list)
+    # print("重组关系之后的确定数组>>>>>", final_combination_list)
     return final_combination_list
 
 
@@ -181,6 +182,8 @@ def attributeRecombination(analysisModel: SematicAnalysisModel):
         verb_deprel = analysisModel.vertexModel.wordForDeprel(verb)
         verb_target_word = analysisModel.vertexModel.wordForTargetWord(verb)
         attr_for_sbv_word = ""
+        flag_noun = ""
+        flag_attr = ""
         if verb_deprel != "HED":
             # verb位置
             # verb_position = analysisModel.vertexModel.wordForId(verb)
@@ -205,9 +208,13 @@ def attributeRecombination(analysisModel: SematicAnalysisModel):
             # 保证加入的SBV等主语不是"的"等语气词
             if analysisModel.vertexModel.wordForPos(verb_target_word) != "u":
                 final_sequence.append(verb_target_word)
-            final_sequence.append(flag_noun)
-            final_sequence.append(verb)
-            final_sequence.append(flag_attr)
+            # FIXME:如果标记名词不为空，则添加
+            if flag_noun != "":
+                final_sequence.append(flag_noun)
+            if verb != "":
+                final_sequence.append(verb)
+            if flag_attr != "":
+                final_sequence.append(flag_attr)
 
             # 如果有多属性指向sbv词才添加
             if attr_for_sbv_word:
