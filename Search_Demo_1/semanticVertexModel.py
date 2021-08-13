@@ -1,4 +1,4 @@
-import re
+
 class SemanticGraphVertexModel:
     def __init__(self, sematicList):
         self.head = 0
@@ -60,9 +60,17 @@ class SemanticGraphVertexModel:
 
     # 判断是否是表示值的词
     def wordisValue(self,word):
-        value_list = ["TIME","m","LOC","PER"]
+        value_list = ["TIME", "m", "LOC", "PER"]
         word_pos = self.wordForPos(word)
-        if word_pos in value_list:
+        if word_pos:
+            if word_pos in value_list:
+                return True
+            else:
+                return False
+
+    def wordisDegree(self,word):
+        degree_word = ["超过", "大于", "越过","少于", "小于","为", "等于", "是","最高", "最大", "第一","最少", "最小", "最后"]
+        if word in degree_word:
             return True
         else:
             return False
@@ -87,7 +95,6 @@ class SemanticGraphVertexModel:
             chargeSymbol = "limit 1"
         else:
             chargeSymbol = ""
-
         return chargeSymbol
 
 

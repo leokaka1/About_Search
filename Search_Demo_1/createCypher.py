@@ -1,4 +1,5 @@
 from Search_Demo_1.sematicAnalysisModel import SematicAnalysisModel
+from Search_Demo_1.tools import *
 
 
 def createCypher(wordDict, analysisModel: SematicAnalysisModel):
@@ -18,7 +19,7 @@ def createCypher(wordDict, analysisModel: SematicAnalysisModel):
         # Step 3 进行关系解析
         cypher_list = relationPasing(new_word_list)
     else:
-        replaceAttributeValueSentence(sequences)
+        replaceAttributeValueSentence(sequences,analysisModel)
         print("含有属性值的另外计算")
 
 
@@ -90,6 +91,7 @@ def deleteNoneRelationWord(sequences,attribute=False):
                         word = instead_word
             new_sequences.append(word)
             sequences = new_sequences
+        sequences.insert(0,main_word)
 
     print("2.删除词表中关系词不存在的词汇:>>>>>", sequences)
     return sequences
@@ -322,27 +324,42 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
 
 
 # 转换有属性值的
-def replaceAttributeValueSentence(sequences):
+def replaceAttributeValueSentence(sequences,analysisModel: SematicAnalysisModel):
     print("sequences>>>>", sequences)
     # new_sequences = confirmAttributeWord(sequences)
-    deleteNoneRelationWord(sequences,attribute=True)
+    new_sequences = deleteNoneRelationWord(sequences,attribute=True)
+    confirmAttributeWord(new_sequences,analysisModel)
 
 
 # 确定属性词
-def confirmAttributeWord(sequences):
-    main_word = sequences[0]
-    new_sequences = []
+def confirmAttributeWord(sequences,analysisModel:SematicAnalysisModel):
+    # FIXME： 这里可能未来要改
     lines = open(r"G:\About_Search\Search_Demo_1\resources\attributes", encoding="utf-8").readlines()
+    attribute_list = []
+    final_cypher_list = []
+    for line in lines:
+        attribute_list.append(line.split("-")[1].strip())
+    # set(attribute_list)
 
+    cypher_str = "(e:{})".format(sequences[0])
+    # print(cypher_str)
+    final_cypher_list.append(cypher_str)
+
+    cypher_str = ""
     for word in sequences[1:]:
-        for line in lines:
-            entity_word = line.split("-")[0].strip()
-            attribute_word = line.split("-")[1].strip()
-            instead_word = line.split("-")[2].strip()
 
-            if main_word == entity_word:
-                if word == attribute_word:
-                    word = instead_word
-        new_sequences.append(word)
+        if word in attribute_list:
+            cypher = "where e.{}".format(word)
+            cypher_str += cypher
+        elif analysisModel.vertexModel.wordisDegree(word):
+            degree_word=analysisModel.vertexModel.wordForDegreeSymbol(word)
+            cypher_str += degree_word
+        elif analysisModel.vertexModel.wordisValue(word):
+            cypher_str += word
 
-    print(new_sequences)
+    final_cypher_list.append(cypher_str)
+    # FIXME：结尾词
+    end_cypher = "return e"
+    final_cypher_list.append(end_cypher)
+
+    print(final_cypher_list)

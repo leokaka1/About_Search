@@ -2,6 +2,7 @@ import re
 # 引入模块
 import time, datetime
 
+
 # 转金额
 def string_to_yuan(string, base_unit='y', right_side=False):
     """
@@ -81,7 +82,6 @@ def string_to_yuan(string, base_unit='y', right_side=False):
 
 # 转日期
 def string_to_time(string):
-
     timeArray = time.strptime(string, "%Y年%m月%d日")
     otherStyleTime = time.strftime("%Y/%m/%d", timeArray)
     return otherStyleTime
