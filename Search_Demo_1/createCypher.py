@@ -250,22 +250,23 @@ def replaceCypherStr(word, destionation=False, infer_word=False):
 def addEndSearchDirection(lastword, attributeWord="", degreeWord="", valueWord=""):
     cypher_word = ""
     # 表示应该是查询实体
-    if "d:" in lastword and attributeWord != "":
-        if degreeWord != "" and valueWord != "":
-            cypher_word = "where d.{}{}{} return d".format(attributeWord, degreeWord, valueWord)
+    if "d:" in lastword:
+        if attributeWord:
+            if degreeWord and valueWord :
+                cypher_word = "where d.{}{}{} return d".format(attributeWord, degreeWord, valueWord)
+            else:
+                cypher_word = "where d.{} return d".format(attributeWord)
         else:
-            cypher_word = "where d.{} return d".format(attributeWord)
-    else:
-        cypher_word = "return d"
-    # elif "i:" in lastword:
-    #     # 表示应该查询的是查询实例
-    #     if attributeWord != "":
-    #         if degreeWord != "" and valueWord != "":
-    #             cypher_word = "where i.{}{}{} return i".format(attributeWord, degreeWord, valueWord)
-    #         else:
-    #             cypher_word = "where i.{} return i".format(attributeWord)
-    #     else:
-    #         cypher_word = "return i"
+            cypher_word = "return d"
+    elif "i:" in lastword:
+        # 表示应该查询的是查询实例
+        if attributeWord:
+            if degreeWord and valueWord :
+                cypher_word = "where i.{}{}{} return i".format(attributeWord, degreeWord, valueWord)
+            else:
+                cypher_word = "where i.{} return i".format(attributeWord)
+        else:
+            cypher_word = "return i"
 
     return cypher_word
 
