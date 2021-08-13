@@ -16,7 +16,7 @@ def createCypher(wordDict, analysisModel: SematicAnalysisModel):
         new_word_list = deleteNoneRelationWord(disambigurate_list)
 
         # Step 3 进行关系解析
-        relationPasing(new_word_list)
+        cypher_list = relationPasing(new_word_list)
     else:
         print("含有属性值的另外计算")
 
@@ -120,13 +120,9 @@ def deduceKeyWord(wordList):
     # print(relation_sequence_list)
     destination_word_list = []
     while flag_index < len(relation_sequence_list):
-        relation_word, destination_word, infer_word = estimateRelationWordOrAttributeWord(input_word,
-                                                                                          relation_sequence_list[
-                                                                                              flag_index])
-
-        # print("relationword,",relation_word)
-        # print("destinationword",destination_word)
-        # print("infer_word",infer_word)
+        relation_word, destination_word, infer_word, attribute_word = estimateRelationWordOrAttributeWord(input_word,
+                                                                                                          relation_sequence_list[
+                                                                                                              flag_index])
 
         # FIXME： 如果 infer_word 有值， 说明是需要系统推断出词的 eg:有中标人的项目
         if infer_word:
@@ -151,6 +147,19 @@ def deduceKeyWord(wordList):
     if len(destination_word_list):
         destination_cpyher = replaceCypherStr(destination_word_list[-1], destionation=True)
         cypher_list.append(destination_cpyher)
+
+    # print("relationword,",relation_word)
+    # print("destinationword",destination_word)
+    # print("infer_word",infer_word)
+
+    if attribute_word:
+        # TODO：这里是生成结尾cpyer短语的地方，需要改进
+        end_cypher = addEndSearchDirection(cypher_list[-1], attributeWord=attribute_word)
+        cypher_list.append(end_cypher)
+    else:
+        # TODO：这里是生成结尾cpyer短语的地方，需要改进
+        end_cypher = addEndSearchDirection(cypher_list[-1])
+        cypher_list.append(end_cypher)
 
     return cypher_list
 
@@ -200,12 +209,13 @@ def replaceCypherStr(word, destionation=False, infer_word=False):
 
 
 # 生成最后一步的方向
-def addEndSearchDirection(lastword,attributeWord="",degreeWord="",valueWord=""):
+def addEndSearchDirection(lastword, attributeWord="", degreeWord="", valueWord=""):
+    cypher_word = ""
     # 表示应该是查询实体
     if "d:" in lastword:
         if attributeWord:
             if degreeWord and valueWord:
-                cypher_word = "where d.{}{}{} return d".format(attributeWord,degreeWord,valueWord)
+                cypher_word = "where d.{}{}{} return d".format(attributeWord, degreeWord, valueWord)
             else:
                 cypher_word = "where d.{} return d".format(attributeWord)
         else:
@@ -233,6 +243,8 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
     relation_word = ""
     # 推断词
     infer_word = ""
+    # 属性词直接返回
+    attribute_word = ""
     if instanceType:
         # 先判断在不在关系列表中
         for words in relation_list:
@@ -249,31 +261,32 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
                 # print("匹配到第一个词")
                 if word == relation_word:
                     destination_word = target_word
-                    return instead_word, destination_word, infer_word
+                    return instead_word, destination_word, infer_word, attribute_word
                 # 知道左边-右边->中间
                 elif word == target_word:
                     destination_word = word
-                    return instead_word, destination_word, infer_word
+                    return instead_word, destination_word, infer_word, attribute_word
             # 反方向搜索 知道 右边-中->左边
             elif instanceType == target_word:
                 if word == relation_word:
                     destination_word = instance_type_word
-                    return instead_word, destination_word, infer_word
+                    return instead_word, destination_word, infer_word, attribute_word
                 # 知道右边-左边->中间
                 elif word == instance_type_word:
                     destination_word = word
-                    return instead_word, destination_word, infer_word
+                    return instead_word, destination_word, infer_word, attribute_word
             # 中间搜索 知道 中间-左边->右边 / 中间-右边->左边
             elif instanceType == relation_word:
                 if word == instance_type_word:
                     destination_word = target_word
                     infer_word = word
-                    return instead_word, destination_word, infer_word
+                    return instead_word, destination_word, infer_word, attribute_word
                 else:
                     destination_word = instance_type_word
                     infer_word = word
-                    return instead_word, destination_word, infer_word
-    else:
-        print("继续查询")
+                    return instead_word, destination_word, infer_word, attribute_word
 
-    return relation_word, destination_word, infer_word
+    # FIXME: 如果词不在关系列表中，那么可以判断这个词一定是在属性中
+    attribute_word = word
+
+    return relation_word, destination_word, infer_word, attribute_word
