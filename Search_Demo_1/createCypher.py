@@ -18,6 +18,7 @@ def createCypher(wordDict, analysisModel: SematicAnalysisModel):
         # Step 3 进行关系解析
         cypher_list = relationPasing(new_word_list)
     else:
+        replaceAttributeValueSentence(sequences)
         print("含有属性值的另外计算")
 
 
@@ -47,26 +48,48 @@ def disambiguration(sequences):
 
 
 # 2.删除没有的关系词
-def deleteNoneRelationWord(sequences):
+def deleteNoneRelationWord(sequences,attribute=False):
+    """
+    删除没有的关系词
+    :param sequences: 原始句子
+    :param attribute: 是否含有属性词
+    :return: []
+    """
     relations_list = open(r"G:\About_Search\Search_Demo_1\resources\relations", encoding="utf-8").readlines()
     types_list = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
+    lines = open(r"G:\About_Search\Search_Demo_1\resources\attributes", encoding="utf-8").readlines()
     relation_list = []
     type_list = []
     entity_list = []
-    for sequence in sequences:
-        # 关系词
-        for type_word in relations_list:
-            relation_list.append(type_word.split("-")[1].strip())
-            entity_list.append(type_word.split("-")[2].strip())
+    if not attribute:
+        for sequence in sequences:
+            # 关系词
+            for type_word in relations_list:
+                relation_list.append(type_word.split("-")[1].strip())
+                entity_list.append(type_word.split("-")[2].strip())
 
-        # 属性词
-        for type_word in types_list:
-            type_list.append(type_word.split("-")[0].strip())
+            # 属性词
+            for type_word in types_list:
+                type_list.append(type_word.split("-")[0].strip())
 
-        for word in sequence:
-            if "/" not in word:
-                if word not in relation_list and word not in entity_list and word not in type_list:
-                    sequence.remove(word)
+            for word in sequence:
+                if "/" not in word:
+                    if word not in relation_list and word not in entity_list and word not in type_list:
+                        sequence.remove(word)
+    else:
+        new_sequences = []
+        main_word = sequences[0]
+        for word in sequences[1:]:
+            for line in lines:
+                entity_word = line.split("-")[0].strip()
+                attribute_word = line.split("-")[1].strip()
+                instead_word = line.split("-")[2].strip()
+
+                if main_word == entity_word:
+                    if word == attribute_word:
+                        word = instead_word
+            new_sequences.append(word)
+            sequences = new_sequences
 
     print("2.删除词表中关系词不存在的词汇:>>>>>", sequences)
     return sequences
@@ -179,6 +202,7 @@ def replaceInstanceCypherStr(instanceName, instanceType):
 def replaceCypherStr(word, destionation=False, infer_word=False):
     """
     转换关系词
+    :param attribute_word:  关系词
     :param word: 词
     :param destionation:  目标词
     :param infer_word: 推断词
@@ -188,9 +212,12 @@ def replaceCypherStr(word, destionation=False, infer_word=False):
     cypher_str = ""
     type_list = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
     temp_save_list = []
+    temp_refer_list = []
     for typeline in type_list:
         type_word = typeline.split("-")[0].strip()
+        refer_word = typeline.split("-")[1].strip()
         temp_save_list.append(type_word)
+        temp_refer_list.append(refer_word)
 
     if destionation:
         if word in temp_save_list:
@@ -294,4 +321,28 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
     return relation_word, destination_word, infer_word, attribute_word
 
 
-#
+# 转换有属性值的
+def replaceAttributeValueSentence(sequences):
+    print("sequences>>>>", sequences)
+    # new_sequences = confirmAttributeWord(sequences)
+    deleteNoneRelationWord(sequences,attribute=True)
+
+
+# 确定属性词
+def confirmAttributeWord(sequences):
+    main_word = sequences[0]
+    new_sequences = []
+    lines = open(r"G:\About_Search\Search_Demo_1\resources\attributes", encoding="utf-8").readlines()
+
+    for word in sequences[1:]:
+        for line in lines:
+            entity_word = line.split("-")[0].strip()
+            attribute_word = line.split("-")[1].strip()
+            instead_word = line.split("-")[2].strip()
+
+            if main_word == entity_word:
+                if word == attribute_word:
+                    word = instead_word
+        new_sequences.append(word)
+
+    print(new_sequences)

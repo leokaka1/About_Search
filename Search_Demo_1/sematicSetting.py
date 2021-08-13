@@ -85,7 +85,6 @@ def findEntityAndIndex(wordList):
             final_word = noun + "/" + e_type
             final_word_list.append(final_word)
 
-
     # print("1. 搜索实例词，如果实例词在实例词库中，则构建成:>>>>>>>",final_word_list)
     return final_word_list
 

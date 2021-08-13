@@ -1,4 +1,6 @@
 import re
+# 引入模块
+import time, datetime
 
 # 转金额
 def string_to_yuan(string, base_unit='y', right_side=False):
@@ -75,3 +77,15 @@ def string_to_yuan(string, base_unit='y', right_side=False):
         cur, odd = re.split(BASE_UNIT[base_unit], string)
         return LEVEL_MAPPING[base_unit] * string_to_yuan(cur, UNIT_SEQ[UNIT_SEQ.index(base_unit) - 1]) \
                + string_to_yuan(odd, UNIT_SEQ[UNIT_SEQ.index(base_unit) - 1], right_side=True)
+
+
+# 转日期
+def string_to_time(string):
+
+    timeArray = time.strptime(string, "%Y年%m月%d日")
+    otherStyleTime = time.strftime("%Y/%m/%d", timeArray)
+    return otherStyleTime
+
+if __name__ == '__main__':
+    res = string_to_time("2021年3月27")
+    print(res)

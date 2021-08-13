@@ -58,8 +58,9 @@ class SemanticGraphVertexModel:
     def removeVerbWordList(self,word):
         self.word_list.remove(word)
 
+    # 判断是否是表示值的词
     def wordisValue(self,word):
-        value_list = ["TIME","m","LOC","TIME"]
+        value_list = ["TIME","m","LOC","PER"]
         word_pos = self.wordForPos(word)
         if word_pos in value_list:
             return True
