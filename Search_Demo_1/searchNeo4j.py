@@ -6,16 +6,20 @@ def searchNeo4j(cypher_list,isSequence):
         for sequence in cypher_list:
             cypher_search_str = "MATCH"
             for index, word in enumerate(sequence):
-                if index != len(sequence) - 1:
-                    cypher_search_str += (word + "->")
-                else:
+                if index == len(sequence) - 2:
                     cypher_search_str += word
+                elif index == len(sequence) - 1:
+                    cypher_search_str += " "+word
+                else:
+                    cypher_search_str += (word + "->")
             print("模拟Cypher语句为:>>>>>>", cypher_search_str)
     else:
         cypher_search_str = "MATCH"
         for index, word in enumerate(cypher_list):
-            if index != len(cypher_list) - 1:
-                cypher_search_str += (word + "->")
-            else:
+            if index == len(cypher_list) - 2:
                 cypher_search_str += word
+            elif index == len(cypher_list) - 1:
+                cypher_search_str += " " + word
+            else:
+                cypher_search_str += (word + "->")
         print("模拟Cypher语句为:>>>>>>",cypher_search_str)
