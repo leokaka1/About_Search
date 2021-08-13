@@ -1,5 +1,5 @@
 from Search_Demo_1.sematicAnalysisModel import SematicAnalysisModel
-from Search_Demo_1.tools import *
+from Search_Demo_1.searchNeo4j import searchNeo4j
 
 
 def createCypher(wordDict, analysisModel: SematicAnalysisModel):
@@ -8,6 +8,7 @@ def createCypher(wordDict, analysisModel: SematicAnalysisModel):
 
     includeValues = wordDict["includeValues"]
     sequences = wordDict["sequence"]
+    isSequence = False
 
     if not includeValues:
         # Step 1 主语谓语消歧
@@ -18,9 +19,13 @@ def createCypher(wordDict, analysisModel: SematicAnalysisModel):
 
         # Step 3 进行关系解析
         cypher_list = relationPasing(new_word_list)
+        isSequence = True
     else:
-        replaceAttributeValueSentence(sequences,analysisModel)
+        cypher_list = replaceAttributeValueSentence(sequences, analysisModel)
         # print("含有属性值的另外计算")
+
+    print("--------------------------------------------")
+    searchNeo4j(cypher_list,isSequence=isSequence)
 
 
 # 1.消歧
@@ -49,7 +54,7 @@ def disambiguration(sequences):
 
 
 # 2.删除没有的关系词
-def deleteNoneRelationWord(sequences,attribute=False):
+def deleteNoneRelationWord(sequences, attribute=False):
     """
     删除没有的关系词
     :param sequences: 原始句子
@@ -91,7 +96,7 @@ def deleteNoneRelationWord(sequences,attribute=False):
                         word = instead_word
             new_sequences.append(word)
             sequences = new_sequences
-        sequences.insert(0,main_word)
+        sequences.insert(0, main_word)
 
     print("2.删除词表中关系词不存在的词汇:>>>>>", sequences)
     return sequences
@@ -105,6 +110,7 @@ def relationPasing(sequences):
         cypher_final_sequence_list.append(cypher_list)
 
     print('3.转换为cypher_list数组后:>>>>>>>>', cypher_final_sequence_list)
+    return cypher_final_sequence_list
 
 
 # 解析关键词
@@ -177,6 +183,7 @@ def deduceKeyWord(wordList):
     # print("relationword,",relation_word)
     # print("destinationword",destination_word)
     # print("infer_word",infer_word)
+    # print("attibute_word",attribute_word)
 
     if len(cypher_list):
         if attribute_word:
@@ -243,23 +250,22 @@ def replaceCypherStr(word, destionation=False, infer_word=False):
 def addEndSearchDirection(lastword, attributeWord="", degreeWord="", valueWord=""):
     cypher_word = ""
     # 表示应该是查询实体
-    if "d:" in lastword:
-        if attributeWord:
-            if degreeWord and valueWord:
-                cypher_word = "where d.{}{}{} return d".format(attributeWord, degreeWord, valueWord)
-            else:
-                cypher_word = "where d.{} return d".format(attributeWord)
+    if "d:" in lastword and attributeWord != "":
+        if degreeWord != "" and valueWord != "":
+            cypher_word = "where d.{}{}{} return d".format(attributeWord, degreeWord, valueWord)
         else:
-            cypher_word = "return d"
-    elif "i:" in lastword:
-        # 表示应该查询的是查询实例
-        if attributeWord:
-            if degreeWord and valueWord:
-                cypher_word = "where i.{}{}{} return i".format(attributeWord, degreeWord, valueWord)
-            else:
-                cypher_word = "where i.{} return i".format(attributeWord)
-        else:
-            cypher_word = "return i"
+            cypher_word = "where d.{} return d".format(attributeWord)
+    else:
+        cypher_word = "return d"
+    # elif "i:" in lastword:
+    #     # 表示应该查询的是查询实例
+    #     if attributeWord != "":
+    #         if degreeWord != "" and valueWord != "":
+    #             cypher_word = "where i.{}{}{} return i".format(attributeWord, degreeWord, valueWord)
+    #         else:
+    #             cypher_word = "where i.{} return i".format(attributeWord)
+    #     else:
+    #         cypher_word = "return i"
 
     return cypher_word
 
@@ -276,11 +282,15 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
     infer_word = ""
     # 属性词直接返回
     attribute_word = ""
+
+    instance_list = []
     if instanceType:
         # 先判断在不在关系列表中
         for words in relation_list:
             # 实体词
             instance_type_word = words.split("-")[0].strip()
+            # FIXME: 解决最后的词不是实体词，那么就是属性词（后期修改）
+            instance_list.append(instance_type_word)
             # 关系词
             relation_word = words.split("-")[1].strip()
             # 目标词
@@ -317,22 +327,29 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
                     infer_word = word
                     return instead_word, destination_word, infer_word, attribute_word
 
+    # print("instead_word   ",instead_word)
+    # print("destination_word    ",destination_word)
+    # print("infer_word    ",infer_word)
+    # print("word    ",word)
     # FIXME: 如果词不在关系列表中，那么可以判断这个词一定是在属性中
-    attribute_word = word
+    if destination_word == "" and infer_word == "" and word not in instance_list:
+        attribute_word = word
 
     return relation_word, destination_word, infer_word, attribute_word
 
 
 # 转换有属性值的
-def replaceAttributeValueSentence(sequences,analysisModel: SematicAnalysisModel):
+def replaceAttributeValueSentence(sequences, analysisModel: SematicAnalysisModel):
     # print("sequences>>>>", sequences)
     # new_sequences = confirmAttributeWord(sequences)
-    new_sequences = deleteNoneRelationWord(sequences,attribute=True)
-    confirmAttributeWord(new_sequences,analysisModel)
+    new_sequences = deleteNoneRelationWord(sequences, attribute=True)
+    cypher_list = confirmAttributeWord(new_sequences, analysisModel)
+
+    return cypher_list
 
 
 # 确定属性词
-def confirmAttributeWord(sequences,analysisModel:SematicAnalysisModel):
+def confirmAttributeWord(sequences, analysisModel: SematicAnalysisModel):
     # FIXME： 这里可能未来要改
     lines = open(r"G:\About_Search\Search_Demo_1\resources\attributes", encoding="utf-8").readlines()
     attribute_list = []
@@ -347,12 +364,11 @@ def confirmAttributeWord(sequences,analysisModel:SematicAnalysisModel):
 
     cypher_str = ""
     for word in sequences[1:]:
-
         if word in attribute_list:
             cypher = "where e.{}".format(word)
             cypher_str += cypher
         elif analysisModel.vertexModel.wordisDegree(word):
-            degree_word=analysisModel.vertexModel.wordForDegreeSymbol(word)
+            degree_word = analysisModel.vertexModel.wordForDegreeSymbol(word)
             cypher_str += degree_word
         elif analysisModel.vertexModel.wordisValue(word):
             cypher_str += word
@@ -362,4 +378,5 @@ def confirmAttributeWord(sequences,analysisModel:SematicAnalysisModel):
     end_cypher = "return e"
     final_cypher_list.append(end_cypher)
 
-    print("3.简单的属性拼接之后的句子为:>>>>>>",final_cypher_list)
+    print("3.简单的属性拼接之后的句子为:>>>>>>", final_cypher_list)
+    return final_cypher_list

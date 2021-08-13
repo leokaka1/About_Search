@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43e13196-3b90-4094-90df-beddaa7a1642" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Search_Demo_1/searchNeo4j.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Search_Demo_1/createCypher.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/createCypher.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Search_Demo_1/resources/attributes" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/resources/attributes" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_Demo_1/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/main.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,16 +29,16 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/createCypher.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="26" column="31" lean-forward="true" selection-start-line="26" selection-start-column="31" selection-end-line="26" selection-end-column="31" />
+            <state relative-caret-position="288">
+              <caret line="21" column="25" lean-forward="true" selection-start-line="21" selection-start-column="25" selection-end-line="21" selection-end-column="25" />
               <folding>
                 <element signature="e#0#67#0" expanded="true" />
+                <element signature="e#660#1495#0" />
                 <element signature="e#1633#3343#0" />
-                <element signature="e#2305#2539#0" />
+                <element signature="e#3524#3796#0" />
                 <element signature="e#2752#5223#0" />
                 <element signature="e#4989#5236#0" />
-                <element signature="e#6645#7391#0" />
-                <element signature="e#7455#9740#0" />
+                <element signature="e#5508#6402#0" />
               </folding>
             </state>
           </provider>
@@ -68,8 +69,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicSetting.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1680">
-              <caret line="112" column="44" lean-forward="true" selection-start-line="112" selection-start-column="44" selection-end-line="112" selection-end-column="44" />
+            <state relative-caret-position="360">
+              <caret line="57" column="4" selection-start-line="57" selection-start-column="4" selection-end-line="57" selection-end-column="57" />
               <folding>
                 <element signature="e#0#57#0" expanded="true" />
                 <element signature="e#6050#8057#0" />
@@ -78,11 +79,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="840">
-              <caret line="35" column="9" lean-forward="true" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="9" />
+            <state relative-caret-position="504">
+              <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" selection-end-column="15" />
               <folding>
                 <element signature="e#0#69#0" expanded="true" />
               </folding>
@@ -108,7 +109,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/attributes">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
@@ -118,10 +119,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/type">
+        <entry file="file://$PROJECT_DIR$/Search_Demo_1/searchNeo4j.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="20" column="14" lean-forward="true" selection-start-line="20" selection-start-column="14" selection-end-line="20" selection-end-column="14" />
+            <state relative-caret-position="192">
+              <caret line="8" column="40" selection-start-line="8" selection-start-column="40" selection-end-line="8" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -137,9 +138,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>服务标的类</find>
-      <find>wordForHead</find>
-      <find>通用</find>
       <find>投标单位</find>
       <find>投标</find>
       <find>coosCombinationRelation</find>
@@ -161,12 +159,15 @@
       <find>break</find>
       <find>destination_word</find>
       <find>destination</find>
-      <find>estimateRelationWordOrAttributeWord</find>
       <find>word</find>
       <find>entity_word&gt;&gt;&gt;&gt;&gt;</find>
       <find>flag</find>
       <find>项目分类</find>
       <find>sequences&gt;&gt;&gt;&gt;</find>
+      <find>estimateRelationWordOrAttributeWord</find>
+      <find>instead_word</find>
+      <find>addEndSearchDirection</find>
+      <find>attibute_word</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -201,12 +202,14 @@
         <option value="$PROJECT_DIR$/Search_Demo_1/resources/relations" />
         <option value="$PROJECT_DIR$/Search_Demo_1/resources/user_dicts" />
         <option value="$PROJECT_DIR$/Search_Demo_1/resources/entities" />
-        <option value="$PROJECT_DIR$/Search_Demo_1/main.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/sematicSetting.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/tools.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/semanticVertexModel.py" />
-        <option value="$PROJECT_DIR$/Search_Demo_1/createCypher.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/resources/attributes" />
+        <option value="$PROJECT_DIR$/Search_Demo_1/searchDatabase.py" />
+        <option value="$PROJECT_DIR$/Search_Demo_1/main.py" />
+        <option value="$PROJECT_DIR$/Search_Demo_1/createCypher.py" />
+        <option value="$PROJECT_DIR$/Search_Demo_1/searchNeo4j.py" />
       </list>
     </option>
   </component>
@@ -234,12 +237,6 @@
               <item name="About_Search" type="b2602c69:ProjectViewProjectNode" />
               <item name="About_Search" type="462c0819:PsiDirectoryNode" />
               <item name="Search_Demo_1" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="About_Search" type="b2602c69:ProjectViewProjectNode" />
-              <item name="About_Search" type="462c0819:PsiDirectoryNode" />
-              <item name="Search_Demo_1" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -362,22 +359,23 @@
       <workItem from="1628553421182" duration="38966000" />
       <workItem from="1628640661722" duration="41363000" />
       <workItem from="1628724702314" duration="38677000" />
-      <workItem from="1628812523624" duration="27069000" />
+      <workItem from="1628812523624" duration="30872000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="235714000" />
+    <option name="totallyTimeSpent" value="239517000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49833333" visible="true" weight="0.19251336" />
       <window_info id="Structure" order="1" sideWeight="0.50166667" side_tool="true" weight="0.1882353" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.40087622" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3504929" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3603505" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -401,7 +399,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/About_Search$wordSegmentation.coverage" NAME="wordSegmentation Coverage Results" MODIFIED="1628232343084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Code/seg" />
     <SUITE FILE_PATH="coverage/About_Search$tools.coverage" NAME="tools Coverage Results" MODIFIED="1628845151121" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Search_Demo_1" />
-    <SUITE FILE_PATH="coverage/About_Search$main.coverage" NAME="main Coverage Results" MODIFIED="1628859280317" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Search_Demo_1" />
+    <SUITE FILE_PATH="coverage/About_Search$main.coverage" NAME="main Coverage Results" MODIFIED="1628863185183" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Search_Demo_1" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Code/search_main.py" />
@@ -482,33 +480,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="840">
-          <caret line="35" column="9" lean-forward="true" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="9" />
-          <folding>
-            <element signature="e#0#69#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicAnalysisModel.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="393">
           <caret line="51" column="17" lean-forward="true" selection-start-line="51" selection-start-column="17" selection-end-line="51" selection-end-column="17" />
           <folding>
             <element signature="e#0#70#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicSetting.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1680">
-          <caret line="112" column="44" lean-forward="true" selection-start-line="112" selection-start-column="44" selection-end-line="112" selection-end-column="44" />
-          <folding>
-            <element signature="e#0#57#0" expanded="true" />
-            <element signature="e#6050#8057#0" />
           </folding>
         </state>
       </provider>
@@ -520,29 +497,6 @@
           <folding>
             <element signature="e#0#9#0" expanded="true" />
             <element signature="e#71#2794#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/relations">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="13" column="13" lean-forward="true" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Search_Demo_1/createCypher.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="26" column="31" lean-forward="true" selection-start-line="26" selection-start-column="31" selection-end-line="26" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#67#0" expanded="true" />
-            <element signature="e#1633#3343#0" />
-            <element signature="e#2305#2539#0" />
-            <element signature="e#2752#5223#0" />
-            <element signature="e#4989#5236#0" />
-            <element signature="e#6645#7391#0" />
-            <element signature="e#7455#9740#0" />
           </folding>
         </state>
       </provider>
@@ -561,10 +515,61 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/sematicSetting.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="57" column="4" selection-start-line="57" selection-start-column="4" selection-end-line="57" selection-end-column="57" />
+          <folding>
+            <element signature="e#0#57#0" expanded="true" />
+            <element signature="e#6050#8057#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/relations">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="13" column="13" lean-forward="true" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/attributes">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="240">
           <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/createCypher.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="288">
+          <caret line="21" column="25" lean-forward="true" selection-start-line="21" selection-start-column="25" selection-end-line="21" selection-end-column="25" />
+          <folding>
+            <element signature="e#0#67#0" expanded="true" />
+            <element signature="e#660#1495#0" />
+            <element signature="e#1633#3343#0" />
+            <element signature="e#3524#3796#0" />
+            <element signature="e#2752#5223#0" />
+            <element signature="e#4989#5236#0" />
+            <element signature="e#5508#6402#0" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/searchNeo4j.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="8" column="40" selection-start-line="8" selection-start-column="40" selection-end-line="8" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="504">
+          <caret line="33" lean-forward="true" selection-start-line="33" selection-end-line="33" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#69#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
