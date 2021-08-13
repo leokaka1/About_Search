@@ -292,3 +292,6 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
     attribute_word = word
 
     return relation_word, destination_word, infer_word, attribute_word
+
+
+#

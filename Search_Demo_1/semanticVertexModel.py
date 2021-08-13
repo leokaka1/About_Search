@@ -1,3 +1,4 @@
+import re
 class SemanticGraphVertexModel:
     def __init__(self, sematicList):
         self.head = 0
@@ -87,3 +88,5 @@ class SemanticGraphVertexModel:
             chargeSymbol = ""
 
         return chargeSymbol
+
+
