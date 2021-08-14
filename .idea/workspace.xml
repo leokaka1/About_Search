@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43e13196-3b90-4094-90df-beddaa7a1642" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Search_Demo_1/searchNeo4j.py" beforeDir="false" afterPath="$PROJECT_DIR$/Search_Demo_1/searchNeo4j.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/Readme.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Search_Demo_1/resources/user_former_dict" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -41,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="33" selection-start-line="33" selection-end-line="33" selection-end-column="15" />
+            <state relative-caret-position="264">
+              <caret line="11" selection-start-line="11" selection-end-line="11" />
               <folding>
                 <element signature="e#0#69#0" expanded="true" />
               </folding>
@@ -100,6 +102,15 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="48">
               <caret line="2" column="14" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/attributes">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="240">
+              <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -183,10 +194,10 @@
         <option value="$PROJECT_DIR$/Search_Demo_1/semanticVertexModel.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/resources/attributes" />
         <option value="$PROJECT_DIR$/Search_Demo_1/searchDatabase.py" />
-        <option value="$PROJECT_DIR$/Search_Demo_1/main.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/sematicSetting.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/createCypher.py" />
         <option value="$PROJECT_DIR$/Search_Demo_1/searchNeo4j.py" />
+        <option value="$PROJECT_DIR$/Search_Demo_1/main.py" />
       </list>
     </option>
   </component>
@@ -214,6 +225,12 @@
               <item name="About_Search" type="b2602c69:ProjectViewProjectNode" />
               <item name="About_Search" type="462c0819:PsiDirectoryNode" />
               <item name="Search_Demo_1" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="About_Search" type="b2602c69:ProjectViewProjectNode" />
+              <item name="About_Search" type="462c0819:PsiDirectoryNode" />
+              <item name="Search_Demo_1" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -337,22 +354,23 @@
       <workItem from="1628640661722" duration="41363000" />
       <workItem from="1628724702314" duration="38677000" />
       <workItem from="1628812523624" duration="31237000" />
-      <workItem from="1628900855821" duration="14720000" />
+      <workItem from="1628900855821" duration="16112000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="254602000" />
+    <option name="totallyTimeSpent" value="255994000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49833333" visible="true" weight="0.19465241" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49833333" visible="true" weight="0.19465241" />
       <window_info id="Structure" order="1" sideWeight="0.50166667" side_tool="true" weight="0.1882353" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946523" visible="true" weight="0.4720701" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49946523" visible="true" weight="0.25301206" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3603505" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -467,13 +485,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/attributes">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/relations">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="312">
@@ -563,11 +574,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Search_Demo_1/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="216">
-          <caret line="33" selection-start-line="33" selection-end-line="33" selection-end-column="15" />
+        <state relative-caret-position="264">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
           <folding>
             <element signature="e#0#69#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Search_Demo_1/resources/attributes">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="10" column="10" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
         </state>
       </provider>
     </entry>
