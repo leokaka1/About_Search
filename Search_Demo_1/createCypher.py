@@ -215,9 +215,7 @@ def replaceInstanceCypherStr(instanceName, instanceType):
 def replaceCypherStr(relation_list):
     """
     转换关系词
-    :param word: 词
-    :param destionation:  目标词
-    :param infer_word: 推断词
+    :param relation_list: 词
     :return: str
     """
     lines = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
@@ -261,13 +259,13 @@ def addEndSearchDirection(lastWord, attributeWord=""):
     # 表示应该是查询实体
     if refer_word in lastWord:
         if attributeWord:
-            cypher_word = "where {}.{} return {}".format(refer_word, attributeWord, refer_word)
+            cypher_word = "return {}.{}".format(refer_word, attributeWord)
         else:
             cypher_word = "return {}".format(refer_word)
     elif "i:" in lastWord:
         # 表示应该查询的是查询实例
         if attributeWord:
-            cypher_word = "where i.{} return i".format(attributeWord)
+            cypher_word = "return i.{}".format(attributeWord)
         else:
             cypher_word = "return i"
 
