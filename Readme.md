@@ -16,23 +16,23 @@
 
 ## 项目目录说明
 ```
-├── createCypher.py  									   创建Cypher语句词数组
-├── main.py 													   主函数		
-├── resources													 资源目录	  			
-│   ├── attributes												属性关系
-│   ├── disambiguation									  消歧词库
-│   ├── entities													 实体词
-│   ├── relations												   关系库
-│   ├── type														   类型库										 
-│   └── user_dicts												 用户自定义词典
-├── searchNeo4j.py											查询Neo4j
-├── segmentationAndPostag.py					   分词并词性标注
-├── semanticGraph.py										构建词性数组
-├── semanticVertexModel.py						    语义判断工具类
-├── sematicAnalysisModel.py						   语义分析工具类
-├── sematicPosModel.py								   语义词性工具类
-├── sematicSetting.py										构建语义顺序
-└── tools.py														  基础工具类
+├── createCypher.py  					创建Cypher语句词数组
+├── main.py 							主函数		
+├── resources							资源目录	  			
+│   ├── attributes						属性关系词库
+│   ├── disambiguation					消歧词库
+│   ├── entities						实体词库
+│   ├── relations						关系词库
+│   ├── type							类型词库										 
+│   └── user_dicts						用户自定义词典
+├── searchNeo4j.py						查询Neo4j
+├── segmentationAndPostag.py			分词并词性标注
+├── semanticGraph.py					构建词性数组
+├── semanticVertexModel.py				语义判断工具类
+├── sematicAnalysisModel.py				语义分析工具类
+├── sematicPosModel.py					语义词性工具类
+├── sematicSetting.py					构建语义顺序
+└── tools.py							基础工具类
 ```
 
 
