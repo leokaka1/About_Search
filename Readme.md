@@ -14,3 +14,22 @@
 
 未完待续....
 
+## 项目目录说明
+├── createCypher.py
+├── main.py
+├── resources
+│   ├── attributes
+│   ├── disambiguation
+│   ├── entities
+│   ├── relations
+│   ├── type
+│   ├── user_dicts
+│   └── user_former_dict
+├── searchNeo4j.py
+├── segmentationAndPostag.py
+├── semanticGraph.py
+├── semanticVertexModel.py
+├── sematicAnalysisModel.py
+├── sematicPosModel.py
+├── sematicSetting.py
+└── tools.py
