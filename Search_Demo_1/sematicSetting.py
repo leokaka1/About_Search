@@ -126,7 +126,7 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
     new_combination =[]
 
     # 如果实例和动词库都有词
-    if len(entities) and len(new_verbs):
+    if len(entities) or len(new_verbs):
         for entity_word in entities:
             new_combination = []
             entity = entity_word.split("/")[0]

@@ -116,12 +116,14 @@ def relationPasing(sequences):
 # 解析关键词
 def deduceKeyWord(wordList):
     flag_index = 0
+    prepare_cypher_list = []
     cypher_list = []
     # 判断第一个词
-    firstWord = wordList[0]
+    if wordList[0]:
+        firstWord = wordList[0]
+    else:
+        firstWord = ""
 
-    # destination_word = ""
-    # input_word = ""
     attribute_word = ""
 
     # 关系数组
@@ -129,27 +131,22 @@ def deduceKeyWord(wordList):
 
     # 如果第一个词是实例，那么就分解实例
     if "/" in firstWord:
-        # print("True")
         # 实体词
         instanceName = firstWord.split("/")[0]
         # 实体词的类型
         instanceType = firstWord.split("/")[1]
 
-        cypher_entity = replaceInstanceCypherStr(instanceName, instanceType)
-        cypher_list.append(cypher_entity)
+        # cypher_entity = replaceInstanceCypherStr(instanceName, instanceType)
+        prepare_cypher_list.append(firstWord)
         # 第一个词如果可分就赋值
         input_word = instanceType
     else:
         input_word = firstWord
 
     # FIXME: 如果第一个不是实例，分开判断
-    # print(cypher_list)
-
     for word in wordList[1:]:
         relation_sequence_list.append(word)
 
-    # print(instanceType)
-    # print(relation_sequence_list)
     destination_word_list = []
     while flag_index < len(relation_sequence_list):
         relation_word, destination_word, infer_word, attribute_word = estimateRelationWordOrAttributeWord(input_word,
@@ -158,113 +155,119 @@ def deduceKeyWord(wordList):
 
         # FIXME： 如果 infer_word 有值， 说明是需要系统推断出词的 eg:有中标人的项目
         if infer_word:
-            # print("infer_word有值", infer_word)
-            # 添加到cypher_list数组的第一个
-            infer_cypher = replaceCypherStr(infer_word, infer_word=True)
-            cypher_list.insert(0, infer_cypher)
+            # infer_cypher = replaceCypherStr(infer_word, infer_word=True)
+            # cypher_list.insert(0, infer_cypher)
+            prepare_cypher_list.insert(0, infer_word)
 
         # 保证正方向反方向都有词的时候添加
         if destination_word and relation_word:
-            relation_cypher = replaceCypherStr(relation_word)
+            # relation_cypher = replaceCypherStr(relation_word)
             # print("destination_word>>>>>>", destination_word, flag_index, len(relation_sequence_list))
             # print("relation_word>>>>>>", relation_word)
-            cypher_list.append(relation_cypher)
+            # cypher_list.append(relation_cypher)
+            prepare_cypher_list.append(relation_word)
             # 还是用数组添加
             destination_word_list.append(destination_word)
 
-        input_word = destination_word
-        flag_index += 1
+        # FIXME: 目标词，最后再添加
+        if len(destination_word_list):
+            # destination_cpyher = replaceCypherStr(destination_word_list[-1], destionation=True)
+            # cypher_list.append(destination_cpyher)
+            prepare_cypher_list.append(destination_word)
 
-    # FIXME: 终点词，最后再添加(只添加一次)
-    if len(destination_word_list):
-        destination_cpyher = replaceCypherStr(destination_word_list[-1], destionation=True)
-        cypher_list.append(destination_cpyher)
+        # print("relationword,",relation_word)
+        # print("destinationword",destination_word)
+        # print("infer_word",infer_word)
+        # print("attibute_word",attribute_word)
+        # FIXME: 如果最后一个目标词不是序列列表最后一个关系词就继续循环，如果相同就跳出循环
+        if destination_word != relation_sequence_list[-1]:
+            input_word = destination_word
+            flag_index += 1
+        else:
+            break
 
-    # print("relationword,",relation_word)
-    # print("destinationword",destination_word)
-    # print("infer_word",infer_word)
-    # print("attibute_word",attribute_word)
+    # 中间的词布局
+    cypher_list = replaceCypherStr(prepare_cypher_list)
 
+    # TODO：这里是生成结尾cpyer短语的地方，需要改进
     if len(cypher_list):
+        # 有属性词的时候
         if attribute_word:
-            # TODO：这里是生成结尾cpyer短语的地方，需要改进
             end_cypher = addEndSearchDirection(cypher_list[-1], attributeWord=attribute_word)
             cypher_list.append(end_cypher)
+        # 无属性词的时候
         else:
-            # TODO：这里是生成结尾cpyer短语的地方，需要改进
             end_cypher = addEndSearchDirection(cypher_list[-1])
             cypher_list.append(end_cypher)
+
+    # print("prepare_cypher_list>>>>>>",replaceCypherStr(prepare_cypher_list))
 
     return cypher_list
 
 
 # 转换实例单词
 def replaceInstanceCypherStr(instanceName, instanceType):
-    # cypher_str = r"(i:{a}\{name:{b}\})".format(a=instanceType, b=instanceName)
-    cypher_str = "(" + "i:{}".format(instanceType) + "{" + "name:" + instanceName + "}" + ")"
-    # cypher_str = "i:" + '{}'
-    # print(cypher_str)
+    cypher_str = "(" + "i:{}".format(instanceType) + "{" + "name:" + "'" + instanceName + "'" + "}" + ")"
     return cypher_str
 
 
 # 转换关系词
-def replaceCypherStr(word, destionation=False, infer_word=False):
+def replaceCypherStr(relation_list):
     """
     转换关系词
-    :param attribute_word:  关系词
     :param word: 词
     :param destionation:  目标词
     :param infer_word: 推断词
     :return: str
     """
-    # print("word>>>>>>>>>>>>>>>>>>>>", word)
-    cypher_str = ""
-    type_list = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
-    temp_save_list = []
-    temp_refer_list = []
-    for typeline in type_list:
-        type_word = typeline.split("-")[0].strip()
-        refer_word = typeline.split("-")[1].strip()
-        temp_save_list.append(type_word)
-        temp_refer_list.append(refer_word)
+    lines = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
+    final_cypher_list = []
 
-    if destionation:
-        if word in temp_save_list:
-            # print("word 在 temp 里")
-            cypher_str = "(d:{})".format(word)
-    else:
-        # print("temp_save_list",temp_save_list)
-        if word in temp_save_list:
-            # print("word 在 temp 里")
-            cypher_str = "[r:{}]".format(word)
+    relation_flag = 1
+    entity_flag = 1
 
-    if infer_word:
-        if word in temp_save_list:
-            # print("word 在 temp 里")
-            cypher_str = "(n:{})".format(word)
+    for relation in relation_list:
+        for type_line in lines:
+            word = type_line.split("-")[0].strip()
+            type = type_line.split("-")[1].strip()
+            if relation == word and type == "relation":
+                cypher_str = "-[r{}:{}]->".format(relation_flag, word)
+                # print(cypher_str)
+                relation_flag += 1
+                final_cypher_list.append(cypher_str)
+            elif relation == word and type == "entity":
+                cypher_str = "(e{}:{})".format(entity_flag, word)
+                # print(cypher_str)
+                entity_flag += 1
+                final_cypher_list.append(cypher_str)
+        if "/" in relation:
+            # 实体词
+            instanceName = relation.split("/")[0]
+            # 实体词的类型
+            instanceType = relation.split("/")[1]
+            cypher_str = replaceInstanceCypherStr(instanceName, instanceType)
+            # print(cypher_str)
+            final_cypher_list.append(cypher_str)
 
-    return cypher_str
+    # print(final_cypher_list)
+    return final_cypher_list
 
 
 # 生成最后一步的方向
-def addEndSearchDirection(lastword, attributeWord="", degreeWord="", valueWord=""):
+def addEndSearchDirection(lastWord, attributeWord=""):
+    refer_word = lastWord.split(":")[0].replace("(", "")
+    # print("refer_word>>>>", refer_word)
     cypher_word = ""
     # 表示应该是查询实体
-    if "d:" in lastword:
+    if refer_word in lastWord:
         if attributeWord:
-            if degreeWord and valueWord :
-                cypher_word = "where d.{}{}{} return d".format(attributeWord, degreeWord, valueWord)
-            else:
-                cypher_word = "where d.{} return d".format(attributeWord)
+            cypher_word = "where {}.{} return {}".format(refer_word, attributeWord, refer_word)
         else:
-            cypher_word = "return d"
-    elif "i:" in lastword:
+            cypher_word = "return {}".format(refer_word)
+    elif "i:" in lastWord:
         # 表示应该查询的是查询实例
         if attributeWord:
-            if degreeWord and valueWord :
-                cypher_word = "where i.{}{}{} return i".format(attributeWord, degreeWord, valueWord)
-            else:
-                cypher_word = "where i.{} return i".format(attributeWord)
+            cypher_word = "where i.{} return i".format(attributeWord)
         else:
             cypher_word = "return i"
 
@@ -338,6 +341,8 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
 
     return relation_word, destination_word, infer_word, attribute_word
 
+
+# TODO: ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ 关于属性值处理的 ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
 # 转换有属性值的
 def replaceAttributeValueSentence(sequences, analysisModel: SematicAnalysisModel):
