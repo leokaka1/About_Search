@@ -1,6 +1,6 @@
 from py2neo import Graph
 
-
+# 查询词数组转换成查询语句
 def searchNeo4j(cypher_list, isSequence):
     print("Step:5 最终形成cypher语句\n")
 
@@ -22,6 +22,7 @@ def searchNeo4j(cypher_list, isSequence):
         queryForNeo4j(cypher_search_str)
 
 
+# 查询Neo4j数据库
 def queryForNeo4j(query):
     graph = Graph("http://10.10.10.161:7474", auth=("neo4j", "88116142"))
     search_query = query
