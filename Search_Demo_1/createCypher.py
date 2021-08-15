@@ -229,7 +229,7 @@ def replaceCypherStr(relation_list):
             word = type_line.split("-")[0].strip()
             type = type_line.split("-")[1].strip()
             if relation == word and type == "relation":
-                cypher_str = "-[r{}:{}]->".format(relation_flag, word)
+                cypher_str = "-[r{}:{}]-".format(relation_flag, word)
                 # print(cypher_str)
                 relation_flag += 1
                 final_cypher_list.append(cypher_str)

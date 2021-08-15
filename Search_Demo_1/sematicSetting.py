@@ -106,7 +106,7 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
                     # 找到指向中心词的词之后判断一下是否是SBV，因为SBV是谓语的主语，所以找到主语
                     # 替换HED为SBV
                     if analysisModel.vertexModel.wordForDeprel(word) == "SBV":
-                        # print("SBV====",word)
+                        # print("SBV====",word)清除了HED关系动词之后的数组
                         final_relation_list.append(word)
         # FIXME: 谓词不能放在第一个，- eg:有中标人的项目 则不添加
         elif analysisModel.vertexModel.wordForId(verb) != 0:
@@ -116,7 +116,7 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
     if analysisModel.isLastNounObject() and len(analysisModel.posModel.nouns) != 1:
         final_relation_list.append(analysisModel.posModel.nouns[-1])
 
-    print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
+    # print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
     return final_relation_list
 
 
