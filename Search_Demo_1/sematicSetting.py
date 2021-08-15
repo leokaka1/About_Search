@@ -118,7 +118,7 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
         if analysisModel.isLastNounObject() and len(analysisModel.posModel.nouns) != 1:
             final_relation_list.append(analysisModel.posModel.nouns[-1])
 
-    print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
+    # print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
     return final_relation_list
 
 
@@ -127,26 +127,28 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
     final_combination_list = []
     new_combination =[]
 
-    # print("entity>>>>",entities)
-    # print("new_verbs>>>>>",new_verbs)
+    print("entity>>>>",entities)
+    print("new_verbs>>>>>",new_verbs)
 
     # 如果实例和动词库都有词
-    if len(entities) or len(new_verbs):
+    # or 查询一个实例 远光软件股份有限公司 能过 and 不能过
+    # and 有投标项目的单位
+    if len(entities):
         for entity_word in entities:
             new_combination = []
             entity = entity_word.split("/")[0]
             # 1号位置是实例
             new_combination.append(entity_word)
-
+            if len(new_verbs):
             # 2号位置是修饰实例的Verb
-            for verb in new_verbs:
-                verb_head = analysisModel.vertexModel.wordForTargetWord(verb)
-                if verb_head == entity:
-                    new_combination.insert(1, verb)
-                else:
-                    new_combination.append(verb)
-                # print(new_combination)
-            # FIXME: 不知道这里改动有没有影响，先记录
+                for verb in new_verbs:
+                    verb_head = analysisModel.vertexModel.wordForTargetWord(verb)
+                    if verb_head == entity:
+                        new_combination.insert(1, verb)
+                    else:
+                        new_combination.append(verb)
+                    # print(new_combination)
+                # FIXME: 不知道这里改动有没有影响，先记录
             final_combination_list.append(new_combination)
     # 如果动词库有词
     elif len(new_verbs):

@@ -253,6 +253,8 @@ def replaceCypherStr(relation_list):
 
 # 生成最后一步的方向
 def addEndSearchDirection(lastWord, attributeWord=""):
+
+    # FIXME ： 有投标项目的单位 最后单位 应该返回单位而不是项目
     refer_word = lastWord.split(":")[0].replace("(", "")
     # print("refer_word>>>>", refer_word)
     cypher_word = ""
