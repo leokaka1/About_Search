@@ -54,9 +54,9 @@ def posSetting(posModel: SematicPosModel, vertexModel: SemanticGraphVertexModel)
     else:
         print("为空")
 
-    print("重组关系之后的确定数组:",final_sequence_dict)
+    print("重组关系之后的确定数组:", final_sequence_dict)
     print("--------------------------------------------")
-    createCypher(final_sequence_dict,analysisModel)
+    createCypher(final_sequence_dict, analysisModel)
 
 
 # 找到对应的实例
@@ -125,10 +125,10 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
 # 重组关系
 def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisModel):
     final_combination_list = []
-    new_combination =[]
+    new_combination = []
 
-    print("entity>>>>",entities)
-    print("new_verbs>>>>>",new_verbs)
+    print("entity>>>>", entities)
+    print("new_verbs>>>>>", new_verbs)
 
     # 如果实例和动词库都有词
     # or 查询一个实例 远光软件股份有限公司 能过 and 不能过
@@ -140,7 +140,7 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
             # 1号位置是实例
             new_combination.append(entity_word)
             if len(new_verbs):
-            # 2号位置是修饰实例的Verb
+                # 2号位置是修饰实例的Verb
                 for verb in new_verbs:
                     verb_head = analysisModel.vertexModel.wordForTargetWord(verb)
                     if verb_head == entity:
@@ -174,73 +174,161 @@ def coosCombinationRelation(analysisModel: SematicAnalysisModel):
 
 
 # 属性重组
+
 # 总价为100万的合同有哪些
 # 合同总价为100万的有哪些
 # 2021年的项目有哪些
+# 2020年投标单位有哪些
+# 2020年有招标总价超过1000万的项目吗
+# 2020年招标总价有超过1000万的项目吗
 def attributeRecombination(analysisModel: SematicAnalysisModel):
+    # 实体库判断
+    type_lines = open(r"G:\About_Search\Search_Demo_1\resources\type", encoding="utf-8").readlines()
+    types = []
     final_sequence = []
+    verb_deprel_list = []
     # step 1 谓词程度词解析
     verbs = analysisModel.posModel.verbs
     nouns = analysisModel.posModel.nouns
     attris = analysisModel.posModel.attri
+
+    # type添加集合
+    for type in type_lines:
+        types.append(type.split("-")[0].strip())
+
     for verb in verbs:
-        # verb中心词
         verb_deprel = analysisModel.vertexModel.wordForDeprel(verb)
-        verb_target_word = analysisModel.vertexModel.wordForTargetWord(verb)
-        attr_for_sbv_word = ""
-        flag_noun = ""
-        flag_attr = ""
-        if verb_deprel != "HED":
-            # verb位置
-            # verb_position = analysisModel.vertexModel.wordForId(verb)
-            # 遍历名词
-            """
-            如果名词和属性词都指代同一个动词，说明这个名词和属性词是有关联的，添加到一起
-            """
-            # 找出名词指代的指代词
-            for noun in nouns:
-                noun_target_word = analysisModel.vertexModel.wordForTargetWord(noun)
-                if noun_target_word == verb:
-                    flag_noun = noun
+        verb_deprel_list.append(verb_deprel)
 
-            # 找出属性词对应的指代词
-            for attr in attris:
-                attr_target_word = analysisModel.vertexModel.wordForTargetWord(attr)
-                if attr_target_word == verb:
-                    flag_attr = attr
-                elif attr_target_word == analysisModel.isSBVword():
-                    attr_for_sbv_word = attr
+    for noun in nouns:
+        if analysisModel.vertexModel.wordForDeprel(noun) == "SBV":
+            final_sequence.append(noun)
+        # if len(verbs) > 1 and "HED" in verb_deprel_list:
+        noun_target_word = analysisModel.vertexModel.wordForTargetWord(noun)
+        for verb in verbs:
+            if noun_target_word == verb:
+                print(noun,verb)
+                for type in type_lines:
+                    word = type.split("-")[0].strip()
+                    type = type.split("-")[1].strip()
+                    if noun == word and type == "entity":
+                        final_sequence.insert(0, noun)
+                    elif noun == word  and noun not in final_sequence:
+                        final_sequence.append(noun)
 
-            # 保证加入的SBV等主语不是"的"等语气词
-            if analysisModel.vertexModel.wordForPos(verb_target_word) != "u":
-                final_sequence.append(verb_target_word)
-            # FIXME:如果标记名词不为空，则添加
-            if flag_noun != "":
-                final_sequence.append(flag_noun)
-            if verb != "":
-                final_sequence.append(verb)
-            if flag_attr != "":
-                final_sequence.append(flag_attr)
+    for verb in verbs:
+        if analysisModel.vertexModel.wordForDeprel(verb) != "HED":
+            final_sequence.append(verb)
 
-            # 如果有多属性指向sbv词才添加
-            if attr_for_sbv_word:
-                final_sequence.append(attr_for_sbv_word)
+    for attr in attris:
+        attr_target_word = analysisModel.vertexModel.wordForTargetWord(attr)
+        if attr_target_word not in final_sequence or analysisModel.vertexModel.wordForPos(attr) == "TIME":
+            final_sequence.append(attr)
         else:
-            if len(analysisModel.posModel.verbs) == 1:
-                # 如果谓词只有一个中心词 , 找主语和属性词的关系 - 2021年的项目有哪些
-                for attr in attris:
-                    attr_target_word = analysisModel.vertexModel.wordForTargetWord(attr)
-                    final_sequence.append(attr_target_word)
-                    final_sequence.append(attr)
+            index = final_sequence.index(attr_target_word)
+            final_sequence.insert(index+1, attr)
 
-    # if not len(verbs):
-    #     # 如果没有有属性值词
-    #     if not len(attris):
+    # # 如果动词的长度大于1并且有HED中心在其中
+    # if len(verbs) > 1 and "HED" in verb_deprel_list:
+    #     for verb in verbs:
+    #         verb_position = analysisModel.vertexModel.wordForId(verb)
+    #         verb_deprel = analysisModel.vertexModel.wordForDeprel(verb)
     #         for noun in nouns:
-    #             if analysisModel.vertexModel.wordForDeprel(noun) == "HED":
-    #                 print("haha",noun)
-    #     else:
-    #         print("有属性词")
+    #             noun_target_word = analysisModel.vertexModel.wordForTargetWord(noun)
+    #             if noun_target_word == verb:
+    #                 # 遍历type看名词是否在type里是entity，如果是则优先添加
+    #                 for type in type_lines:
+    #                     word = type.split("-")[0].strip()
+    #                     type = type.split("-")[1].strip()
+    #                     if noun == word and type == "entity":
+    #                         final_sequence.append(noun)
+                    # final_sequence.append(noun)
+                    # if verb_deprel != "HED":
+                    #     final_sequence.append(verb)
+    # else:
+    #     print("NO")
 
-    print("final_sequence>>>>",final_sequence)
+    # for verb in verbs:
+    #     # verb位置
+
+    #
+    #     # 找出名词指代的指代词
+    #     for noun in nouns:
+    #         noun_target_word = analysisModel.vertexModel.wordForTargetWord(noun)
+    #         if noun_target_word == verb:
+    #             # 判断有没有名词在type中=entity的
+    #             for type in type_lines:
+    #                 word = type.split("-")[0].strip()
+    #                 type = type.split("-")[1].strip()
+    #                 # 如果名词在typ中=entity
+    #                 if noun == word and type == "entity":
+    #                     final_sequence.append(noun)
+    #             final_sequence.append(noun)
+    #
+    #     break
+
+    # for verb in verbs:
+    #     # verb中心词
+    #     verb_deprel = analysisModel.vertexModel.wordForDeprel(verb)
+    #     verb_target_word = analysisModel.vertexModel.wordForTargetWord(verb)
+    #     attr_for_sbv_word = ""
+    #     flag_noun = ""
+    #     flag_attr = ""
+    #     # eg : 总价为100万的合同（只适合有名词不为HED的情况）
+    #     if verb_deprel != "HED":
+    #         # verb位置
+    #         # verb_position = analysisModel.vertexModel.wordForId(verb)
+    #         # 遍历名词
+    #         """
+    #         如果名词和属性词都指代同一个动词，说明这个名词和属性词是有关联的，添加到一起
+    #         """
+    #         # 找出名词指代的指代词
+    #         for noun in nouns:
+    #             noun_target_word = analysisModel.vertexModel.wordForTargetWord(noun)
+    #             if noun_target_word == verb:
+    #                 flag_noun = noun
+    #
+    #         # 找出属性词对应的指代词
+    #         for attr in attris:
+    #             attr_target_word = analysisModel.vertexModel.wordForTargetWord(attr)
+    #             if attr_target_word == verb:
+    #                 flag_attr = attr
+    #             elif attr_target_word == analysisModel.isSBVword():
+    #                 attr_for_sbv_word = attr
+    #
+    #         # 保证加入的SBV等主语不是"的"等语气词
+    #         if analysisModel.vertexModel.wordForPos(verb_target_word) != "u":
+    #             final_sequence.append(verb_target_word)
+    #         # FIXME:如果标记名词不为空，则添加
+    #         if flag_noun != "":
+    #             final_sequence.append(flag_noun)
+    #         if verb != "":
+    #             final_sequence.append(verb)
+    #         if flag_attr != "":
+    #             final_sequence.append(flag_attr)
+    #
+    #         # 如果有多属性指向sbv词才添加
+    #         if attr_for_sbv_word:
+    #             final_sequence.append(attr_for_sbv_word)
+    #     else:
+    #         if len(analysisModel.posModel.verbs) == 1:
+    #             # 如果谓词只有一个中心词 , 找主语和属性词的关系 - 2021年的项目有哪些
+    #             for attr in attris:
+    #                 attr_target_word = analysisModel.vertexModel.wordForTargetWord(attr)
+    #                 final_sequence.append(attr_target_word)
+    #                 final_sequence.append(attr)
+    #         else: # 动词含有HED并且数量不为1
+    #             print("动词数量不等于1哦")
+    #             print("final_sequence>>>>", final_sequence)
+    #
+    # # if not len(verbs):
+    # #     # 如果没有有属性值词
+    # #     if not len(attris):
+    # #         for noun in nouns:
+    # #             if analysisModel.vertexModel.wordForDeprel(noun) == "HED":
+    # #                 print("haha",noun)
+    # #     else:
+    # #         print("有属性词")
+
+    print("final_sequence>>>>", final_sequence)
     return final_sequence
