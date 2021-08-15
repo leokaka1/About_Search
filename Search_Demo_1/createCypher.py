@@ -346,8 +346,10 @@ def estimateRelationWordOrAttributeWord(instanceType, word):
 def replaceAttributeValueSentence(sequences, analysisModel: SematicAnalysisModel):
     # print("sequences>>>>", sequences)
     # new_sequences = confirmAttributeWord(sequences)
-    new_sequences = deleteNoneRelationWord(sequences, attribute=True)
-    cypher_list = confirmAttributeWord(new_sequences, analysisModel)
+    cypher_list = []
+    if len(sequences):
+        new_sequences = deleteNoneRelationWord(sequences, attribute=True)
+        cypher_list = confirmAttributeWord(new_sequences, analysisModel)
 
     return cypher_list
 
@@ -375,7 +377,7 @@ def confirmAttributeWord(sequences, analysisModel: SematicAnalysisModel):
             degree_word = analysisModel.vertexModel.wordForDegreeSymbol(word)
             cypher_str += degree_word
         elif analysisModel.vertexModel.wordisValue(word):
-            cypher_str += word
+            cypher_str += "'{}'".format(word)
 
     final_cypher_list.append(cypher_str)
     # FIXME：结尾词

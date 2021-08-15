@@ -112,11 +112,13 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
         elif analysisModel.vertexModel.wordForId(verb) != 0:
             final_relation_list.append(verb)
 
-    # 如果最后一个名词是HED，说明话没有HED谓语，那么则把noun添加到最后(如果只有一个HED则不添加，说明就是实例本身)
-    if analysisModel.isLastNounObject() and len(analysisModel.posModel.nouns) != 1:
-        final_relation_list.append(analysisModel.posModel.nouns[-1])
+    # 如果verbs有词，则执行下面的体系，如果没有词，则不执行 eg: 项目的招标金额
+    if len(verbsList):
+        # 如果最后一个名词是HED，说明话没有HED谓语，那么则把noun添加到最后(如果只有一个HED则不添加，说明就是实例本身)
+        if analysisModel.isLastNounObject() and len(analysisModel.posModel.nouns) != 1:
+            final_relation_list.append(analysisModel.posModel.nouns[-1])
 
-    # print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
+    print("清除了HED关系动词之后的数组>>>>>>", final_relation_list)
     return final_relation_list
 
 
@@ -124,6 +126,9 @@ def verbInsteadNoun(analysisModel: SematicAnalysisModel):
 def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisModel):
     final_combination_list = []
     new_combination =[]
+
+    # print("entity>>>>",entities)
+    # print("new_verbs>>>>>",new_verbs)
 
     # 如果实例和动词库都有词
     if len(entities) or len(new_verbs):
@@ -153,7 +158,7 @@ def combinationNewRelation(entities, new_verbs, analysisModel: SematicAnalysisMo
         # FIXME: 如果动词和实例都没有则直接使用名词库里的词 eg:有乙方的单位
         final_combination_list.append(analysisModel.posModel.nouns)
 
-    # print("重组关系之后的确定数组>>>>>", final_combination_list)
+    print("重组关系之后的确定数组>>>>>", final_combination_list)
     return final_combination_list
 
 
@@ -226,5 +231,14 @@ def attributeRecombination(analysisModel: SematicAnalysisModel):
                     final_sequence.append(attr_target_word)
                     final_sequence.append(attr)
 
-    # print(final_sequence)
+    # if not len(verbs):
+    #     # 如果没有有属性值词
+    #     if not len(attris):
+    #         for noun in nouns:
+    #             if analysisModel.vertexModel.wordForDeprel(noun) == "HED":
+    #                 print("haha",noun)
+    #     else:
+    #         print("有属性词")
+
+    print("final_sequence>>>>",final_sequence)
     return final_sequence

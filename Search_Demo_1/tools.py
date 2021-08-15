@@ -81,11 +81,19 @@ def string_to_yuan(string, base_unit='y', right_side=False):
 
 
 # 转日期
-def string_to_time(string):
-    timeArray = time.strptime(string, "%Y年%m月%d日")
-    otherStyleTime = time.strftime("%Y/%m/%d", timeArray)
-    return otherStyleTime
+def string_to_time(time):
+    if "年" in time:
+        text = time.replace("年", "")
+        if "月" in time:
+            text = text.replace("月", "")
+            if "日" in time:
+                text = text.replace("日", "").replace("/", "-").strip()
+
+    return text
 
 if __name__ == '__main__':
-    res = string_to_time("2021年3月27")
+    # money = "100万"
+    # res = string_to_yuan(money)
+    time= "2021年"
+    res = string_to_time(time)
     print(res)
