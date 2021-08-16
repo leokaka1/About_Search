@@ -8,21 +8,20 @@ Step 1 分词
 
 
 class WordPosttag:
-    def __init__(self,question):
+    def __init__(self, ):
         self.lac = LAC()
         self.lac.load_customization(user_dicts, sep=None)
         self.ddp = DDParser()
-        self.question = question
 
-    def segAndPos(self):
+    def segAndPos(self,question):
         """
         用户分词方法
         :param question: 用户问题
         :return: {}
         """
-        if self.question:
+        if question:
             # 分词
-            seg_res = self.lac.run(self.question)
+            seg_res = self.lac.run(question)
             # 词语列表
             wordList = seg_res[0]
             # 词性列表

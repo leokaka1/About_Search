@@ -1,9 +1,11 @@
 from SematicSearch.postag.wordPostag import WordPosttag
+from SematicSearch.graphCreating.sematicgraphCreating import seperatingTypeOfWords
 
-
-def manageProcess(question):
+def manageProcess(seg,question):
     # Step 1 用户分词和词性标注
-    wordpostag = WordPosttag(question)
-    seg_res = wordpostag.segAndPos()
+
+    seg_res = seg.segAndPos(question)
 
     # Step 2 词性图生成
+    seperatingTypeOfWords(seg_res)
+

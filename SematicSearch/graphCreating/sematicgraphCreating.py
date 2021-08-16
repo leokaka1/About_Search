@@ -1,11 +1,12 @@
-from Search_Demo_1.semanticVertexModel import SemanticGraphVertexModel
-from Search_Demo_1.sematicSetting import posSetting
-from Search_Demo_1.sematicPosModel import SematicPosModel
-
+from SematicSearch.model.vertexModel import SemanticGraphVertexModel
+# from Search_Demo_1.sematicSetting import posSetting
+from SematicSearch.model.posModel import SematicPosModel
+from SematicSearch.utils.degreewords import *
+from SematicSearch.utils.lexicon import Lexicon
 
 # 构建句法分析返回结果
 # 创建语法结构层级
-def createGrammerGraph(segAndPostList):
+def seperatingTypeOfWords(segAndPostList):
     # 名词词表
     nounList = []
     # 并列关系的名词
@@ -15,8 +16,11 @@ def createGrammerGraph(segAndPostList):
     # 形容词表
     adjList = []
     # 存储属性值
-    attriLst = []
+    valueList = []
+    # 问属性的词
+    attributeList = []
 
+    lexicon = Lexicon()
     # print(sematic.headID)
     # print(sematic.head_list)
 
@@ -37,10 +41,10 @@ def createGrammerGraph(segAndPostList):
                     nounList.append(word)
             elif isVerbWord(sematic_Model.pos):
                 verbList.append(word)
-            elif isAdjWord(sematic_Model.pos):
+            elif isAdjWord(sematic_Model.pos, word):
                 adjList.append(word)
-            else:
-                pass
+            elif lexicon.isAttributeWords(word):
+                attributeList.append(word)
 
         # 处理并列关系 - 句中含有COO关系的找到其对应的target word并做一个映射
         for nounWord in nounList:
@@ -58,27 +62,39 @@ def createGrammerGraph(segAndPostList):
         # 处理属性值操作
         for index, posWord in enumerate(sematic_Model.pos_list):
             if posWord == "TIME" or posWord == "m" or posWord == "PER":
-                attriLst.append(sematic_Model.word_list[index])
+                valueList.append(sematic_Model.word_list[index])
 
-        coo_list = set(coo_list) if len(coo_list)>0 else coo_list
+
+        coo_list = set(coo_list) if len(coo_list) > 0 else coo_list
         print("Step:2 返回词性:>>>>>>\n")
         print("名词词性:>>>>>", nounList)
         print("并列名词:>>>>>", coo_list)
         print("动词词性:>>>>>", verbList)
         print("形容词性:>>>>>", adjList)
-        print("属性值词:>>>>>", attriLst)
+        print("属性词:>>>>>>>", attributeList)
+        print("属性值词:>>>>>", valueList)
         print("--------------------------------------------")
 
-        pos_Model = SematicPosModel(nounList, coo_list, verbList, adjList, attriLst)
-        posSetting(pos_Model, sematic_Model)
+        # pos_Model = SematicPosModel(nounList, coo_list, verbList, adjList, valueList)
+        # posSetting(pos_Model, sematic_Model)
 
     else:
         print("数组为空，不予处理")
 
 
+# 判断句式中是否含有属性问题
+def isContainAtrribute(posList):
+    for posTag in posList:
+        if posTag == "TIME" or posTag == "m" or posTag == "PER":
+            return True
+        else:
+            return False
+
+
 # 判断是否是名词词性的词
 def isNounWord(pos):
-    nounList = ["n", "nr", "nz", "nw", "ORG","LOC"]
+    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC"]
+
     if pos in nounList:
         return True
     else:
@@ -88,6 +104,7 @@ def isNounWord(pos):
 # 判断是否是动词词性的词
 def isVerbWord(pos):
     verbList = ["v", "vd", "vn"]
+
     if pos in verbList:
         return True
     else:
@@ -95,11 +112,9 @@ def isVerbWord(pos):
 
 
 # 判断一些程度描述性形容词，如"最多"等
-def isAdjWord(pos):
+def isAdjWord(pos, word):
+    isValue = valueWord(word)
     if pos == "a":
         return True
     else:
         return False
-
-
-
