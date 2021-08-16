@@ -207,14 +207,15 @@ def attributeRecombination(analysisModel: SematicAnalysisModel):
         noun_target_word = analysisModel.vertexModel.wordForTargetWord(noun)
         for verb in verbs:
             if noun_target_word == verb:
-                print(noun,verb)
                 for type in type_lines:
                     word = type.split("-")[0].strip()
                     type = type.split("-")[1].strip()
-                    if noun == word and type == "entity":
-                        final_sequence.insert(0, noun)
-                    elif noun == word  and noun not in final_sequence:
-                        final_sequence.append(noun)
+
+                    if noun not in final_sequence:
+                        if noun == word and type == "entity":
+                            final_sequence.insert(0, noun)
+                        elif noun == word:
+                            final_sequence.append(noun)
 
     for verb in verbs:
         if analysisModel.vertexModel.wordForDeprel(verb) != "HED":
@@ -226,7 +227,18 @@ def attributeRecombination(analysisModel: SematicAnalysisModel):
             final_sequence.append(attr)
         else:
             index = final_sequence.index(attr_target_word)
-            final_sequence.insert(index+1, attr)
+            final_sequence.insert(index + 1, attr)
+
+    # 重新再次排序
+    for type in type_lines:
+        word = type.split("-")[0].strip()
+        type = type.split("-")[1].strip()
+        if noun == word and type == "entity":
+            flag_noun = word
+            final_sequence.remove(noun)
+            final_sequence.insert(0, flag_noun)
+
+
 
     # # 如果动词的长度大于1并且有HED中心在其中
     # if len(verbs) > 1 and "HED" in verb_deprel_list:
@@ -242,9 +254,9 @@ def attributeRecombination(analysisModel: SematicAnalysisModel):
     #                     type = type.split("-")[1].strip()
     #                     if noun == word and type == "entity":
     #                         final_sequence.append(noun)
-                    # final_sequence.append(noun)
-                    # if verb_deprel != "HED":
-                    #     final_sequence.append(verb)
+    # final_sequence.append(noun)
+    # if verb_deprel != "HED":
+    #     final_sequence.append(verb)
     # else:
     #     print("NO")
 
