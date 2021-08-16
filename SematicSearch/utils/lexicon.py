@@ -13,8 +13,7 @@ class Lexicon:
         for line in self.types_lines:
             if word == line.split("-")[0].strip() and line.split("-")[1].strip() == "attribute":
                 return True
-            else:
-                return False
+        return False
 
     # def entitiesList(self,type_flag):
     #     word_list = []

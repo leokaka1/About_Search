@@ -1,5 +1,4 @@
-from SematicSearch.model.vertexModel import SemanticGraphVertexModel
-from SematicSearch.model.posModel import SematicPosModel
+from SematicSearch.model.vertexModel import SemanticModel
 
 """
 词性语义分析模型
@@ -7,9 +6,19 @@ from SematicSearch.model.posModel import SematicPosModel
 
 
 class SematicAnalysisModel:
-    def __init__(self, vertexModel: SemanticGraphVertexModel, posModel: SematicPosModel):
-        self.posModel = posModel
+    def __init__(self, vertexModel: SemanticModel,nouns,coos,verbs,adjs,attri):
         self.vertexModel = vertexModel
+        self.nouns = nouns
+        self.coos = coos
+        self.verbs = verbs
+        self.adjs = adjs
+        self.attri = attri
+
+        self.nounsHasWords = True if len(nouns) else False
+        self.coosHasWords = False if len(coos) else True
+        self.verbsHasWords = True if len(verbs) else False
+        self.adjsHasWords = True if len(adjs) else False
+        self.attriHasWords = True if len(attri) else False
 
     # 分析名词数组中最后一个词的词性
     def analysisNounsLastWord(self):
@@ -52,6 +61,13 @@ class SematicAnalysisModel:
                 word = ""
 
         return word
+
+    def isValueWord(self,word):
+        posWord = self.vertexModel.wordForPos(word)
+        if posWord == "TIME" or posWord == "m" or posWord == "PER":
+            return True
+        else:
+            return False
 
 
 

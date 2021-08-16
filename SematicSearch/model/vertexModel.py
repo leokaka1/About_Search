@@ -1,5 +1,5 @@
 
-class SemanticGraphVertexModel:
+class SemanticModel:
     def __init__(self, sematicList):
         self.head = 0
         self.deprel = ""
