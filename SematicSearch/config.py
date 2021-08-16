@@ -3,9 +3,9 @@ import os
 # 当前目录
 current_path = os.getcwd() + '\\resources'
 
-# 属性关系列表
+# resources列表
 attribute_path = current_path + "\\attributes"
-disambiguration_path = current_path + "\\disambiguration"
+disambiguation_path = current_path + "\\disambiguation"
 entities_path = current_path + "\\entities"
 relations_path = current_path + "\\relations"
 types_path = current_path + "\\types"
