@@ -15,6 +15,30 @@ class Lexicon:
                 return True
         return False
 
+    # 获取实例的名称和type列表
+    def receiveEntitiesInfo(self):
+        entities = []
+        entities_type = []
+        for item in self.entities_lines:
+            item = item.strip().split("-")
+            # 用"-"分割
+            entity = item[0]
+            entity_type = item[1]
+            # 将类型和type组装成词典
+            entities.append(entity)
+            entities_type.append(entity_type)
+        return entities, entities_type
+
+    # 获取实例的词
+    def receiveEntitiesWordAndType(self, word):
+        entities, entities_type = self.receiveEntitiesInfo()
+        if word in entities:
+            index = entities.index(word)
+            e_type = entities_type[index]
+            final_word = word + "/" + e_type
+
+        return final_word
+
     # def entitiesList(self,type_flag):
     #     word_list = []
     #     type_list = []

@@ -66,6 +66,15 @@ def isAdjWord(pos):
     else:
         return False
 
+
+# 是否包含一些HED的虚拟动词
+def isVerbContainedHEDwords(word):
+    hed_ver_list = ["有", "是", "包含", "为"]
+    if word in hed_ver_list:
+        return True
+    else:
+        return False
+
 # def countWord(word):
 #     countwords = ['次数']
 #     if word in countwords:

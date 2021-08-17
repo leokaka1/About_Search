@@ -1,5 +1,7 @@
 from SematicSearch.model.analysisModel import SematicAnalysisModel
+from SematicSearch.setmaticSetting.syntaxTemplate import sematicPasing
 from Search_Demo_1.createCypher import createCypher
+
 
 """
 说明:
@@ -33,6 +35,9 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
                 # new_verbs = verbInsteadNoun(analysisModel)
                 # res = combinationNewRelation(entity_word, new_verbs, analysisModel)
                 # final_sequence_dict["sequence"] = res
+
+                sematicPasing(analysisModel)
+
             else:
                 print("Situation: 有属性关系")
                 # final_sequence_dict["includeValues"] = True
