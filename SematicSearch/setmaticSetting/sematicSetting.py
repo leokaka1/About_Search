@@ -1,7 +1,7 @@
 from SematicSearch.model.analysisModel import SematicAnalysisModel
 from SematicSearch.setmaticSetting.syntaxTemplate import sematicPasing
+from SematicSearch.utils import *
 from Search_Demo_1.createCypher import createCypher
-
 
 """
 说明:
@@ -18,6 +18,7 @@ final_sequence_dict = {"includeValues": False, "sequence": []}
 
 
 def sematicSetting(analysisModel: SematicAnalysisModel):
+    print(analysisModel.attributesHasWords)
     print("Step:3 确定的语序数组为:>>>>>\n")
     # 1.找到句中有没有确定的entity
     # 先判断词性对象中是否为空，如果为空就不做处理
@@ -25,7 +26,13 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
         # coos数组中无词，表示没有并列关系
         if not analysisModel.coosHasWords:
             # TODO:判断有点需要改进
-            if not analysisModel.attributesHasWords:
+            if analysisModel.isValueSituation():
+                print("Situation: 有属性关系")
+                # final_sequence_dict["includeValues"] = True
+                # TODO: 待完成
+                # res = attributeRecombination(analysisModel)
+                # final_sequence_dict["sequence"] = res
+            else:
                 print("Situation: 无属性关系")
                 # # 先找到是否有实例
                 # entity_word = findEntityAndIndex(analysisModel.posModel.nouns)
@@ -36,16 +43,10 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
                 # res = combinationNewRelation(entity_word, new_verbs, analysisModel)
                 # final_sequence_dict["sequence"] = res
 
-                sematicPasing(analysisModel)
+                sematicPasing(analysisModel, Situations.noAttribute)
 
-            else:
-                print("Situation: 有属性关系")
-                # final_sequence_dict["includeValues"] = True
-                # TODO: 待完成
-                # res = attributeRecombination(analysisModel)
-                # final_sequence_dict["sequence"] = res
         else:
-            if analysisModel.attributesHasWords:
+            if analysisModel.isValueSituation():
                 print("Situation: 并列关系中有属性关系")
                 # final_sequence_dict["includeValues"] = True
             else:
@@ -55,7 +56,7 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
     else:
         if analysisModel.coosHasWords:
             print("Situation：并列关系存在")
-            if analysisModel.attributesHasWords:
+            if analysisModel.isValueSituation():
                 print("Situation: 并列关系中有属性关系")
                 # final_sequence_dict["includeValues"] = True
             else:

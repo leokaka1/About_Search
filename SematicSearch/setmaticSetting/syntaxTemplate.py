@@ -1,20 +1,22 @@
 from SematicSearch.model.analysisModel import SematicAnalysisModel
-from SematicSearch.utils.lexicon import *
-from SematicSearch.utils.distinguishwords import *
+from SematicSearch.utils import *
 
 lexicon = Lexicon()
 
 
-def sematicPasing(analysisModel: SematicAnalysisModel):
-    # 如果句子结尾是"HED"(不论HED是否是noun或verb)
-    if analysisModel.isLastNounAndVerbObject():
-        print("HED是最后一个")
-        entities = findEntityAndIndex(analysisModel.nouns)
-        verbsRelatedNouns(analysisModel)
-
-    # 如果"HED"不在最后
+def sematicPasing(analysisModel: SematicAnalysisModel, situation: Situations):
+    # noAttribute
+    if situation.value == 0:
+        # 如果句子结尾是"HED"(不论HED是否是noun或verb)
+        if analysisModel.isLastNounAndVerbObject():
+            print("HED是最后一个")
+            entities = findEntityAndIndex(analysisModel.nouns)
+            verbsRelatedNouns(analysisModel)
+        # 如果"HED"不在最后
+        else:
+            pass
     else:
-        pass
+        print("有属性值")
 
 
 def findEntityAndIndex(nouns):
@@ -37,7 +39,7 @@ def verbsRelatedNouns(analysisModel: SematicAnalysisModel):
     verbs = analysisModel.verbs
     final_relation_sequences = []
 
-    for index,verb in enumerate(verbs):
+    for index, verb in enumerate(verbs):
         word_deprel = analysisModel.vertexModel.wordForDeprel(verb)
         verb_position = analysisModel.vertexModel.wordForId(verb)
 

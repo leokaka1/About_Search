@@ -6,7 +6,7 @@ from SematicSearch.model.sematicModel import SemanticModel
 
 
 class SematicAnalysisModel:
-    def __init__(self, vertexModel: SemanticModel,nouns,coos,verbs,adjs,attributes,values):
+    def __init__(self, vertexModel: SemanticModel, nouns, coos, verbs, adjs, attributes, values):
         self.vertexModel = vertexModel
         self.nouns = nouns
         self.coos = coos
@@ -15,12 +15,12 @@ class SematicAnalysisModel:
         self.attributes = attributes
         self.values = values
 
-        self.nounsHasWords = True if nouns else False
-        self.coosHasWords = True if coos else False
-        self.verbsHasWords = True if verbs else False
-        self.adjsHasWords = True if adjs else False
-        self.attributesHasWords = True if attributes else False
-        self.valuesHasWords = True if values else False
+        self.nounsHasWords = True if len(nouns) > 0 else False
+        self.coosHasWords = True if len(coos) > 0 else False
+        self.verbsHasWords = True if len(verbs) > 0 else False
+        self.adjsHasWords = True if len(adjs) > 0 else False
+        self.attributesHasWords = True if len(attributes) > 0 else False
+        self.valuesHasWords = True if len(values) > 0 else False
 
     # 分析名词数组中最后一个词的词性
     def analysisNounsLastWord(self):
@@ -49,7 +49,7 @@ class SematicAnalysisModel:
         else:
             return False
 
-    def isHedWord(self,word):
+    def isHedWord(self, word):
         deprel = self.vertexModel.wordForDeprel(word)
         if deprel == "HED":
             return True
@@ -71,19 +71,22 @@ class SematicAnalysisModel:
 
         return word
 
-    def isValueWord(self,word):
+    def isValueWord(self, word):
         posWord = self.vertexModel.wordForPos(word)
         if posWord == "TIME" or posWord == "m" or posWord == "PER":
             return True
         else:
             return False
 
-    def isSkipWord(self,word):
+    def isSkipWord(self, word):
         posWord = self.vertexModel.wordForPos(word)
         if posWord == "MT":
             return True
         else:
             return False
 
-
-
+    def isValueSituation(self):
+        if self.attributesHasWords or self.valuesHasWords:
+            return True
+        else:
+            return False
