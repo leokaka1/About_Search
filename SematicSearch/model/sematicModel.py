@@ -1,4 +1,3 @@
-
 class SemanticModel:
     def __init__(self, sematicList):
         self.head = 0
@@ -51,12 +50,17 @@ class SemanticModel:
         target_word_index = self.wordForHead(word)
         return self.word_list[target_word_index]
 
-    def posForWord(self,pos):
+    def posForWord(self, pos):
         index = self.pos_list.index(pos)
         return self.word_list[index]
 
-    def removeVerbWordList(self,word):
+    def removeVerbWordList(self, word):
         self.word_list.remove(word)
 
-
-
+    def headIndexForWord(self, index):
+        index = self.head_list[index]
+        if index != 0:
+            word = self.word_list[index]
+        else:
+            word = ""
+        return word

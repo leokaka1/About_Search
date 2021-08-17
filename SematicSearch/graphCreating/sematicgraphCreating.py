@@ -29,7 +29,7 @@ def seperatingTypeOfWords(segAndPostList):
     if len(segAndPostList):
         sematic_Model = SemanticModel(segAndPostList)
         # 遍历句法分析表
-        for word in sematic_Model.word_list:
+        for index, word in enumerate(sematic_Model.word_list):
             sematic_Model.sematicResponse(word)
             # print(sematic.deprel)
             # print(sematic.head)
@@ -39,24 +39,30 @@ def seperatingTypeOfWords(segAndPostList):
             if isNounWord(sematic_Model.pos):
                 # 如果不是虚词成分就加入数组
                 if not sematic_Model.wordForDeprel(word) == "MT":
-                    nounList.append(word)
+                    nounList.append(combineWords(word, index))
             elif isVerbWord(sematic_Model.pos):
-                verbList.append(word)
+                verbList.append(combineWords(word, index))
             elif isAdjWord(sematic_Model.pos):
-                adjList.append(word)
-
+                adjList.append(combineWords(word, index))
         # 处理并列关系 - 句中含有COO关系的找到其对应的target word并做一个映射
         for nounWord in nounList:
-            if sematic_Model.wordForDeprel(nounWord) == "COO":
-                target_word = sematic_Model.wordForTargetWord(nounWord)
+            orign_word = nounWord.split("-")[0]
+            if sematic_Model.wordForDeprel(orign_word) == "COO":
+                target_word = sematic_Model.wordForTargetWord(orign_word)
+                target_index = sematic_Model.word_list.index(target_word)
+                target_word = combineWords(target_word, target_index)
+                # target_word_id = sematic_Model.wordForId(target_word)
                 if target_word in nounList:
                     coo_list.append(target_word)
                     coo_list.append(nounWord)
             if lexicon.isAttributeWords(nounWord):
-                attributeList.append(nounWord)
+                attribute_index = sematic_Model.word_list.index(nounWord)
+                attributeList.append(combineWords(nounWord, attribute_index))
 
         # 删除名词里面相同的词，避免后期再次删除
         for cooWord in coo_list:
+            print(nounList)
+            print(cooWord)
             if cooWord in nounList:
                 nounList.remove(cooWord)
 
@@ -88,3 +94,8 @@ def seperatingTypeOfWords(segAndPostList):
 
     else:
         print("数组为空，不予处理")
+
+
+def combineWords(word, id):
+    combine_word = word + "-" + str(id)
+    return combine_word

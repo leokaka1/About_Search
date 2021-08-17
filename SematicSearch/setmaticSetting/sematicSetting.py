@@ -42,7 +42,6 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
                 # new_verbs = verbInsteadNoun(analysisModel)
                 # res = combinationNewRelation(entity_word, new_verbs, analysisModel)
                 # final_sequence_dict["sequence"] = res
-
                 sematicPasing(analysisModel, Situations.noAttribute)
 
         else:
