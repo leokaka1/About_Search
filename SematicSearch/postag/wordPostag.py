@@ -13,7 +13,7 @@ class WordPosttag:
         self.lac.load_customization(user_dicts, sep=None)
         self.ddp = DDParser()
 
-    def segAndPos(self,question):
+    def segAndPos(self, question):
         """
         用户分词方法
         :param question: 用户问题
@@ -32,7 +32,7 @@ class WordPosttag:
             print("Step:1 分词和词性分析的数组:>>>>>>\n")
             print(col_res[0])
             print("--------------------------------------------")
+            return col_res[0]
         else:
-            col_res = []
+            return []
 
-        return col_res[0]

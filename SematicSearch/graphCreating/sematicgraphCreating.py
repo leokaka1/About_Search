@@ -2,6 +2,7 @@ from SematicSearch.model.sematicModel import SemanticModel
 from SematicSearch.setmaticSetting.sematicSetting import sematicSetting
 from SematicSearch.utils.lexicon import Lexicon
 from SematicSearch.model.analysisModel import SematicAnalysisModel
+from SematicSearch.utils.distinguishwords import *
 
 """
 # 构建词性分组
@@ -81,35 +82,9 @@ def seperatingTypeOfWords(segAndPostList):
         print("属性值词:>>>>>", valueList)
         print("--------------------------------------------")
 
-        analysisModel = SematicAnalysisModel(sematic_Model, nounList, coo_list, verbList, adjList,attributeList, valueList)
+        analysisModel = SematicAnalysisModel(sematic_Model, nounList, coo_list, verbList, adjList, attributeList,
+                                             valueList)
         sematicSetting(analysisModel)
 
     else:
         print("数组为空，不予处理")
-
-
-# 判断是否是名词词性的词
-def isNounWord(pos):
-    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC"]
-
-    if pos in nounList:
-        return True
-    else:
-        return False
-
-
-# 判断是否是动词词性的词
-def isVerbWord(pos):
-    verbList = ["v", "vd", "vn"]
-    if pos in verbList:
-        return True
-    else:
-        return False
-
-
-# 判断一些程度描述性形容词，如"最多"等
-def isAdjWord(pos):
-    if pos == "a":
-        return True
-    else:
-        return False

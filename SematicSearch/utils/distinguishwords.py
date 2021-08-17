@@ -1,3 +1,4 @@
+# 是否包含程度词
 def degreeWord(word):
     degree_word = ["超过", "大于", "越过", "少于", "小于", "为", "等于", "是", "最高", "最大", "第一", "最少", "最小", "最后"]
     if word in degree_word:
@@ -37,6 +38,33 @@ def valueWord(word4pos):
             return True
         else:
             return False
+
+
+# 判断是否是名词词性的词
+def isNounWord(pos):
+    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC"]
+
+    if pos in nounList:
+        return True
+    else:
+        return False
+
+
+# 判断是否是动词词性的词
+def isVerbWord(pos):
+    verbList = ["v", "vd", "vn"]
+    if pos in verbList:
+        return True
+    else:
+        return False
+
+
+# 判断一些程度描述性形容词，如"最多"等
+def isAdjWord(pos):
+    if pos == "a":
+        return True
+    else:
+        return False
 
 # def countWord(word):
 #     countwords = ['次数']
