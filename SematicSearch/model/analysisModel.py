@@ -68,7 +68,6 @@ class SematicAnalysisModel:
                 word = self.vertexModel.word_list[index]
             else:
                 word = ""
-
         return word
 
     def isValueWord(self, word):

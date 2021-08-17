@@ -64,3 +64,12 @@ class SemanticModel:
         else:
             word = ""
         return word
+
+    def modifiedWord(self,word):
+        word_index = self.word_list.index(word)
+        res = []
+        for index,head in enumerate(self.head_list):
+            if head == word_index:
+                res.append(self.word_list[index])
+
+        return res

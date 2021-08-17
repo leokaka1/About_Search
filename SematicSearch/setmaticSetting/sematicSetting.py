@@ -1,5 +1,5 @@
 from SematicSearch.model.analysisModel import SematicAnalysisModel
-from SematicSearch.setmaticSetting.syntaxTemplate import sematicPasing
+from SematicSearch.setmaticSetting.syntaxTemplate import SematicPasing
 from SematicSearch.utils import *
 from Search_Demo_1.createCypher import createCypher
 
@@ -18,7 +18,7 @@ final_sequence_dict = {"includeValues": False, "sequence": []}
 
 
 def sematicSetting(analysisModel: SematicAnalysisModel):
-    print(analysisModel.attributesHasWords)
+    sematicpasing = SematicPasing(analysisModel, Situations.noAttribute)
     print("Step:3 确定的语序数组为:>>>>>\n")
     # 1.找到句中有没有确定的entity
     # 先判断词性对象中是否为空，如果为空就不做处理
@@ -42,7 +42,8 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
                 # new_verbs = verbInsteadNoun(analysisModel)
                 # res = combinationNewRelation(entity_word, new_verbs, analysisModel)
                 # final_sequence_dict["sequence"] = res
-                sematicPasing(analysisModel, Situations.noAttribute)
+                res = sematicpasing.pasing()
+                final_sequence_dict["sequence"] = res
 
         else:
             if analysisModel.isValueSituation():
@@ -65,7 +66,7 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
         else:
             print("Situation：并列关系不存在")
 
-    print("重组关系之后的确定数组:", final_sequence_dict)
+    print("final:最后重组之后的句子序列为:>>>>>>:", final_sequence_dict)
     print("--------------------------------------------")
     # createCypher(final_sequence_dict, analysisModel)
 

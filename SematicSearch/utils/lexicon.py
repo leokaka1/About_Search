@@ -15,6 +15,26 @@ class Lexicon:
                 return True
         return False
 
+    def isEntityWords(self, word):
+        for line in self.types_lines:
+            if word == line.split("-")[0].strip() and line.split("-")[1].strip() == "entity":
+                return True
+        return False
+
+    def isInstanceWords(self, word):
+        for line in self.entities_lines:
+            if word == line.split("-")[0].strip():
+                return True
+
+        return False
+
+    def listContainInstance(self, wordlist):
+        for word in wordlist:
+            if self.isInstanceWords(word):
+                return True
+
+        return False
+
     # 获取实例的名称和type列表
     def receiveEntitiesInfo(self):
         entities = []
