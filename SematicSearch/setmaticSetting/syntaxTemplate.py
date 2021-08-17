@@ -78,6 +78,12 @@ class SematicPasing:
                         final_mapping_sequences.append(noun)
                         final_mapping_sequences += vob_target_list
 
+        # FIXME：判断如果HED在最后，并且是名词，而且final_mapping_sequences没有HED，则添加在句尾
+        #   eg：远光股份有限公司中标项目的类型
+        if self.analysisModel.isLastNounAndVerbObject() and not self.analysisModel.islistContainHEDword(
+                final_mapping_sequences):
+            final_mapping_sequences.append(self.analysisModel.getHEDWord())
+
         print("2.重组了动词和名词之间的关系后>>>>>>", final_mapping_sequences)
         return final_mapping_sequences
 

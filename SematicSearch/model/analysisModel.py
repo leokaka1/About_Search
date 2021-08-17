@@ -25,30 +25,40 @@ class SematicAnalysisModel:
     # 分析名词数组中最后一个词的词性
     def analysisNounsLastWord(self):
         if self.nounsHasWords:
-            last_noun_word = self.nouns[-1]
+            last_noun_word = self.nouns[-1].split("-")[0]
             last_noun_deprel = self.vertexModel.wordForDeprel(last_noun_word)
             return last_noun_deprel
 
     # 分析动词数组中最后一个词的词性
     def analysisVerbsLastWord(self):
         if self.verbsHasWords:
-            last_verb_word = self.verbs[-1]
+            last_verb_word = self.verbs[-1].split("-")[0]
             last_verb_deprel = self.vertexModel.wordForDeprel(last_verb_word)
             # print("lastNoun的词性", last_verb_deprel)
             return last_verb_deprel
 
+    # 最后一个名词是HED
     def isLastNounObject(self):
         if self.analysisNounsLastWord() == "HED":
             return True
         else:
             return False
 
+    # 最后一个动词是HED
     def isLastVerbObject(self):
         if self.analysisVerbsLastWord() == "HED":
             return True
         else:
             return False
 
+    # 最后一个名词或者动词是HED
+    def isLastNounAndVerbObject(self):
+        if self.isLastNounObject() or self.isLastVerbObject():
+            return True
+        else:
+            return False
+
+    # 本词是否是HED
     def isHedWord(self, word):
         deprel = self.vertexModel.wordForDeprel(word)
         if deprel == "HED":
@@ -56,12 +66,14 @@ class SematicAnalysisModel:
         else:
             return False
 
-    def isLastNounAndVerbObject(self):
-        if self.isLastNounObject() or self.isLastVerbObject():
-            return True
-        else:
-            return False
+    # 判断一个词组里面有没有HED词
+    def islistContainHEDword(self, wordlist):
+        for word in wordlist:
+            if self.isHedWord(word):
+                return True
+        return False
 
+    # 是否是SBV word
     def isSBVword(self):
         for index, deprel in enumerate(self.vertexModel.deprel_list):
             if deprel == "SBV":
@@ -70,6 +82,7 @@ class SematicAnalysisModel:
                 word = ""
         return word
 
+    # 是否是属性值词
     def isValueWord(self, word):
         posWord = self.vertexModel.wordForPos(word)
         if posWord == "TIME" or posWord == "m" or posWord == "PER":
@@ -77,6 +90,7 @@ class SematicAnalysisModel:
         else:
             return False
 
+    # 是否是虚词，可以过滤
     def isSkipWord(self, word):
         posWord = self.vertexModel.wordForPos(word)
         if posWord == "MT":
@@ -84,13 +98,15 @@ class SematicAnalysisModel:
         else:
             return False
 
+    # 有属性值词或者有属性词
     def isValueSituation(self):
         if self.attributesHasWords or self.valuesHasWords:
             return True
         else:
             return False
 
-    def verbForSBV(self,verb):
+    # 获取动词的SBV主语
+    def getverbSBV(self, verb):
         list = []
         # verb_id = self.vertexModel.wordForId(verb)
         for word in self.vertexModel.word_list:
@@ -102,3 +118,10 @@ class SematicAnalysisModel:
                 return i
             else:
                 return ""
+
+    # 获取句子中的HED词
+    def getHEDWord(self):
+        for word in self.vertexModel.word_list:
+            if self.vertexModel.wordForDeprel(word) == "HED":
+                return word
+
