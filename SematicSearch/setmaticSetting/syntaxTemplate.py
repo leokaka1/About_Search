@@ -45,7 +45,6 @@ class Template:
                     sequence.append(noun)
 
             self.final_action_dict["sequences"] = sequence
-
         else:
             degrees = []
             # 如果形容词和动词都修饰HED，那么就把adj给v
@@ -54,6 +53,25 @@ class Template:
                 if degreeWord(word) and word not in degrees:
                     degrees.append(word)
             self.final_action_dict["degree"] = degrees
+            # 如果有动词
+            if verbs:
+                # 再处理动词
+                for word in verbs:
+                    word, position = wordAndIndex(word)
+                    head = head_list[position]
+                    targetword = word_list[head]
+
+                    if self.model.isHedWord(targetword):
+                        sequence.append(targetword)
+                        sequence.append(word)
+                    else:
+                        actionword = word + targetword
+                        sequence.append(actionword)
+            else:
+                for noun in nouns:
+                    noun, position = wordAndIndex(noun)
+                    sequence.append(noun)
+            self.final_action_dict["sequences"] = sequence
 
         print("final_sequence>>>>>>>", self.final_action_dict)
 

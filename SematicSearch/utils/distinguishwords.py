@@ -1,6 +1,6 @@
 # 是否包含程度词
 def degreeWord(word):
-    degree_word = ["超过", "大于", "越过", "少于", "小于", "为", "等于", "是", "最高", "最大", "第一", "最少", "最小", "最后","最多"]
+    degree_word = ["超过", "大于", "越过", "少于", "小于", "为", "等于", "是", "最高", "最大", "第一", "最少", "最小", "最后", "最多", "相同"]
     if word in degree_word:
         return True
 
@@ -12,7 +12,7 @@ def degreeSymbol(word):
     big = ["超过", "大于", "越过"]
     small = ["少于", "小于"]
     equal = ["为", "等于", "是"]
-    biggest = ["最高", "最大", "第一","最多"]
+    biggest = ["最高", "最大", "第一", "最多"]
     smallest = ["最少", "最小", "最后"]
 
     if word in big:
@@ -42,7 +42,7 @@ def valueWord(word4pos):
 
 # 判断是否是名词词性的词
 def isNounWord(pos):
-    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC","r"]
+    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC", "r"]
 
     if pos in nounList:
         return True
