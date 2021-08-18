@@ -75,7 +75,7 @@ class Template:
         print("final_sequence>>>>>>>", self.final_action_dict)
 
     # 如果有主谓宾三个
-    def has_SBV_VOB_HED_Words(self):
+    def has_SBV_HED_VOB_Words(self):
         pass
 
     # 如果只有主语和中心词
@@ -88,6 +88,8 @@ class Template:
                 self.sequence.append(verb)
                 self.sequence.append(target_word)
         self.final_action_dict["sequences"] = self.sequence
+
+        print(self.final_action_dict)
 
     # 如果只有宾
     def has_VOB_HED_Words(self):

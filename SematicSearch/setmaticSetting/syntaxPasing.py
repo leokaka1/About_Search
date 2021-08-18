@@ -16,16 +16,19 @@ class SematicPasing:
         if type == self.s_type.HED.value:
             print(1)
             res = template.has_HED_Words()
-        elif type == self.s_type.HED_VOB_SBV.value:
-            print(212321312)
         elif type == self.s_type.HED_SBV.value:
+            print(2)
+        elif type == self.s_type.HED_VOB.value:
             print(3)
-        elif type == self.s_type.HED_ADV.value:
+        elif type == self.s_type.HED_SBV_VOB.value:
             print(4)
-        elif type == self.s_type.HED_ADV_SBV_VOB.value:
+            res = template.has_SBV_HED_VOB_Words()
+        elif type == self.s_type.HED_ADV.value:
             print(5)
-        elif type == self.s_type.HED_ADV_SBV_VOB_POB.value:
+        elif type == self.s_type.HED_ADV_SBV_VOB.value:
             print(6)
+        elif type == self.s_type.HED_ADV_SBV_VOB_POB.value:
+            print(7)
 
         # print("res=======>>>>",res)
         # return res

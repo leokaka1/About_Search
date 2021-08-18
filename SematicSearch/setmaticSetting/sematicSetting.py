@@ -27,12 +27,13 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
         # TODO:判断有点需要改进
         if analysisModel.isValueSituation():
             print("Situation: 有属性或者属性值")
+            res = sematicPasing.pasing()
         else:
             print("Situation: 无属性或者属性值")
-
+            res = sematicPasing.pasing()
             # final_sequence_dict["sequence"] = res
 
-        res = sematicPasing.pasing()
+
 
 
     # elif analysisModel.coosHasWords:
