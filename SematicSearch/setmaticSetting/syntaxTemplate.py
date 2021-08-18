@@ -76,6 +76,10 @@ class Template:
                         # 如果对应的词不是独立的就拼接
                         actionword = word + targetword
                         self.sequence.append(actionword)
+                # 判断HED在不在句子中，如果不在就添加到末尾
+                hed = self.model.getHEDWord()
+                if hed and hed not in self.sequence:
+                    self.sequence.append(hed)
             else:
                 for noun in self.nouns:
                     noun, position = wordAndIndex(noun)
@@ -95,6 +99,11 @@ class Template:
                     self.sequence.append(verb)
                     self.sequence.append(target_word)
                     self.sequence = modified_word + self.sequence
+
+                    # 判断HED在不在句子中，如果不在就添加到末尾
+                    hed = self.model.getHEDWord()
+                    if hed and hed not in self.sequence:
+                        self.sequence.append(hed)
                 else:
                     # 如果是HED词
                     sbv_word = self.model.getverbSBV(verb)
@@ -120,26 +129,34 @@ class Template:
 
         print(self.final_action_dict)
 
+    # 如果有谓宾三个
+    # 第③种情况
+    def has_HED_VOB_Words(self):
+        # 判断有没有属性词
+        self.values
+        pass
 
     # 如果有主谓宾三个
+    # 第④种情况
     def has_SBV_HED_VOB_Words(self):
         pass
 
     # 如果只有宾
+    # 第⑤种情况
     def has_VOB_HED_Words(self):
         pass
 
     # 如果有状语，介宾和动宾
-    # 远光股份有限公司与中国水利电力物资集团有限公司有签订合同吗
+    # 第⑥种情况
     def has_ADV_POB_VOB_SBV_HED_Words(self):
         pass
 
     # 只有状中，介宾，
-    # 与远光软件股份有限公司签订合同的企业
+    # 第⑦种情况
     def has_ADV_POB_VOB_HED_Words(self):
         pass
 
-    # 只有一个实例的情况
+    # 查找句子中的实例
     def findEntityWords(self):
         nouns = self.model.nouns
         entities, entities_type = lexicon.receiveEntitiesInfo()

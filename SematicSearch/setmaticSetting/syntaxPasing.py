@@ -14,16 +14,16 @@ class SematicPasing:
         template = Template(self.analysisModel)
         type = self.analysisModel.sentenceSematicSituations()
         if type == self.s_type.HED.value:
-            print(1)
+            print("Situation 1:")
             res = template.has_HED_Words()
         elif type == self.s_type.HED_SBV.value:
-            print(2)
+            print("Situation 2:")
             res = template.has_SBV_HED_Words()
         elif type == self.s_type.HED_VOB.value:
-            print(3)
+            print("Situation 3:")
+            res = template.has_HED_VOB_Words()
         elif type == self.s_type.HED_SBV_VOB.value:
             print(4)
-
         elif type == self.s_type.HED_ADV.value:
             print(5)
         elif type == self.s_type.HED_ADV_SBV_VOB.value:
