@@ -24,29 +24,18 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
     # 先判断词性对象中是否为空，如果为空就不做处理
     if analysisModel.nounsHasWords:
         # coos数组中无词，表示没有并列关系
-        if not analysisModel.coosHasWords:
-            # TODO:判断有点需要改进
-            if analysisModel.isValueSituation():
-                print("Situation: 有属性关系")
-            else:
-                print("Situation: 无属性关系")
-                res = sematicpasing.pasing()
-                final_sequence_dict["sequence"] = res
-
+        # TODO:判断有点需要改进
+        if analysisModel.isValueSituation():
+            print("Situation: 有属性或者属性值")
         else:
-            if analysisModel.isValueSituation():
-                print("Situation: 并列关系中有属性关系")
-            else:
-                print("Situation: 并列关系中无属性关系")
-    else:
-        if analysisModel.coosHasWords:
-            print("Situation：并列关系存在")
-            if analysisModel.isValueSituation():
-                print("Situation: 并列关系中有属性关系")
-            else:
-                print("Situation: 并列关系中无属性关系")
+            print("Situation: 无属性或者属性值")
+            res = sematicpasing.pasing()
+            final_sequence_dict["sequence"] = res
+    elif analysisModel.coosHasWords:
+        if analysisModel.isValueSituation():
+            print("Situation: 并列关系 有属性或者属性值")
         else:
-            print("Situation：并列关系不存在")
+            print("Situation: 并列关系 无属性或者属性值")
 
     print("final:最后重组之后的句子序列为:>>>>>>:", final_sequence_dict)
     print("--------------------------------------------")

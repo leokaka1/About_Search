@@ -125,3 +125,17 @@ class SematicAnalysisModel:
             if self.vertexModel.wordForDeprel(word) == "HED":
                 return word
 
+
+    def deprelNotEqualOtherDeprel(self,deprel,deprelList):
+        for i in deprelList:
+            if i != deprel:
+                return True
+
+        return False
+
+    #FIXME: 这里是判断句子中有没有包含一些类别的词
+    # def contain_ATT_HED(self):
+    #     for word in wordList:
+    #         deprel = self.vertexModel.wordForDeprel(word)
+    #         if deprel == "ATT":
+    #             pass
