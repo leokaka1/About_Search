@@ -28,10 +28,26 @@ class WordPosttag:
             posList = seg_res[1]
             # 对分词后的词语进行依存分析
             col_res = self.ddp.parse_seg([wordList])
-            col_res[0]["pos"] = posList
+
             print("Step:1 分词和词性分析的数组:>>>>>>\n")
             print(col_res[0])
             print("--------------------------------------------")
+
+            # 去掉带MT的词（也就是虚词）
+            deltete_list = []
+
+            for index,deprel in enumerate(col_res[0]["deprel"]):
+                if deprel == "MT":
+                    deltete_list.append(index)
+
+            for i in deltete_list[::-1]:
+                del wordList[i]
+                del posList[i]
+
+            # 再次区分词性
+            col_res = self.ddp.parse_seg([wordList])
+            col_res[0]["pos"] = posList
+
             return col_res[0]
         else:
             return []
