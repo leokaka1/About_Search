@@ -65,11 +65,13 @@ class SemanticModel:
             word = ""
         return word
 
+    # 找出修饰这个词的词
     def modifiedWord(self,word):
-        word_index = self.word_list.index(word)
+        word_index = self.word_list.index(word.split("-")[0])
         res = []
         for index,head in enumerate(self.head_list):
             if head == word_index:
-                res.append(self.word_list[index])
+                print(self.word_list[index].split("-")[0])
+                res.append(self.word_list[index].split("-")[0])
 
         return res

@@ -18,11 +18,12 @@ class SematicPasing:
             res = template.has_HED_Words()
         elif type == self.s_type.HED_SBV.value:
             print(2)
+            res = template.has_SBV_HED_Words()
         elif type == self.s_type.HED_VOB.value:
             print(3)
         elif type == self.s_type.HED_SBV_VOB.value:
             print(4)
-            res = template.has_SBV_HED_VOB_Words()
+
         elif type == self.s_type.HED_ADV.value:
             print(5)
         elif type == self.s_type.HED_ADV_SBV_VOB.value:

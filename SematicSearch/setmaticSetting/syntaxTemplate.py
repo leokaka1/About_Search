@@ -28,6 +28,13 @@ class Template:
                 if self.model.vertexModel.wordForPos(value) == "TIME":
                     self.final_action_dict["time"] = value
 
+        # 如果形容词和动词都修饰HED，那么就把adj给v
+        for word in self.adjs:
+            word, _ = wordAndIndex(word)
+            if degreeWord(word) and word not in self.degrees:
+                self.degrees.append(word)
+        self.final_action_dict["degree"] = self.degrees
+
     # 如果只有ATT修饰HED
     # 第①种情况
     def has_HED_Words(self):
@@ -54,12 +61,6 @@ class Template:
 
             self.final_action_dict["sequences"] = self.sequence
         else:
-            # 如果形容词和动词都修饰HED，那么就把adj给v
-            for word in self.adjs:
-                word, _ = wordAndIndex(word)
-                if degreeWord(word) and word not in self.degrees:
-                    self.degrees.append(word)
-            self.final_action_dict["degree"] = self.degrees
             # 如果有动词
             if self.verbs:
                 # 再处理动词
@@ -82,22 +83,47 @@ class Template:
             self.final_action_dict["sequences"] = self.sequence
         print("final_sequence>>>>>>>", self.final_action_dict)
 
-    # 如果有主谓宾三个
-    def has_SBV_HED_VOB_Words(self):
-        pass
-
     # 如果只有主语和中心词
     # 第②种情况
     def has_SBV_HED_Words(self):
-        for verb in self.verbs:
-            verb, position = wordAndIndex(verb)
-            if not self.model.isHedWord(verb):
-                target_word = self.model.vertexModel.headIndexForWord(position)
-                self.sequence.append(verb)
-                self.sequence.append(target_word)
+        if not self.adjs:
+            for verb in self.verbs:
+                verb, position = wordAndIndex(verb)
+                if not self.model.isHedWord(verb):
+                    target_word = self.model.vertexModel.headIndexForWord(position)
+                    modified_word = self.model.vertexModel.modifiedWord(verb)
+                    self.sequence.append(verb)
+                    self.sequence.append(target_word)
+                    self.sequence = modified_word + self.sequence
+                else:
+                    # 如果是HED词
+                    sbv_word = self.model.getverbSBV(verb)
+                    self.sequence.append(sbv_word)
+        else:
+            for verb in self.verbs:
+                word, position = wordAndIndex(verb)
+                head = self.head_list[position]
+                targetword = self.word_list[head]
+                modified_word = self.model.vertexModel.modifiedWord(verb)
+                # 如果动词对应的词是HED，则是独立的，直接添加
+                if self.model.isHedWord(targetword):
+                    self.sequence.append(targetword)
+                    self.sequence.append(word)
+
+                else:
+                    # 如果对应的词不是独立的就拼接
+                    actionword = word + targetword
+                    self.sequence.append(actionword)
+                    self.sequence = modified_word + self.sequence
+
         self.final_action_dict["sequences"] = self.sequence
 
         print(self.final_action_dict)
+
+
+    # 如果有主谓宾三个
+    def has_SBV_HED_VOB_Words(self):
+        pass
 
     # 如果只有宾
     def has_VOB_HED_Words(self):
