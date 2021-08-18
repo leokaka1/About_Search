@@ -75,7 +75,7 @@ def seperatingTypeOfWords(segAndPostList):
         # 处理属性值操作
         for index, posWord in enumerate(sematic_Model.pos_list):
             if posWord == "TIME" or posWord == "m" or posWord == "PER":
-                valueList.append(sematic_Model.word_list[index])
+                valueList.append(combineWords(sematic_Model.word_list[index],index))
 
         if coo_list:
             coo_list = set(coo_list)
