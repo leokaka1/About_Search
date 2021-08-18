@@ -58,8 +58,6 @@ class Template:
                     noun, position = wordAndIndex(noun)
                     if not lexicon.isInstanceWords(noun):
                         self.sequence.append(noun)
-
-            self.final_action_dict["sequences"] = self.sequence
         else:
             # 如果有动词
             if self.verbs:
@@ -84,8 +82,9 @@ class Template:
                 for noun in self.nouns:
                     noun, position = wordAndIndex(noun)
                     self.sequence.append(noun)
-            self.final_action_dict["sequences"] = self.sequence
-        print("final_sequence>>>>>>>", self.final_action_dict)
+        self.final_action_dict["sequences"] = self.sequence
+
+        return self.final_action_dict
 
     # 如果只有主语和中心词
     # 第②种情况
@@ -126,15 +125,31 @@ class Template:
                     self.sequence = modified_word + self.sequence
 
         self.final_action_dict["sequences"] = self.sequence
-
-        print(self.final_action_dict)
+        return self.final_action_dict
 
     # 如果有谓宾三个
     # 第③种情况
     def has_HED_VOB_Words(self):
-        # 判断有没有属性词
-        self.values
-        pass
+        # 判断有没有属性值词
+        if self.values:
+            for noun in self.nouns:
+                noun, position = wordAndIndex(noun)
+                if self.model.vertexModel.wordForDeprel(noun) == "VOB" or self.model.vertexModel.wordForDeprel(noun) == "HED":
+                    self.sequence.append(noun)
+            # 属性值词结合
+            values = []
+            for value in self.values:
+                value, _ = wordAndIndex(value)
+                target_value_word = self.model.vertexModel.wordForTargetWord(value)
+                symbol = degreeSymbol(target_value_word)
+                if symbol:
+                    value_str = symbol + value
+                    values.append(value_str)
+
+            self.final_action_dict["degree"] = values
+        self.final_action_dict["sequences"] = self.sequence
+        return self.final_action_dict
+
 
     # 如果有主谓宾三个
     # 第④种情况

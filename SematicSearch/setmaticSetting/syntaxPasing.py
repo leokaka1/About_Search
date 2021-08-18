@@ -31,7 +31,7 @@ class SematicPasing:
         elif type == self.s_type.HED_ADV_SBV_VOB_POB.value:
             print(7)
 
-        # print("res=======>>>>",res)
+        print("final_sequence_res=======>>>>",res)
         # return res
 
 
