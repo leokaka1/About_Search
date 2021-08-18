@@ -26,32 +26,39 @@ class WordPosttag:
             wordList = seg_res[0]
             # 词性列表
             posList = seg_res[1]
-            # 对分词后的词语进行依存分析
-            col_res = self.ddp.parse_seg([wordList])
-            # 去掉带MT的词（也就是虚词）
-            deltete_list = []
 
-            # 删除MT的虚词
-            for index,deprel in enumerate(col_res[0]["deprel"]):
-                if deprel == "MT":
-                    deltete_list.append(index)
 
-            for i in deltete_list[::-1]:
-                del wordList[i]
-                del posList[i]
+            while(1):
+                # 对分词后的词语进行依存分析
+                col_res = self.ddp.parse_seg([wordList])
 
-            deltete_list = []
-            # 删除结尾是哪些，什么的VOB词
-            for index,word in enumerate(wordList):
-                if self.isContainQuestionWord(word) and  col_res[0]["deprel"][index] == "VOB":
-                    deltete_list.append(index)
+                if "MT" not in col_res[0]["deprel"]:
+                    break
 
-            for i in deltete_list[::-1]:
-                del wordList[i]
-                del posList[i]
+                # 去掉带MT的词（也就是虚词）
+                deltete_list = []
 
-            # 再次区分词性
-            col_res = self.ddp.parse_seg([wordList])
+                # 删除MT的虚词
+                # print(col_res[0]["deprel"])
+                for index, deprel in enumerate(col_res[0]["deprel"]):
+                    if deprel == "MT":
+                        deltete_list.append(index)
+
+                print("delete_list:>>>", deltete_list)
+                for i in deltete_list[::-1]:
+                    del wordList[i]
+                    del posList[i]
+
+                deltete_list = []
+                # 删除结尾是哪些，什么的VOB词
+                for index, word in enumerate(wordList):
+                    if self.isContainQuestionWord(word) and col_res[0]["deprel"][index] == "VOB":
+                        deltete_list.append(index)
+
+                for i in deltete_list[::-1]:
+                    del wordList[i]
+                    del posList[i]
+
             col_res[0]["pos"] = posList
             print("Step:1 分词和词性分析的数组:>>>>>>\n")
             print(col_res[0])

@@ -121,14 +121,15 @@ class SematicAnalysisModel:
 
     # 获取句子中的HED词
     def getHEDWord(self):
-        for word in self.vertexModel.word_list:
-            if self.vertexModel.wordForDeprel(word) == "HED":
-                return word
+        for index,deprel in enumerate(self.vertexModel.deprel_list):
+            if deprel == "HED":
+                return self.vertexModel.word_list[index]
+        return ""
 
     # 判断传入的deprel是否是在句子中
     def sentenceContainWhichDeqrel(self, deprels):
         flag = 0
-        sentence_deprel_list = self.vertexModel.deprel_list
+        sentence_deprel_list = self.vertexModel.deprel_list.copy()
         # 先去掉ATT修饰词,因为先要保留主干，避免定中关系影响成分
         for deprel in sentence_deprel_list[::-1]:
             if deprel == "ATT":
@@ -163,3 +164,5 @@ class SematicAnalysisModel:
         # 状，介宾，主，谓，宾 eg:与(ADV)远光软件股份有限公司(POB)签订合同(VOB)的企业(SBV)有哪些
         elif self.sentenceContainWhichDeqrel(["ADV","POB","VOB","SBV","HED"]):
             return 6
+        elif self.sentenceContainWhichDeqrel(["SBV","IC","HED"]):
+            pass

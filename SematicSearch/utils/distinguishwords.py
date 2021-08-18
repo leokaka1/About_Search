@@ -42,7 +42,7 @@ def valueWord(word4pos):
 
 # 判断是否是名词词性的词
 def isNounWord(pos):
-    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC"]
+    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC","r"]
 
     if pos in nounList:
         return True
