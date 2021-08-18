@@ -27,8 +27,7 @@ class WordPosttag:
             # 词性列表
             posList = seg_res[1]
 
-
-            while(1):
+            while (1):
                 # 对分词后的词语进行依存分析
                 col_res = self.ddp.parse_seg([wordList])
 
@@ -68,8 +67,8 @@ class WordPosttag:
             return []
 
     # 疑问词结尾
-    def isContainQuestionWord(self,word):
-        question_word = ["哪些","什么"]
+    def isContainQuestionWord(self, word):
+        question_word = ["哪些", "什么"]
         if word in question_word:
             return True
 

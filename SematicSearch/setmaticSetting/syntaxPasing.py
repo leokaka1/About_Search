@@ -17,7 +17,7 @@ class SematicPasing:
             print(1)
             res = template.has_HED_Words()
         elif type == self.s_type.HED_VOB_SBV.value:
-            print(2)
+            print(212321312)
         elif type == self.s_type.HED_SBV.value:
             print(3)
         elif type == self.s_type.HED_ADV.value:

@@ -8,80 +8,86 @@ class Template:
     def __init__(self, model: SematicAnalysisModel):
         self.model = model
         self.final_action_dict = {"entities": [], "sequences": [], "degree": []}
-
-    # 如果只有ATT修饰HED
-    # 远光软件股份有限公司投标项目的中标人
-    def has_HED_Words(self):
-
-        sequence = []
-        nouns = self.model.nouns
-        verbs = self.model.verbs
-        adjs = self.model.adjs
-        head_list = self.model.vertexModel.head_list
-        word_list = self.model.vertexModel.word_list
+        self.sequence = []
+        self.degrees = []
+        self.nouns = self.model.nouns
+        self.verbs = self.model.verbs
+        self.adjs = self.model.adjs
+        self.head_list = self.model.vertexModel.head_list
+        self.word_list = self.model.vertexModel.word_list
 
         # 把找出来的实例给终极字典
-        entities = self.findEntityWords()
-        self.final_action_dict["entities"] = entities
+        self.entities = self.findEntityWords()
+        self.final_action_dict["entities"] = self.entities
+
+    # 如果只有ATT修饰HED
+    # 第①种情况
+    def has_HED_Words(self):
 
         # 没有形容词修饰，比如有形容词修饰：最多-最少之类的
-        if not adjs:
+        if not self.adjs:
             # 有verb的时候
-            if verbs:
-                for index, verb in enumerate(verbs):
+            if self.verbs:
+                for index, verb in enumerate(self.verbs):
                     word, position = wordAndIndex(verb)
-                    head = head_list[position]
-                    target_word = word_list[head]
-                    sequence.append(word)
-                    sequence.append(target_word)
+                    head = self.head_list[position]
+                    target_word = self.word_list[head]
+                    self.sequence.append(word)
+                    self.sequence.append(target_word)
 
                 # 判断HED在不在句子中，如果不在就添加到末尾
                 hed = self.model.getHEDWord()
-                if hed and hed not in sequence:
-                    sequence.append(hed)
+                if hed and hed not in self.sequence:
+                    self.sequence.append(hed)
             else:
-                for noun in nouns:
+                for noun in self.nouns:
                     noun, position = wordAndIndex(noun)
-                    sequence.append(noun)
+                    self.sequence.append(noun)
 
-            self.final_action_dict["sequences"] = sequence
+            self.final_action_dict["sequences"] = self.sequence
         else:
-            degrees = []
             # 如果形容词和动词都修饰HED，那么就把adj给v
-            for word in adjs:
+            for word in self.adjs:
                 word, _ = wordAndIndex(word)
-                if degreeWord(word) and word not in degrees:
-                    degrees.append(word)
-            self.final_action_dict["degree"] = degrees
+                if degreeWord(word) and word not in self.degrees:
+                    self.degrees.append(word)
+            self.final_action_dict["degree"] = self.degrees
             # 如果有动词
-            if verbs:
+            if self.verbs:
                 # 再处理动词
-                for word in verbs:
+                for word in self.verbs:
                     word, position = wordAndIndex(word)
-                    head = head_list[position]
-                    targetword = word_list[head]
-
+                    head = self.head_list[position]
+                    targetword = self.word_list[head]
+                    # 如果动词对应的词是HED，则是独立的，直接添加
                     if self.model.isHedWord(targetword):
-                        sequence.append(targetword)
-                        sequence.append(word)
+                        self.sequence.append(targetword)
+                        self.sequence.append(word)
                     else:
+                        # 如果对应的词不是独立的就拼接
                         actionword = word + targetword
-                        sequence.append(actionword)
+                        self.sequence.append(actionword)
             else:
-                for noun in nouns:
+                for noun in self.nouns:
                     noun, position = wordAndIndex(noun)
-                    sequence.append(noun)
-            self.final_action_dict["sequences"] = sequence
-
+                    self.sequence.append(noun)
+            self.final_action_dict["sequences"] = self.sequence
         print("final_sequence>>>>>>>", self.final_action_dict)
 
     # 如果有主谓宾三个
     def has_SBV_VOB_HED_Words(self):
         pass
 
-    # 如果只有主
+    # 如果只有主语和中心词
+    # 第②种情况
     def has_SBV_HED_Words(self):
-        pass
+        for verb in self.verbs:
+            verb, position = wordAndIndex(verb)
+            if not self.model.isHedWord(verb):
+                target_word = self.model.vertexModel.headIndexForWord(position)
+                self.sequence.append(verb)
+                self.sequence.append(target_word)
+        self.final_action_dict["sequences"] = self.sequence
 
     # 如果只有宾
     def has_VOB_HED_Words(self):
