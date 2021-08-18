@@ -1,10 +1,10 @@
 # 是否包含程度词
 def degreeWord(word):
-    degree_word = ["超过", "大于", "越过", "少于", "小于", "为", "等于", "是", "最高", "最大", "第一", "最少", "最小", "最后"]
+    degree_word = ["超过", "大于", "越过", "少于", "小于", "为", "等于", "是", "最高", "最大", "第一", "最少", "最小", "最后","最多"]
     if word in degree_word:
         return True
-    else:
-        return False
+
+    return False
 
 
 # 解析程度副词
@@ -12,7 +12,7 @@ def degreeSymbol(word):
     big = ["超过", "大于", "越过"]
     small = ["少于", "小于"]
     equal = ["为", "等于", "是"]
-    biggest = ["最高", "最大", "第一"]
+    biggest = ["最高", "最大", "第一","最多"]
     smallest = ["最少", "最小", "最后"]
 
     if word in big:

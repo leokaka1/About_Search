@@ -43,21 +43,21 @@ def seperatingTypeOfWords(segAndPostList):
             elif isAdjWord(sematic_Model.pos):
                 adjList.append(combineWords(word, index))
 
-        # 处理并列关系 - 句中含有COO关系的找到其对应的target word并做一个映射
-        for nounWord in nounList:
-            orign_word = nounWord.split("-")[0]
-            if findEntitiesWord(orign_word):
-                coo_list.append(nounWord)
-            if lexicon.isAttributeWords(nounWord):
-                attribute_index = sematic_Model.word_list.index(nounWord)
-                attributeList.append(combineWords(nounWord, attribute_index))
-
-        # 删除名词里面相同的词，避免后期再次删除
-        for cooWord in coo_list:
-            print(nounList)
-            print(cooWord)
-            if cooWord in nounList:
-                nounList.remove(cooWord)
+        # # 处理并列关系 - 句中含有COO关系的找到其对应的target word并做一个映射
+        # for nounWord in nounList:
+        #     orign_word = nounWord.split("-")[0]
+        #     if findEntitiesWord(orign_word):
+        #         coo_list.append(nounWord)
+        #     if lexicon.isAttributeWords(nounWord):
+        #         attribute_index = sematic_Model.word_list.index(nounWord)
+        #         attributeList.append(combineWords(nounWord, attribute_index))
+        #
+        # # 删除名词里面相同的词，避免后期再次删除
+        # for cooWord in coo_list:
+        #     print(nounList)
+        #     print(cooWord)
+        #     if cooWord in nounList:
+        #         nounList.remove(cooWord)
 
         # 删除属性里面相同的词，避免后期再次删除
         for attribute_word in attributeList:
@@ -75,7 +75,7 @@ def seperatingTypeOfWords(segAndPostList):
             coo_list = set(coo_list)
         print("Step:2 返回词性:>>>>>>\n")
         print("名词词性:>>>>>", nounList)
-        print("并列名词:>>>>>", coo_list)
+        # print("并列名词:>>>>>", coo_list)
         print("动词词性:>>>>>", verbList)
         print("形容词性:>>>>>", adjList)
         print("属性词:>>>>>>>", attributeList)

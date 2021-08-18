@@ -31,11 +31,15 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
             print("Situation: 无属性或者属性值")
             res = sematicPasing.pasing()
             # final_sequence_dict["sequence"] = res
-    elif analysisModel.coosHasWords:
-        if analysisModel.isValueSituation():
-            print("Situation: 并列关系 有属性或者属性值")
-        else:
-            print("Situation: 并列关系 无属性或者属性值")
+
+
+
+
+    # elif analysisModel.coosHasWords:
+    #     if analysisModel.isValueSituation():
+    #         print("Situation: 并列关系 有属性或者属性值")
+    #     else:
+    #         print("Situation: 并列关系 无属性或者属性值")
 
     # print("final:最后重组之后的句子序列为:>>>>>>:", final_sequence_dict)
     # print("--------------------------------------------")
