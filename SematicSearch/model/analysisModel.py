@@ -1,5 +1,5 @@
 from SematicSearch.model.sematicModel import SemanticModel
-
+from SematicSearch.utils import *
 """
 词性语义分析模型
 """

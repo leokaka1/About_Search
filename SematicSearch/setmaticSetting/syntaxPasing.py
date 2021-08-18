@@ -1,31 +1,35 @@
 from SematicSearch.model.analysisModel import SematicAnalysisModel
+from SematicSearch.setmaticSetting.syntaxTemplate import Template
 from SematicSearch.utils import *
 
 lexicon = Lexicon()
 
 
 class SematicPasing:
-    def __init__(self, analysisModel: SematicAnalysisModel, situation: Situations):
+    def __init__(self, analysisModel: SematicAnalysisModel):
         self.analysisModel = analysisModel
+        self.s_type = SematicStituations
 
     def pasing(self):
-        # noAttribute
-        # print(situation.value)
-        entity = self.findSimpleEntityAndIndex()
-        mapping_sequence = self.verbsRelatedNouns()
-        final = self.combinationToSequence(entity, mapping_sequence)
-        # if situation.value == 0:
-        #     # 如果句子结尾是"HED"(不论HED是否是noun或verb)
-        #     if analysisModel.isLastNounAndVerbObject():
-        #         print("HED是最后一个")
-        #         entities = findEntityAndIndex(analysisModel.nouns)
-        #         verbsRelatedNouns(analysisModel)
-        #     # 如果"HED"不在最后
-        #     else:
-        #         pass
-        # else:
-        #     print("有属性值")
-        return final
+        template = Template(self.analysisModel)
+        type = self.analysisModel.sentenceSematicSituations()
+        if type == self.s_type.HED.value:
+            print(1)
+            res = template.has_HED_Words()
+        elif type == self.s_type.HED_VOB_SBV.value:
+            print(2)
+        elif type == self.s_type.HED_SBV.value:
+            print(3)
+        elif type == self.s_type.HED_ADV.value:
+            print(4)
+        elif type == self.s_type.HED_ADV_SBV_VOB.value:
+            print(5)
+        elif type == self.s_type.HED_ADV_SBV_VOB_POB.value:
+            print(6)
+
+        # print("res=======>>>>",res)
+        # return res
+
 
     # 只有一个实例的情况
     def findSimpleEntityAndIndex(self):

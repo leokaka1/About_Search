@@ -18,11 +18,7 @@ final_sequence_dict = {"includeValues": False, "sequence": []}
 
 def sematicSetting(analysisModel: SematicAnalysisModel):
 
-
-    res = analysisModel.sentenceSematicSituations()
-    print("句法分析的姐姐及大》》》》》》》",res)
-
-    sematicPasing = SematicPasing(analysisModel, Situations.noAttribute)
+    sematicPasing = SematicPasing(analysisModel)
     print("Step:3 确定的语序数组为:>>>>>\n")
     # 1.找到句中有没有确定的entity
     # 先判断词性对象中是否为空，如果为空就不做处理
@@ -33,7 +29,7 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
             print("Situation: 有属性或者属性值")
         else:
             print("Situation: 无属性或者属性值")
-            # res = sematicPasing.pasing()
+            res = sematicPasing.pasing()
             # final_sequence_dict["sequence"] = res
     elif analysisModel.coosHasWords:
         if analysisModel.isValueSituation():
