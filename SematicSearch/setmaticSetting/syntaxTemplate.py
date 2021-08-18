@@ -7,12 +7,13 @@ lexicon = Lexicon()
 class Template:
     def __init__(self, model: SematicAnalysisModel):
         self.model = model
-        self.final_action_dict = {"entities": [], "sequences": [], "degree": []}
+        self.final_action_dict = {"entities": [], "sequences": [], "degree": [], "time": []}
         self.sequence = []
         self.degrees = []
         self.nouns = self.model.nouns
         self.verbs = self.model.verbs
         self.adjs = self.model.adjs
+        self.values = self.model.values
         self.head_list = self.model.vertexModel.head_list
         self.word_list = self.model.vertexModel.word_list
 
@@ -20,10 +21,16 @@ class Template:
         self.entities = self.findEntityWords()
         self.final_action_dict["entities"] = self.entities
 
+        # 时间赋值
+        if self.values:
+            for value in self.values:
+                value, _ = wordAndIndex(value)
+                if self.model.vertexModel.wordForPos(value) == "TIME":
+                    self.final_action_dict["time"] = value
+
     # 如果只有ATT修饰HED
     # 第①种情况
     def has_HED_Words(self):
-
         # 没有形容词修饰，比如有形容词修饰：最多-最少之类的
         if not self.adjs:
             # 有verb的时候
@@ -42,7 +49,8 @@ class Template:
             else:
                 for noun in self.nouns:
                     noun, position = wordAndIndex(noun)
-                    self.sequence.append(noun)
+                    if not lexicon.isInstanceWords(noun):
+                        self.sequence.append(noun)
 
             self.final_action_dict["sequences"] = self.sequence
         else:
