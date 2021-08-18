@@ -16,9 +16,13 @@ analysisModel - 词性语义分析模型
 # 最终的顺序输出列表
 final_sequence_dict = {"includeValues": False, "sequence": []}
 
-
 def sematicSetting(analysisModel: SematicAnalysisModel):
-    sematicpasing = SematicPasing(analysisModel, Situations.noAttribute)
+
+
+    res = analysisModel.sentenceSematicSituations()
+    print("句法分析的姐姐及大》》》》》》》",res)
+
+    sematicPasing = SematicPasing(analysisModel, Situations.noAttribute)
     print("Step:3 确定的语序数组为:>>>>>\n")
     # 1.找到句中有没有确定的entity
     # 先判断词性对象中是否为空，如果为空就不做处理
@@ -29,14 +33,14 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
             print("Situation: 有属性或者属性值")
         else:
             print("Situation: 无属性或者属性值")
-            res = sematicpasing.pasing()
-            final_sequence_dict["sequence"] = res
+            # res = sematicPasing.pasing()
+            # final_sequence_dict["sequence"] = res
     elif analysisModel.coosHasWords:
         if analysisModel.isValueSituation():
             print("Situation: 并列关系 有属性或者属性值")
         else:
             print("Situation: 并列关系 无属性或者属性值")
 
-    print("final:最后重组之后的句子序列为:>>>>>>:", final_sequence_dict)
-    print("--------------------------------------------")
+    # print("final:最后重组之后的句子序列为:>>>>>>:", final_sequence_dict)
+    # print("--------------------------------------------")
     # createCypher(final_sequence_dict, analysisModel)

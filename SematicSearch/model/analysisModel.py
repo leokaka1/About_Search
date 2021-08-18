@@ -125,17 +125,41 @@ class SematicAnalysisModel:
             if self.vertexModel.wordForDeprel(word) == "HED":
                 return word
 
+    # 判断传入的deprel是否是在句子中
+    def sentenceContainWhichDeqrel(self, deprels):
+        flag = 0
+        sentence_deprel_list = self.vertexModel.deprel_list
+        # 先去掉ATT修饰词,因为先要保留主干，避免定中关系影响成分
+        for deprel in sentence_deprel_list[::-1]:
+            if deprel == "ATT":
+                sentence_deprel_list.remove(deprel)
 
-    def deprelNotEqualOtherDeprel(self,deprel,deprelList):
-        for i in deprelList:
-            if i != deprel:
-                return True
+        for i in deprels:
+            if i in sentence_deprel_list:
+                flag += 1
+
+        if flag == len(set(sentence_deprel_list)):
+            return True
 
         return False
 
-    #FIXME: 这里是判断句子中有没有包含一些类别的词
-    # def contain_ATT_HED(self):
-    #     for word in wordList:
-    #         deprel = self.vertexModel.wordForDeprel(word)
-    #         if deprel == "ATT":
-    #             pass
+    # FIXME: 这里是判断句子中有没有包含一些类别的词
+    def sentenceSematicSituations(self):
+        # 只有主语中心词 eg：2020年（ATT）招标文件（HED)
+        if self.sentenceContainWhichDeqrel(["HED"]):
+            return 1
+        # 有主谓宾完整 eg:哪些单位(SBV)有(HED)投标 基于NLP的商务数据清洗项目(VOB)
+        elif self.sentenceContainWhichDeqrel(["HED", "SBV", "VOB"]):
+            return 2
+        # 有动HED和动词的SBV主语
+        elif self.sentenceContainWhichDeqrel(["HED","SBV"]):
+            return 3
+        # 有状语和中心语 eg:2020年 (时间状语)招标那些类型的 项目(HED)主语
+        elif self.sentenceContainWhichDeqrel(["ADV","HED"]):
+            return 4
+        # 状语，主,谓，宾 eg:2020年(ADV)远光股份有限公司(SBV)有(HED)投标服务类项目(VOB)吗
+        elif self.sentenceContainWhichDeqrel(["ADV","SBV","HED","VOB"]):
+            return 5
+        # 状，介宾，主，谓，宾 eg:与(ADV)远光软件股份有限公司(POB)签订合同(VOB)的企业(SBV)有哪些
+        elif self.sentenceContainWhichDeqrel(["ADV","POB","VOB","SBV","HED"]):
+            return 6
