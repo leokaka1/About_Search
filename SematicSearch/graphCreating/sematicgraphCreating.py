@@ -7,11 +7,9 @@ from SematicSearch.utils.distinguishwords import *
 """
 # 构建词性分组
 """
-
+lexicon = Lexicon()
 
 def seperatingTypeOfWords(segAndPostList):
-    lexicon = Lexicon()
-
     # 名词词表
     nounList = []
     # 并列关系的名词
@@ -44,17 +42,12 @@ def seperatingTypeOfWords(segAndPostList):
                 verbList.append(combineWords(word, index))
             elif isAdjWord(sematic_Model.pos):
                 adjList.append(combineWords(word, index))
+
         # 处理并列关系 - 句中含有COO关系的找到其对应的target word并做一个映射
         for nounWord in nounList:
             orign_word = nounWord.split("-")[0]
-            if sematic_Model.wordForDeprel(orign_word) == "COO":
-                target_word = sematic_Model.wordForTargetWord(orign_word)
-                target_index = sematic_Model.word_list.index(target_word)
-                target_word = combineWords(target_word, target_index)
-                # target_word_id = sematic_Model.wordForId(target_word)
-                if target_word in nounList:
-                    coo_list.append(target_word)
-                    coo_list.append(nounWord)
+            if findEntitiesWord(orign_word):
+                coo_list.append(nounWord)
             if lexicon.isAttributeWords(nounWord):
                 attribute_index = sematic_Model.word_list.index(nounWord)
                 attributeList.append(combineWords(nounWord, attribute_index))
@@ -66,6 +59,7 @@ def seperatingTypeOfWords(segAndPostList):
             if cooWord in nounList:
                 nounList.remove(cooWord)
 
+        # 删除属性里面相同的词，避免后期再次删除
         for attribute_word in attributeList:
             if attribute_word in nounList:
                 nounList.remove(attribute_word)
@@ -99,3 +93,10 @@ def seperatingTypeOfWords(segAndPostList):
 def combineWords(word, id):
     combine_word = word + "-" + str(id)
     return combine_word
+
+def findEntitiesWord(word):
+    entities, entities_type = lexicon.receiveEntitiesInfo()
+    if word in entities:
+        return True
+
+    return False
