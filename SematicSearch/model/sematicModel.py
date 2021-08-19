@@ -47,8 +47,16 @@ class SemanticModel:
         return self.word_list.index(word)
 
     def wordForTargetWord(self, word):
-        target_word_index = self.wordForHead(word)
-        return self.word_list[target_word_index]
+        target_word_index = self.word_list.index(word)
+        return self.word_list[self.head_list[target_word_index]]
+
+    def wordForTargetIndexWord(self,pos):
+        target_word_index = self.head_list[pos]
+        if target_word_index != -1:
+            word = self.word_list[target_word_index]
+        else:
+            word = ""
+        return word
 
     def posForWord(self, pos):
         index = self.pos_list.index(pos)

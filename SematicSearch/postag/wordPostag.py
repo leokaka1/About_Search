@@ -26,13 +26,15 @@ class WordPosttag:
             wordList = seg_res[0]
             # 词性列表
             posList = seg_res[1]
-
+            flag = 0
             while (1):
                 # 对分词后的词语进行依存分析
                 col_res = self.ddp.parse_seg([wordList])
 
-                if "MT" not in col_res[0]["deprel"]:
+                if "MT" not in col_res[0]["deprel"] and flag > 0:
                     break
+
+                flag += 1
 
                 # 去掉带MT的词（也就是虚词）
                 deltete_list = []
@@ -47,6 +49,7 @@ class WordPosttag:
                 for i in deltete_list[::-1]:
                     del wordList[i]
                     del posList[i]
+                    del col_res[0]['deprel'][i]
 
                 deltete_list = []
                 # 删除结尾是哪些，什么的VOB词
@@ -54,6 +57,7 @@ class WordPosttag:
                     if self.isContainQuestionWord(word) and col_res[0]["deprel"][index] == "VOB":
                         deltete_list.append(index)
 
+                print("delete_list1:>>>", deltete_list)
                 for i in deltete_list[::-1]:
                     del wordList[i]
                     del posList[i]

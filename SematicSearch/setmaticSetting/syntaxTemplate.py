@@ -96,17 +96,21 @@ class Template:
                     target_word = self.model.vertexModel.headIndexForWord(position)
                     modified_word = self.model.vertexModel.modifiedWord(verb)
                     self.sequence.append(verb)
-                    self.sequence.append(target_word)
+                    if target_word:
+                        self.sequence.append(target_word)
                     self.sequence = modified_word + self.sequence
 
                     # 判断HED在不在句子中，如果不在就添加到末尾
                     hed = self.model.getHEDWord()
-                    if hed and hed not in self.sequence:
+                    if hed and hed not in self.sequence and not isVerbContainedHEDwords(hed):
                         self.sequence.append(hed)
                 else:
                     # 如果是HED词
                     sbv_word = self.model.getverbSBV(verb)
-                    self.sequence.append(sbv_word)
+                    if sbv_word:
+                        for sbv in sbv_word:
+                            if sbv not in self.sequence:
+                                self.sequence.append(sbv)
         else:
             for verb in self.verbs:
                 word, position = wordAndIndex(verb)
@@ -154,40 +158,39 @@ class Template:
     # 如果有主谓宾三个
     # 第④种情况
     def has_SBV_HED_VOB_Words(self):
-        # 如果句子中含有entity，那么必然entity的顺序是第一位的,修饰entity的动词放第一个
-        if self.entities:
-            for entity in self.entities:
-                entity = entity.split("/")[0]
-                modified_word = self.model.vertexModel.modifiedWord(entity)
-                self.sequence += modified_word
-
-            # 其次遍历verbs
-            for verb in self.verbs:
-                verb, _ = wordAndIndex(verb)
-                # 看verb是不是HED
-                if self.model.isHedWord(verb):
+        # 没有属性值的情况
+        if not self.values:
+            # 如果句子中含有entity，那么必然entity的顺序是第一位的,修饰entity的动词放第一个
+            if self.entities:
+                # 其次遍历verbs
+                for verb in self.verbs:
+                    verb, position = wordAndIndex(verb)
                     modified_words = self.model.vertexModel.modifiedWord(verb)
-                    # 看实例词在不在其中
-                    for entity in self.entities:
-                        entity = entity.split("/")[0]
-                        # 如果实例词不在被修饰词中，就直接添加，如果在就删除之后再添加
-                        if entity not in modified_words:
-                            self.sequence += modified_words
-                        else:
-                            modified_words.remove(entity)
-                            self.sequence += modified_words
+                    target_word = self.model.vertexModel.wordForTargetIndexWord(position)
+                    if target_word and target_word in self.entities:
+                        self.sequence.insert(0,verb)
+                    else:
+                        for word in modified_words:
+                            if word not in self.entities:
+                                self.sequence.append(word)
+
+
+
+            else:
+                # 先找出动词中的HED，然后找到对应HED的SBV主语，然后找到修饰SBV主语的ATT（v），添加到序列
+                for verb in self.verbs:
+                    verb, _ = wordAndIndex(verb)
+                    if self.model.isHedWord(verb):
+                        sbv_word = self.model.getverbSBV(verb)
+                        self.sequence.append(sbv_word)
+                        modified_word = self.model.vertexModel.modifiedWord(sbv_word)
+                        # print(modified_word)
+                        for word in modified_word:
+                            if self.model.vertexModel.wordForPos(word) == "v":
+                                self.sequence.append(word)
         else:
-            # 先找出动词中的HED，然后找到对应HED的SBV主语，然后找到修饰SBV主语的ATT（v），添加到序列
-            for verb in self.verbs:
-                verb, _ = wordAndIndex(verb)
-                if self.model.isHedWord(verb):
-                    sbv_word = self.model.getverbSBV(verb)
-                    self.sequence.append(sbv_word)
-                    modified_word = self.model.vertexModel.modifiedWord(sbv_word)
-                    # print(modified_word)
-                    for word in modified_word:
-                        if self.model.vertexModel.wordForPos(word) == "v":
-                            self.sequence.append(word)
+            # 有属性值的情况
+            pass
 
         self.final_action_dict["sequences"] = self.sequence
 
@@ -217,8 +220,8 @@ class Template:
         for noun in nouns:
             noun = noun.split("-")[0]
             if noun in entities:
-                word = lexicon.receiveEntitiesWordAndType(noun)
-                entity_list.append(word)
+                # word = lexicon.receiveEntitiesWordAndType(noun)
+                entity_list.append(noun)
 
         print("1.搜索实例词>>>>>>>", entity_list)
         return entity_list
