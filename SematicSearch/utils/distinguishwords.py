@@ -1,6 +1,6 @@
 # 是否包含程度词
 def degreeWord(word):
-    degree_word = ["超过", "大于", "越过", "少于", "小于", "为", "等于", "是", "最高", "最大", "第一", "最少", "最小", "最后", "最多", "相同"]
+    degree_word = ["超过", "大于", "越过", "少于", "小于", "为", "等于", "是", "最高", "最大", "第一", "最少", "最小", "最后", "最多", "相同","仅次于"]
     if word in degree_word:
         return True
 
@@ -75,6 +75,9 @@ def isVerbContainedHEDwords(word):
     else:
         return False
 
-# def countWord(word):
-#     countwords = ['次数']
-#     if word in countwords:
+def countWord(word):
+    countwords = ['次数']
+    if word in countwords:
+        return True
+    else:
+        return False

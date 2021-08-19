@@ -109,13 +109,15 @@ class SematicAnalysisModel:
 
     # 获取动词的SBV主语
     def getverbSBV(self, verb):
-        temp_list = []
+        # temp_list = []
         # verb_id = self.vertexModel.wordForId(verb)
         for word in self.vertexModel.word_list:
             if self.vertexModel.wordForTargetWord(word) == verb:
                 if self.vertexModel.wordForDeprel(word) == "SBV":
-                    temp_list.append(word)
-        return temp_list
+                    # temp_list.append(word)
+                    return word
+        # return temp_list
+        return word
 
     # 获取句子中的HED词
     def getHEDWord(self):
@@ -123,6 +125,9 @@ class SematicAnalysisModel:
             if deprel == "HED":
                 return self.vertexModel.word_list[index]
         return ""
+
+    # def getVOBWord(self):
+
 
     # 判断传入的deprel是否是在句子中
     def sentenceContainWhichDeqrel(self, deprels):

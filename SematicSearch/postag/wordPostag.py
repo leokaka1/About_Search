@@ -51,6 +51,16 @@ class WordPosttag:
                     del posList[i]
                     del col_res[0]['deprel'][i]
 
+                # 删除带u的助词
+                deltete_list = []
+                for index,pos in enumerate(posList):
+                    if pos == "u":
+                        deltete_list.append(index)
+
+                for i in deltete_list[::-1]:
+                    del wordList[i]
+                    del posList[i]
+
                 deltete_list = []
                 # 删除结尾是哪些，什么的VOB词
                 for index, word in enumerate(wordList):

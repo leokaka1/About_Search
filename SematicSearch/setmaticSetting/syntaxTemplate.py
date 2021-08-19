@@ -7,7 +7,7 @@ lexicon = Lexicon()
 class Template:
     def __init__(self, model: SematicAnalysisModel):
         self.model = model
-        self.final_action_dict = {"entities": [], "sequences": [], "degree": [], "time": []}
+        self.final_action_dict = {"entities": [], "sequences": [], "values": [], "time": [], "count": False}
         self.sequence = []
         self.degrees = []
         self.nouns = self.model.nouns
@@ -21,6 +21,11 @@ class Template:
         self.entities = self.findEntityWords()
         self.final_action_dict["entities"] = self.entities
 
+        # 是否有次数,count
+        for word in self.model.vertexModel.word_list:
+            if countWord(word):
+                self.final_action_dict["count"] = True
+
         # 时间赋值
         if self.values:
             for value in self.values:
@@ -33,7 +38,7 @@ class Template:
             word, _ = wordAndIndex(word)
             if degreeWord(word) and word not in self.degrees:
                 self.degrees.append(word)
-        self.final_action_dict["degree"] = self.degrees
+        self.final_action_dict["values"] = self.degrees
 
     # 如果只有ATT修饰HED
     # 第①种情况
@@ -124,7 +129,7 @@ class Template:
 
                 else:
                     # 如果对应的词不是独立的就拼接
-                    actionword = word + targetword
+                    actionword = word
                     self.sequence.append(actionword)
                     self.sequence = modified_word + self.sequence
 
@@ -150,8 +155,10 @@ class Template:
                 if symbol:
                     value_str = symbol + value
                     values.append(value_str)
+            self.final_action_dict["values"] = values
+        else:
+            pass
 
-            self.final_action_dict["degree"] = values
         self.final_action_dict["sequences"] = self.sequence
         return self.final_action_dict
 
@@ -168,14 +175,15 @@ class Template:
                     modified_words = self.model.vertexModel.modifiedWord(verb)
                     target_word = self.model.vertexModel.wordForTargetIndexWord(position)
                     if target_word and target_word in self.entities:
-                        self.sequence.insert(0,verb)
+                        self.sequence.insert(0, verb)
                     else:
-                        for word in modified_words:
-                            if word not in self.entities:
-                                self.sequence.append(word)
-
-
-
+                        # 如果没有被修饰的词，说明有可能不是中心词，那么需要添加动词到序列里
+                        if not modified_words:
+                            self.sequence.insert(0,verb)
+                        else:
+                            for word in modified_words:
+                                if word not in self.entities:
+                                    self.sequence.append(word)
             else:
                 # 先找出动词中的HED，然后找到对应HED的SBV主语，然后找到修饰SBV主语的ATT（v），添加到序列
                 for verb in self.verbs:
@@ -189,11 +197,43 @@ class Template:
                             if self.model.vertexModel.wordForPos(word) == "v":
                                 self.sequence.append(word)
         else:
-            # 有属性值的情况
-            pass
+            # 有属性值的情况(VOB宾语提前,插入到sequence的第一位置)
+            for verb in self.verbs:
+                verb, position = wordAndIndex(verb)
+                modified_words = self.model.vertexModel.modifiedWord(verb)
+                for word in modified_words:
+                    if self.model.vertexModel.wordForDeprel(word) == "VOB" and self.model.vertexModel.wordForPos(
+                            word) != "v":
+                        self.sequence.insert(0, word)
+                    else:
+                        if not degreeWord(word):
+                            self.sequence.append(word)
+
+            values = []
+            for value in self.values:
+                value, _ = wordAndIndex(value)
+                target_value_word = self.model.vertexModel.wordForTargetWord(
+                    self.model.vertexModel.wordForTargetWord(value))
+                if self.model.isHedWord(target_value_word) and not degreeWord(target_value_word):
+                    target_value_word = self.model.vertexModel.wordForTargetWord(value)
+
+                symbol = degreeSymbol(target_value_word)
+                if symbol:
+                    values.append(symbol)
+                values.append(value)
+
+            self.final_action_dict["values"] = values
+
+            # 删除sequence中的values词和实体词
+            for word in self.sequence:
+                if self.model.isValueWord(word):
+                    self.sequence.remove(word)
+
+            for word in self.sequence:
+                if word in self.entities:
+                    self.sequence.remove(word)
 
         self.final_action_dict["sequences"] = self.sequence
-
         return self.final_action_dict
 
     # 如果只有宾
