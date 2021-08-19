@@ -86,11 +86,12 @@ class SematicAnalysisModel:
 
     # 是否是属性值词
     def isValueWord(self, word):
-        posWord = self.vertexModel.wordForPos(word)
-        if posWord == "TIME" or posWord == "m" or posWord == "PER":
-            return True
-        else:
-            return False
+        if word in self.vertexModel.word_list:
+            posWord = self.vertexModel.wordForPos(word)
+            if posWord == "TIME" or posWord == "m" or posWord == "PER":
+                return True
+            else:
+                return False
 
     # 是否是虚词，可以过滤
     def isSkipWord(self, word):
@@ -109,15 +110,13 @@ class SematicAnalysisModel:
 
     # 获取动词的SBV主语
     def getverbSBV(self, verb):
-        # temp_list = []
+        temp_list = []
         # verb_id = self.vertexModel.wordForId(verb)
         for word in self.vertexModel.word_list:
             if self.vertexModel.wordForTargetWord(word) == verb:
                 if self.vertexModel.wordForDeprel(word) == "SBV":
-                    # temp_list.append(word)
-                    return word
-        # return temp_list
-        return word
+                    temp_list.append(word)
+        return temp_list
 
     # 获取句子中的HED词
     def getHEDWord(self):
@@ -126,7 +125,12 @@ class SematicAnalysisModel:
                 return self.vertexModel.word_list[index]
         return ""
 
-    # def getVOBWord(self):
+    def getVOBWord(self):
+        vob_list = []
+        for index, deprel in enumerate(self.vertexModel.deprel_list):
+            if deprel == "VOB":
+                vob_list.append(self.vertexModel.word_list[index])
+        return vob_list
 
 
     # 判断传入的deprel是否是在句子中

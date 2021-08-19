@@ -13,13 +13,13 @@ def searchNeo4j(cypher_list, isSequence):
             for index, word in enumerate(sequence):
                 cypher_search_str += word
             print("模拟Cypher语句为:>>>>>>", cypher_search_str)
-            queryForNeo4j(cypher_search_str)
+            # queryForNeo4j(cypher_search_str)
     else:
         cypher_search_str = "MATCH "
         for index, word in enumerate(cypher_list):
             cypher_search_str += word
         print("模拟Cypher语句为:>>>>>>", cypher_search_str)
-        queryForNeo4j(cypher_search_str)
+        # queryForNeo4j(cypher_search_str)
 
 
 # 查询Neo4j数据库
