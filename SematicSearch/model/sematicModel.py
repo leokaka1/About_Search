@@ -71,7 +71,7 @@ class SemanticModel:
         res = []
         for index,head in enumerate(self.head_list):
             if head == word_index:
-                print(self.word_list[index].split("-")[0])
+                # print(self.word_list[index].split("-")[0])
                 res.append(self.word_list[index].split("-")[0])
 
         return res

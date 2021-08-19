@@ -75,13 +75,14 @@ class SematicAnalysisModel:
         return False
 
     # 是否是SBV word
-    def isSBVword(self):
+    def getSentenceSBVwords(self):
+        sbv_words = []
         for index, deprel in enumerate(self.vertexModel.deprel_list):
             if deprel == "SBV":
                 word = self.vertexModel.word_list[index]
-            else:
-                word = ""
-        return word
+                sbv_words.append(word)
+
+        return sbv_words
 
     # 是否是属性值词
     def isValueWord(self, word):
