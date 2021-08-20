@@ -128,17 +128,15 @@ class Template:
             for verb in self.verbs:
                 word, position = wordAndIndex(verb)
                 head = self.head_list[position]
-                targetword = self.word_list[head]
+                if head != -1:
+                    targetword = self.word_list[head]
                 modified_word = self.model.vertexModel.modifiedWord(verb)
                 # 如果动词对应的词是HED，则是独立的，直接添加
                 if self.model.isHedWord(targetword):
                     self.sequence.append(targetword)
                     self.sequence.append(word)
-
                 else:
-                    # 如果对应的词不是独立的就拼接
-                    actionword = word
-                    self.sequence.append(actionword)
+                    self.sequence.append(word)
                     self.sequence = modified_word + self.sequence
 
         self.final_action_dict["sequences"] = self.sequence
@@ -214,7 +212,7 @@ class Template:
                             self.sequence.insert(0, verb)
                         else:
                             for word in modified_words:
-                                if word not in self.entities:
+                                if word not in self.entities and not isQuestionWord(word):
                                     self.sequence.append(word)
             else:
                 # 投标最多的企业中标次数是最多的吗？

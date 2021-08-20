@@ -32,7 +32,7 @@ def degreeSymbol(word):
 
 # 判断是否是表示值的词
 def valueWord(word4pos):
-    value_list = ["TIME", "m", "LOC", "PER"]
+    value_list = ["TIME", "m", "LOC"]
     if word4pos:
         if word4pos in value_list:
             return True
@@ -42,7 +42,7 @@ def valueWord(word4pos):
 
 # 判断是否是名词词性的词
 def isNounWord(pos):
-    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC"]
+    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC","PER"]
 
     if pos in nounList:
         return True
@@ -81,3 +81,12 @@ def countWord(word):
         return True
     else:
         return False
+
+
+# 疑问词结尾
+def isQuestionWord(word):
+    question_word = ["哪些", "什么"]
+    if word in question_word:
+        return True
+
+    return False

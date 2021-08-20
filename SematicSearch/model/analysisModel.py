@@ -132,14 +132,13 @@ class SematicAnalysisModel:
                 vob_list.append(self.vertexModel.word_list[index])
         return vob_list
 
-
     # 判断传入的deprel是否是在句子中
     def sentenceContainWhichDeqrel(self, deprels):
         flag = 0
         sentence_deprel_list = self.vertexModel.deprel_list.copy()
         # 先去掉ATT修饰词,因为先要保留主干，避免定中关系影响成分
         for deprel in sentence_deprel_list[::-1]:
-            if deprel == "ATT":
+            if deprel == "ATT" or deprel == "MT":
                 sentence_deprel_list.remove(deprel)
 
         for i in deprels:
@@ -162,7 +161,7 @@ class SematicAnalysisModel:
         elif self.sentenceContainWhichDeqrel(["HED", "VOB"]):
             return 3
         # 有动HED和动词的SBV主语
-        elif self.sentenceContainWhichDeqrel(["HED", "SBV","VOB"]):
+        elif self.sentenceContainWhichDeqrel(["HED", "SBV", "VOB"]):
             return 4
         # 有状语和中心语 eg:2020年 (时间状语)招标那些类型的 项目(HED)主语
         elif self.sentenceContainWhichDeqrel(["ADV", "HED"]):

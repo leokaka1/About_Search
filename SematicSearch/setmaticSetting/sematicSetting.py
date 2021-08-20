@@ -17,7 +17,6 @@ analysisModel - 词性语义分析模型
 final_sequence_dict = {"includeValues": False, "sequence": []}
 
 def sematicSetting(analysisModel: SematicAnalysisModel):
-
     sematicPasing = SematicPasing(analysisModel)
     print("Step:3 确定的语序数组为:>>>>>\n")
     # 1.找到句中有没有确定的entity
