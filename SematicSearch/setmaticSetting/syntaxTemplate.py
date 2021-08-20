@@ -174,7 +174,7 @@ class Template:
             self.final_action_dict["values"] = True
         else:
             for verb in self.verbs:
-                verb,position = wordAndIndex(verb)
+                verb, position = wordAndIndex(verb)
                 if not self.model.isHedWord(verb):
                     target_word = self.model.vertexModel.wordForTargetIndexWord(position)
                     self.sequence.append(verb)
@@ -182,7 +182,7 @@ class Template:
                         self.sequence.append(target_word)
 
             for noun in self.nouns:
-                noun,position = wordAndIndex(noun)
+                noun, position = wordAndIndex(noun)
                 target_word = self.model.vertexModel.wordForTargetIndexWord(position)
                 if self.model.isHedWord(target_word):
                     if target_word not in self.sequence:
@@ -196,7 +196,29 @@ class Template:
     def has_SBV_HED_VOB_Words(self):
         # 没有属性值的情况
         if not self.values:
-            pass
+            # step 1 遍历动词
+            for verb in self.verbs:
+                verb, position = wordAndIndex(verb)
+                # 修饰动词的词
+                modified_words = self.model.vertexModel.modifiedWord(verb)
+                # 被动词修饰的词
+                target_word = self.model.vertexModel.wordForTargetIndexWord(position)
+                # step 1.1 判断是否是HED动词
+                # 不是HED动词
+                if not self.model.isHedWord(verb):
+                    # 如果target_word是entity，就不添加,并且将动词插入到第一位
+                    if target_word not in self.entities:
+                        self.sequence.append(verb)
+                        self.sequence.append(target_word)
+                    else:
+                        self.sequence.insert(0, verb)
+                else:
+                    # 是HED动词
+                    # 如果是HED词，修饰的target不是vob修饰词，如哪些，什么之类的就添加
+                    for modi_word in modified_words:
+                        # 条件，如果修饰动词的词不是疑问词或者不是实体词，就添加进去
+                        if modi_word not in self.entities and modi_word not in self.sequence:
+                            self.sequence.append(modi_word)
         else:
             # 有属性值的情况(VOB宾语提前,插入到sequence的第一位置)
             for verb in self.verbs:
@@ -223,7 +245,7 @@ class Template:
                 if value in self.sequence:
                     self.sequence.remove(value)
                 values.append(value)
-            print("values",values)
+            print("values", values)
             self.sequence += values
             self.final_action_dict["values"] = True
 
@@ -238,6 +260,12 @@ class Template:
 
             self.sequence = getNonRepeatList5(self.sequence)
 
+
+
+        # 清理疑问词
+        for word in self.sequence:
+            if isQuestionWord(word):
+                self.sequence.remove(word)
         self.final_action_dict["sequences"] = self.sequence
         return self.final_action_dict
 
@@ -277,3 +305,10 @@ def wordAndIndex(word):
     index = int(word.split("-")[1])
     return words, index
 
+
+def wordListwithoutIndex(wordList):
+    word_list = []
+    for word in wordList:
+        word, _ = wordAndIndex(word)
+        word_list.append(word)
+    return word_list
