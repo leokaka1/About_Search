@@ -7,7 +7,7 @@ from SematicSearch.utils import *
 
 
 class SematicAnalysisModel:
-    def __init__(self, vertexModel: SemanticModel, nouns, coos, verbs, adjs,attribute):
+    def __init__(self, vertexModel: SemanticModel, nouns, coos, verbs, adjs, attribute):
         self.vertexModel = vertexModel
         self.nouns = nouns
         self.coos = coos
@@ -98,6 +98,13 @@ class SematicAnalysisModel:
             return True
         else:
             return False
+
+    # 判断是否
+    def isSkipWordsIndex(self, index):
+        if self.vertexModel.pos_list[index] == "xc" \
+                and self.vertexModel.pos_list[index] == "u":
+            return True
+        return False
 
     # 有属性值词或者有属性词
     # def isValueSituation(self):

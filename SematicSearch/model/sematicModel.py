@@ -81,7 +81,6 @@ class SemanticModel:
             if head == word_index:
                 # print(self.word_list[index].split("-")[0])
                 res.append(self.word_list[index].split("-")[0])
-
         return res
 
     # 找到修饰词的index
