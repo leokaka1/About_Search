@@ -102,7 +102,7 @@ class SematicAnalysisModel:
     # 判断是否
     def isSkipWordsIndex(self, index):
         if self.vertexModel.pos_list[index] == "xc" \
-                and self.vertexModel.pos_list[index] == "u":
+                or self.vertexModel.pos_list[index] == "u":
             return True
         return False
 
