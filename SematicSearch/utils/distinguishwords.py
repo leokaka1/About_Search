@@ -42,7 +42,7 @@ def valueWord(word4pos):
 
 # 判断是否是名词词性的词
 def isNounWord(pos):
-    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC","PER","TIME","m"]
+    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC", "PER", "TIME", "m", "r"]
 
     if pos in nounList:
         return True
@@ -66,6 +66,12 @@ def isAdjWord(pos):
     else:
         return False
 
+def isTimeWord(pos):
+    if pos == "TIME":
+        return True
+    else:
+        return False
+
 
 # 是否包含一些HED的虚拟动词
 def isVerbContainedSkipHEDwords(word):
@@ -85,7 +91,7 @@ def countWord(word):
 
 # 疑问词结尾
 def isQuestionWord(word):
-    question_word = ["哪些", "什么","那里"]
+    question_word = ["哪些", "什么", "那里"]
     if word in question_word:
         return True
 

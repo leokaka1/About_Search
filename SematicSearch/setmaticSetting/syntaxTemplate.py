@@ -224,36 +224,38 @@ class Template:
                     for modi_index in modified_word_index:
                         # 条件，如果修饰动词的词不是疑问词或者不是实体词，就添加进去
                         if modi_index not in self.entities \
-                                and not self.model.isSkipWordsIndex(modi_index)\
+                                and not self.model.isSkipWordsIndex(modi_index) \
                                 and modi_index not in self.sequence:
                             self.sequence.append(modi_index)
 
                     # 如果中心词不是有，是，这种词，就添加
                     if not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
-            print("sequence>>>>>>>",self.sequence)
+            print("sequence>>>>>>>", self.sequence)
             # FIXME:有可能出现的情况，还有名词修饰名词的时候，必须把名词遍历统计完
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
                 noun_target_index = self.model.vertexModel.targetWordIndex(position)
-                print("target word",noun_target_index)
+                print("target word", noun_target_index)
                 if position not in self.sequence and position not in self.entities:
                     # 如果是目标的sbv就插入目标词之前
                     if self.model.vertexModel.wordForDeprel(noun) == "SBV":
-                        self.sequence.insert(self.sequence.index(noun_target_index),position)
+                        self.sequence.insert(self.sequence.index(noun_target_index), position)
                     # 如果是目标的VOB就插到目标词后面
                     elif self.model.vertexModel.wordForDeprel(noun) == "VOB":
                         if position not in self.sequence:
-                            self.sequence.insert(self.sequence.index(noun_target_index)+1,position)
+                            self.sequence.insert(self.sequence.index(noun_target_index) + 1, position)
                     # 如果啥都不是就直接拼接
                     else:
                         if position not in self.sequence:
                             if noun_target_index in self.entities:
-                                self.sequence.insert(0,position)
+                                self.sequence.insert(0, position)
                             else:
-                                self.sequence.append(position)
-
-
+                                # 插入到修饰词前面 / 如果不是时间词(时间词放最后)
+                                if not isTimeWord(self.model.vertexModel.wordForPos(noun)):
+                                    self.sequence.insert(self.sequence.index(noun_target_index),position)
+                                else:
+                                    self.sequence.append(position)
         else:
             # 有属性值的情况
             # 遍历动词
@@ -266,8 +268,11 @@ class Template:
 
                 # 判断是不是程度词，比如有大于，等于，为之类的
                 if degreeWord(verb):
+                    print("position>>>>", position, target_word)
                     # step 1 找出targetword并且添加到sequence
-                    if target_word and not self.model.isSkipWordsIndex(target_word):
+                    if target_word \
+                            and not self.model.isSkipWordsIndex(target_word) \
+                            and not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(target_word)
 
                     # step 2 找到修饰自己的词，一般来说是SBV和VOB的主谓语和宾语
@@ -287,13 +292,14 @@ class Template:
                     # 不是程度词则组合
                     # 如果是中心词
                     if self.model.isHedWord(verb):
-                        if not self.model.isSkipWord(verb):
-                            self.sequence.append(index)
+                        # print("position>>>>", position, target_word)
+                        if not not isVerbContainedSkipHEDwords(verb):
+                            self.sequence.append(position)
                             self.sequence.append(target_word)
 
             # 补充名词
             for noun in self.nouns:
-                noun,position = wordAndIndex(noun)
+                noun, position = wordAndIndex(noun)
                 if position not in self.sequence:
                     self.sequence.append(position)
 
