@@ -7,19 +7,19 @@ from SematicSearch.utils import *
 
 
 class SematicAnalysisModel:
-    def __init__(self, vertexModel: SemanticModel, nouns, coos, verbs, adjs, values):
+    def __init__(self, vertexModel: SemanticModel, nouns, coos, verbs, adjs,attribute):
         self.vertexModel = vertexModel
         self.nouns = nouns
         self.coos = coos
         self.verbs = verbs
         self.adjs = adjs
-        self.values = values
+        self.attribute = attribute
 
         self.nounsHasWords = True if len(nouns) > 0 else False
         self.coosHasWords = True if len(coos) > 0 else False
         self.verbsHasWords = True if len(verbs) > 0 else False
         self.adjsHasWords = True if len(adjs) > 0 else False
-        self.valuesHasWords = True if len(values) > 0 else False
+        self.attributeHasWords = True if len(attribute) > 0 else False
 
     # 分析名词数组中最后一个词的词性
     def analysisNounsLastWord(self):
@@ -100,11 +100,11 @@ class SematicAnalysisModel:
             return False
 
     # 有属性值词或者有属性词
-    def isValueSituation(self):
-        if self.valuesHasWords:
-            return True
-        else:
-            return False
+    # def isValueSituation(self):
+    #     if self.valuesHasWords:
+    #         return True
+    #     else:
+    #         return False
 
     # 获取动词的SBV主语
     def getverbSBV(self, verb):

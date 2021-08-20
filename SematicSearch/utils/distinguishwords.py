@@ -1,6 +1,6 @@
 # 是否包含程度词
 def degreeWord(word):
-    degree_word = ["超过", "大于", "越过", "少于", "小于", "为", "等于", "是", "最高", "最大", "第一", "最少", "最小", "最后", "最多", "相同","仅次于"]
+    degree_word = ["超过", "大于", "越过", "少于", "小于", "为", "等于", "是", "最高", "最大", "第一", "最少", "最小", "最后", "最多", "相同", "仅次于"]
     if word in degree_word:
         return True
 
@@ -32,7 +32,7 @@ def degreeSymbol(word):
 
 # 判断是否是表示值的词
 def valueWord(word4pos):
-    value_list = ["TIME", "m", "LOC"]
+    value_list = ["TIME", "m", "LOC", "PER"]
     if word4pos:
         if word4pos in value_list:
             return True
@@ -42,7 +42,7 @@ def valueWord(word4pos):
 
 # 判断是否是名词词性的词
 def isNounWord(pos):
-    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC","PER"]
+    nounList = ["n", "nr", "nz", "nw", "ORG", "LOC","PER","TIME","m"]
 
     if pos in nounList:
         return True
@@ -75,12 +75,12 @@ def isVerbContainedHEDwords(word):
     else:
         return False
 
+
 def countWord(word):
-    countwords = ['次数']
+    countwords = ['次数', "排"]
     if word in countwords:
         return True
-    else:
-        return False
+    return False
 
 
 # 疑问词结尾

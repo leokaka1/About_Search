@@ -21,6 +21,20 @@ class Lexicon:
                 return True
         return False
 
+    def findWordAndType(self,word,type):
+        for line in self.types_lines:
+            target = line.split("-")[0].strip()
+            target_type = line.split("-")[1].strip()
+
+            # print("target",target)
+            # print("target_type",target_type)
+            # print("word",word)
+            # print("type",type)
+            if word == target and type == target_type:
+                return True
+
+        return False
+
     def isInstanceWords(self, word):
         for line in self.entities_lines:
             if word == line.split("-")[0].strip():
@@ -48,6 +62,22 @@ class Lexicon:
             entities.append(entity)
             entities_type.append(entity_type)
         return entities, entities_type
+
+    # 获取实例的名称和type列表
+    def  receiveAttributeInfo(self):
+        attributes = []
+        attributes_type = []
+        for item in self.attribute_lines:
+            item = item.strip().split("-")
+            # 用"-"分割
+            attribute = item[0]
+            attribute_type = item[1]
+            # 将类型和type组装成词典
+            attributes.append(attribute)
+            attributes_type.append(attribute_type)
+        return attributes, attributes_type
+
+
 
     # 获取实例的词
     def receiveEntitiesWordAndType(self, word):
