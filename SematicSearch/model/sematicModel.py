@@ -83,3 +83,18 @@ class SemanticModel:
                 res.append(self.word_list[index].split("-")[0])
 
         return res
+
+    # 找到修饰词的index
+    def modifiedWordIndex(self,position):
+        position_list = []
+        for index,head in enumerate(self.head_list):
+            if head == position:
+                position_list.append(index)
+        return position_list
+
+    # 找到target_word的index
+    def targetWordIndex(self,position):
+        return self.head_list[position]
+
+    def indexForWord(self,index):
+        return self.word_list[index]
