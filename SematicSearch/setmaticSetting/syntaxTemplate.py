@@ -7,8 +7,7 @@ lexicon = Lexicon()
 class Template:
     def __init__(self, model: SematicAnalysisModel):
         self.model = model
-        self.final_action_dict = {"entities": [], "sequences": [], "values": False, "time": [], "count": False,
-                                  "count_num": ""}
+        self.final_action_dict = {"entities": [], "sequences": [], "values": False}
         self.sequence = []
         self.degrees = ""
         self.values_str = ""
@@ -23,30 +22,30 @@ class Template:
         self.entities = self.findEntityWords()
         self.final_action_dict["entities"] = self.entities
 
-        # 是否有次数,count
-        for word in self.model.vertexModel.word_list:
-            if countWord(word):
-                self.final_action_dict["count"] = True
-                if self.values:
-                    for value in self.values:
-                        value, _ = wordAndIndex(value)
-                        self.final_action_dict["count_num"] = value
+        # # 是否有次数,count
+        # for word in self.model.vertexModel.word_list:
+        #     if countWord(word):
+        #         self.final_action_dict["count"] = True
+        #         if self.values:
+        #             for value in self.values:
+        #                 value, _ = wordAndIndex(value)
+        #                 self.final_action_dict["count_num"] = value
 
         # 时间赋值
-        if self.values:
-            for value in self.values:
-                value, _ = wordAndIndex(value)
-                if self.model.vertexModel.wordForPos(value) == "TIME":
-                    self.final_action_dict["time"] = value
+        # if self.values:
+        #     for value in self.values:
+        #         value, _ = wordAndIndex(value)
+        #         if self.model.vertexModel.wordForPos(value) == "TIME":
+        #             self.final_action_dict["time"] = value
 
         # 如果形容词和动词都修饰HED，那么就把adj给v
-        if self.adjs:
-            for word in self.adjs:
-                word, _ = wordAndIndex(word)
-                if degreeWord(word) and word not in self.degrees:
-                    self.degrees = word
-                self.final_action_dict["count"] = True
-                self.final_action_dict["count_num"] = word
+        # if self.adjs:
+        #     for word in self.adjs:
+        #         word, _ = wordAndIndex(word)
+        #         if degreeWord(word) and word not in self.degrees:
+        #             self.degrees = word
+        #         self.final_action_dict["count"] = True
+        #         self.final_action_dict["count_num"] = word
 
     # 如果只有ATT修饰HED
     # 第①种情况
@@ -193,30 +192,11 @@ class Template:
         return self.final_action_dict
 
     # 如果有主谓宾三个
-    # 第④种情况
+    # 第④种情况 - （important）
     def has_SBV_HED_VOB_Words(self):
         # 没有属性值的情况
         if not self.values:
-            # 如果句子中含有entity，那么必然entity的顺序是第一位的,修饰entity的动词放第一个
-            if self.entities:
-                # 其次遍历verbs
-                for verb in self.verbs:
-                    verb, position = wordAndIndex(verb)
-                    modified_words = self.model.vertexModel.modifiedWord(verb)
-                    target_word = self.model.vertexModel.wordForTargetIndexWord(position)
-                    if target_word and target_word in self.entities:
-                        self.sequence.insert(0, verb)
-                    else:
-                        # 如果没有被修饰的词，说明有可能不是中心词，那么需要添加动词到序列里
-                        if not modified_words:
-                            self.sequence.insert(0, verb)
-                        else:
-                            for word in modified_words:
-                                if word not in self.entities and not isQuestionWord(word):
-                                    self.sequence.append(word)
-            else:
-                # 投标最多的企业中标次数是最多的吗？
-                pass
+            pass
         else:
             # 有属性值的情况(VOB宾语提前,插入到sequence的第一位置)
             for verb in self.verbs:

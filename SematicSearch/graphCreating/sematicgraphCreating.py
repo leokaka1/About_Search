@@ -9,6 +9,7 @@ from SematicSearch.utils.distinguishwords import *
 """
 lexicon = Lexicon()
 
+
 def seperatingTypeOfWords(segAndPostList):
     # 名词词表
     nounList = []
@@ -44,20 +45,19 @@ def seperatingTypeOfWords(segAndPostList):
                 adjList.append(combineWords(word, index))
 
         # # 处理并列关系 - 句中含有COO关系的找到其对应的target word并做一个映射
-        # for nounWord in nounList:
-        #     orign_word = nounWord.split("-")[0]
-        #     if findEntitiesWord(orign_word):
-        #         coo_list.append(nounWord)
-        #     if lexicon.isAttributeWords(nounWord):
-        #         attribute_index = sematic_Model.word_list.index(nounWord)
-        #         attributeList.append(combineWords(nounWord, attribute_index))
-        #
-        # # 删除名词里面相同的词，避免后期再次删除
-        # for cooWord in coo_list:
-        #     print(nounList)
-        #     print(cooWord)
-        #     if cooWord in nounList:
-        #         nounList.remove(cooWord)
+        temp_coos = []
+        for nounWord in nounList:
+            orign_word = nounWord.split("-")[0]
+            if findEntitiesWord(orign_word):
+                temp_coos.append(nounWord)
+
+        # 删除名词里面相同的词，避免后期再次删除
+        # FIXME: 如果并列名词的长度大于等于2时，进行操作
+        if len(temp_coos) >= 2:
+            coo_list += temp_coos
+            for cooWord in coo_list:
+                if cooWord in nounList:
+                    nounList.remove(cooWord)
 
         # 删除属性里面相同的词，避免后期再次删除
         for attribute_word in attributeList:
@@ -69,20 +69,19 @@ def seperatingTypeOfWords(segAndPostList):
         # 处理属性值操作
         for index, posWord in enumerate(sematic_Model.pos_list):
             if posWord == "TIME" or posWord == "m":
-                valueList.append(combineWords(sematic_Model.word_list[index],index))
+                valueList.append(combineWords(sematic_Model.word_list[index], index))
 
         if coo_list:
-            coo_list = set(coo_list)
+            coo_list = list(set(coo_list))
         print("Step:2 返回词性:>>>>>>\n")
         print("名词词性:>>>>>", nounList)
-        # print("并列名词:>>>>>", coo_list)
+        print("并列名词:>>>>>", coo_list)
         print("动词词性:>>>>>", verbList)
         print("形容词性:>>>>>", adjList)
-        print("属性词:>>>>>>>", attributeList)
         print("属性值词:>>>>>", valueList)
         print("--------------------------------------------")
 
-        analysisModel = SematicAnalysisModel(sematic_Model, nounList, coo_list, verbList, adjList, attributeList,
+        analysisModel = SematicAnalysisModel(sematic_Model, nounList, coo_list, verbList, adjList,
                                              valueList)
         sematicSetting(analysisModel)
 
@@ -93,6 +92,7 @@ def seperatingTypeOfWords(segAndPostList):
 def combineWords(word, id):
     combine_word = word + "-" + str(id)
     return combine_word
+
 
 def findEntitiesWord(word):
     entities, entities_type = lexicon.receiveEntitiesInfo()
