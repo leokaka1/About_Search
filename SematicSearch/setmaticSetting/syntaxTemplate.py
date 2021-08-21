@@ -311,12 +311,12 @@ class Template:
                     # 如果啥都不是就直接拼接
                     else:
                         if position not in self.sequence:
-                            if noun_target_index in self.entities:
+                            if noun_target_index in self.entities and self.model.indexOfTimeWord(position):
                                 self.sequence.insert(0, position)
                             else:
                                 # 插入到修饰词前面 / 如果不是时间词(时间词放最后)
-                                if not isTimeWord(
-                                        self.model.vertexModel.wordForPos(noun)) and noun_target_index in self.sequence:
+                                if not self.model.indexOfTimeWord(position) \
+                                        and noun_target_index in self.sequence:
                                     self.sequence.insert(self.sequence.index(noun_target_index), position)
                                 else:
                                     self.sequence.append(position)
@@ -332,7 +332,7 @@ class Template:
 
                 # 判断是不是程度词，比如有大于，等于，为之类的
                 if degreeWord(verb):
-                    print("position>>>>", position, target_word)
+                    # print("position>>>>", position, target_word)
                     # step 1 找出targetword并且添加到sequence
                     if target_word \
                             and not self.model.isSkipWordsIndex(target_word) \
@@ -364,7 +364,8 @@ class Template:
             # 补充名词
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
-                if position not in self.sequence:
+                if position not in self.sequence \
+                        and position not in self.entities:
                     self.sequence.append(position)
 
         self.dealWithEnd(self.sequence)
@@ -377,8 +378,39 @@ class Template:
 
     # 如果有状语，介宾和动宾
     # 第⑥种情况
-    def has_ADV_POB_VOB_SBV_HED_Words(self):
-        pass
+    def has_ADV_SBV_VOB_HED_Words(self):
+        # 遍历动词
+        for verb in self.verbs:
+            verb,position = wordAndIndex(verb)
+            target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+            modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+            if not self.model.isHedIndex(position):
+                self.sequence.append(position)
+
+                for modi_index in modified_word_index:
+                    if modi_index not in self.sequence and modi_index not in self.entities:
+                        self.sequence.append(modi_index)
+
+        # 处理剩下的名词
+        for noun in self.nouns:
+            noun,position = wordAndIndex(noun)
+            modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+            if not isSkipNounWord(noun) \
+                    and position not in self.sequence \
+                    and position not in self.entities:
+                if not self.model.indexOfTimeWord(position):
+                    self.sequence.append(position)
+
+        # 处理时间
+        for noun in self.nouns:
+            noun, position = wordAndIndex(noun)
+            if self.model.indexOfTimeWord(position):
+                self.sequence.append(position)
+
+
+
+        self.dealWithEnd(self.sequence)
+        return self.final_action_dict
 
     # 只有状中，介宾，
     # 第⑦种情况

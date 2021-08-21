@@ -113,12 +113,14 @@ class SematicAnalysisModel:
             return True
         return False
 
-    # 有属性值词或者有属性词
-    # def isValueSituation(self):
-    #     if self.valuesHasWords:
-    #         return True
-    #     else:
-    #         return False
+    # 是否是时间词
+    def indexOfTimeWord(self,index):
+        pos = self.vertexModel.pos_list[index]
+        word = self.vertexModel.word_list[index]
+        if pos == "TIME" or word == "今年" or word == "去年" or word == "明年" or word == "前年":
+            return True
+        else:
+            return False
 
     # 获取动词的SBV主语
     def getverbSBV(self, verb):

@@ -52,7 +52,7 @@ def isNounWord(pos):
 
 # 判断是否是动词词性的词
 def isVerbWord(pos):
-    verbList = ["v", "vd", "vn","p"]
+    verbList = ["v", "vd", "vn", "p"]
     if pos in verbList:
         return True
     else:
@@ -67,11 +67,11 @@ def isAdjWord(pos):
         return False
 
 
-def isTimeWord(pos):
-    if pos == "TIME":
-        return True
-    else:
-        return False
+# def isTimeWord(pos):
+#     if pos == "TIME":
+#         return True
+#     else:
+#         return False
 
 
 # 是否包含一些HED的虚拟动词
@@ -82,9 +82,15 @@ def isVerbContainedSkipHEDwords(word):
     else:
         return False
 
+def isSkipNounWord(word):
+    skip_word_list = ["哪家","那家","什么","那种"]
+    if word in skip_word_list:
+        return True
+    else:
+        return False
 
 def countWord(word):
-    countwords = ['次数', "排"]
+    countwords = ['次数', "排", "最多", "最少", "仅次于"]
     if word in countwords:
         return True
     return False
@@ -92,7 +98,7 @@ def countWord(word):
 
 # 疑问词结尾
 def isQuestionWord(word):
-    question_word = ["哪些", "什么", "那里", "那些", "哪", "那","吗"]
+    question_word = ["哪些", "什么", "那里", "那些", "哪", "那", "吗"]
     if word in question_word:
         return True
 

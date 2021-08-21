@@ -1,6 +1,7 @@
 from LAC import LAC
 from ddparser import DDParser
 from SematicSearch.config import *
+from SematicSearch.utils import *
 
 """
 Step 1 分词
@@ -16,6 +17,8 @@ class WordPosttag:
     def segAndPos(self, question):
 
         if question:
+            # 去掉所有的标点
+            question = removePunctuation(question)
             # 分词
             seg_res = self.lac.run(question)
             # print("使用用户自定义词典分词结果:>>>>", seg_res)
@@ -28,7 +31,7 @@ class WordPosttag:
             col_res = self.ddp.parse_seg([wordList])
 
             punctuation_list = []
-            for index,pos in enumerate(posList):
+            for index, pos in enumerate(posList):
                 if pos == "w":
                     punctuation_list.append(index)
 
@@ -44,4 +47,3 @@ class WordPosttag:
             print("--------------------------------------------")
 
             return col_res[0]
-

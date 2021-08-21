@@ -35,6 +35,7 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
         print("Situation 5: - 主 状")
     elif type == s_type.HED_ADV_SBV_VOB.value:
         print("Situation 6: - 主 谓 宾 状")
+        res = template.has_ADV_SBV_VOB_HED_Words()
     elif type == s_type.HED_ADV_SBV_VOB_POB.value:
         print("Situation 7: - 主 谓 宾 状 介")
 
