@@ -65,6 +65,13 @@ class SematicAnalysisModel:
         else:
             return False
 
+    def isHedIndex(self,index):
+        deprel = self.vertexModel.deprel_list[index]
+        if deprel == "HED":
+            return True
+        else:
+            return False
+
     # 判断一个词组里面有没有HED词
     def islistContainHEDword(self, wordlist):
         for word in wordlist:

@@ -66,6 +66,7 @@ def isAdjWord(pos):
     else:
         return False
 
+
 def isTimeWord(pos):
     if pos == "TIME":
         return True
@@ -91,7 +92,7 @@ def countWord(word):
 
 # 疑问词结尾
 def isQuestionWord(word):
-    question_word = ["哪些", "什么", "那里"]
+    question_word = ["哪些", "什么", "那里", "那些"]
     if word in question_word:
         return True
 
