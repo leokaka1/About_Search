@@ -505,6 +505,58 @@ class Template:
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
+    # 有子句模式
+    # 第⑩种情况
+    def has_SBV_HED_VOB_IC(self):
+
+        # 2020年公司投标有哪些项目
+        for verb in self.verbs:
+            verb, position = wordAndIndex(verb)
+            modified_words_index = self.model.vertexModel.modifiedWordIndex(position)
+
+            for modi_index in modified_words_index:
+                if self.model.indexOfTimeWord(modi_index):
+                    self.sequence.insert(len(self.sequence) - 1, modi_index)
+                else:
+                    if modi_index not in self.sequence:
+                        self.sequence.append(modi_index)
+
+            if not isVerbContainedSkipHEDwords(verb):
+                self.sequence.append(position)
+
+        self.dealWithEnd(self.sequence)
+        return self.final_action_dict
+
+    # 并列结构
+    # 第⑪种情况
+    def has_COO_SBV_HED_ADV_VOB(self):
+
+        # 没有属性词的情况
+        if not self.attribute:
+            for verb in self.verbs:
+                verb, position = wordAndIndex(verb)
+                modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+                for modi_index in modified_word_index:
+                    modi_word = self.model.vertexModel.indexForWord(modi_index)
+                    if not isVerbContainedSkipHEDwords(modi_word) \
+                            and not self.model.isSkipWordsIndex(modi_index):
+                        self.sequence.append(modi_index)
+                        if position not in self.sequence:
+                            self.sequence.append(position)
+
+            # 处理剩下的名词
+            for noun in self.nouns:
+                noun, position = wordAndIndex(noun)
+                target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                if position not in self.sequence:
+                    if target_word_index in self.sequence and not self.model.isHedIndex(position):
+                        self.sequence.insert(self.sequence.index(target_word_index) + 1, position)
+                    else:
+                        self.sequence.append(position)
+
+        self.dealWithEnd(self.sequence)
+        return self.final_action_dict
+
     # 查找句子中的实例
     def findEntityWords(self):
         nouns = self.model.nouns

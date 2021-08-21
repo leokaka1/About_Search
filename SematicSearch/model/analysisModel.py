@@ -186,7 +186,15 @@ class SematicAnalysisModel:
         # 状，介宾，主，谓，宾 eg:与(ADV)远光软件股份有限公司(POB)签订合同(VOB)的企业(SBV)有哪些
         elif self.sentenceContainWhichDeqrel(["ADV", "POB", "VOB", "SBV", "HED"]):
             return 7
+        # 并列结构 主
         elif self.sentenceContainWhichDeqrel(["COO", "HED"]):
             return 8
+        # 并列结构 主 谓 宾
         elif self.sentenceContainWhichDeqrel(["COO", "HED", "SBV", "VOB"]):
             return 9
+        # IC子句关系
+        elif self.sentenceContainWhichDeqrel(["SBV","VOB","ADV","IC","HED"]):
+            return 10
+        # 并列结构 主 谓 宾 状 中
+        elif self.sentenceContainWhichDeqrel(["COO","SBV","ADV","HED","VOB"]):
+            return 11

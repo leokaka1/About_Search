@@ -45,6 +45,12 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
     elif type == s_type.COO_HED_SBV_VOB.value:
         print("Situation 9: - 并列，主谓宾")
         res = template.has_COO_HED_SBV_VOB()
+    elif type == s_type.SBV_VOB_HED_IC.value:
+        print("Situation 10:- 有IC子句")
+        res = template.has_SBV_HED_VOB_IC()
+    elif type == s_type.COO_HED_SBV_VOB_ADV.value:
+        print("Situation 11 - 并列，主谓宾状中")
+        res = template.has_COO_SBV_HED_ADV_VOB()
 
 
     print("final_sequence_res=======>>>>", res)
