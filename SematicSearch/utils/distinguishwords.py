@@ -52,7 +52,7 @@ def isNounWord(pos):
 
 # 判断是否是动词词性的词
 def isVerbWord(pos):
-    verbList = ["v", "vd", "vn"]
+    verbList = ["v", "vd", "vn","p"]
     if pos in verbList:
         return True
     else:
@@ -92,7 +92,7 @@ def countWord(word):
 
 # 疑问词结尾
 def isQuestionWord(word):
-    question_word = ["哪些", "什么", "那里", "那些", "哪", "那"]
+    question_word = ["哪些", "什么", "那里", "那些", "哪", "那","吗"]
     if word in question_word:
         return True
 

@@ -123,6 +123,17 @@ class Template:
                             else:
                                 # 如果目标词不在实例对象中，就添加到对应修饰的词后面 -（张学友老婆出生于）
                                 self.sequence.insert(self.sequence.index(target_word_index), position)
+
+            # 如果没有动词的情况
+            # eg:小王的笔记本在哪里
+            for noun in self.nouns:
+                noun, position = wordAndIndex(noun)
+                target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                # print(target_word_index)
+                if position not in self.sequence:
+                    self.sequence.append(position)
+                self.sequence.append(target_word_index)
+
         else:
             # FIXME: 2.2 有形容词，比如最多，一般用于排序
             # 遍历动词
@@ -167,48 +178,81 @@ class Template:
     def has_HED_VOB_Words(self):
         # 判断有没有属性值词
         # 有超过一千万的合同吗？
-        # 中标次数排前十的单位？
-        if self.values:
-            vob_word = self.model.getVOBWord()
-            for vobs in vob_word:
-                if self.model.vertexModel.wordForPos(vobs) != "m":
-                    self.sequence.append(vobs)
+        # 处理动词
+        # FIXME: situation 3.1：有ATT，HED和VOB
+        #   eg:有超过一千万的合同吗？
+        for verb in self.verbs:
+            verb, position = wordAndIndex(verb)
+            target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+            modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+            if self.model.isHedIndex(position):
+                if not isVerbContainedSkipHEDwords(verb):
+                    self.sequence.append(position)
+                else:
+                    # 遍历所有的modified_word
+                    for modi_word_index in modified_word_index:
+                        word = self.model.vertexModel.indexForWord(modi_word_index)
+                        if not isQuestionWord(word):
+                            self.sequence.append(modi_word_index)
 
-            # 遍历动词
-            for verb in self.verbs:
-                verb, position = wordAndIndex(verb)
-                if not self.model.isHedWord(verb):
-                    target_word = self.model.vertexModel.wordForTargetIndexWord(position)
-                    if degreeWord(verb):
-                        symobl = degreeSymbol(verb)
-                        self.sequence.append(symobl)
-                    else:
-                        self.sequence.append(verb)
-                    if not countWord(target_word) and target_word not in self.sequence:
-                        self.sequence.append(target_word)
+            else:
+                # 不是HED词
+                self.sequence.append(position)
 
-            if not self.final_action_dict["count"]:
-                for value in self.values:
-                    value, _ = wordAndIndex(value)
-                    self.sequence.append(value)
+        # 处理后续的名词
+        for noun in self.nouns:
+            noun, position = wordAndIndex(noun)
+            target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+            target_word = self.model.vertexModel.indexForWord(target_word_index)
+            if position not in self.sequence \
+                    and not countWord(noun) \
+                    and position not in self.entities:
+                self.sequence.append(position)
+            if not countWord(target_word) \
+                    and target_word in self.sequence:
+                self.sequence.insert(self.sequence.index(target_word_index), position)
 
-            self.final_action_dict["values"] = True
-        else:
-            for verb in self.verbs:
-                verb, position = wordAndIndex(verb)
-                if not self.model.isHedWord(verb):
-                    target_word = self.model.vertexModel.wordForTargetIndexWord(position)
-                    self.sequence.append(verb)
-                    if target_word not in self.sequence:
-                        self.sequence.append(target_word)
-
-            for noun in self.nouns:
-                noun, position = wordAndIndex(noun)
-                target_word = self.model.vertexModel.wordForTargetIndexWord(position)
-                if self.model.isHedWord(target_word):
-                    if target_word not in self.sequence:
-                        self.sequence.append(target_word)
-
+        # if self.values:
+        #     vob_word = self.model.getVOBWord()
+        #     for vobs in vob_word:
+        #         if self.model.vertexModel.wordForPos(vobs) != "m":
+        #             self.sequence.append(vobs)
+        #
+        #     # 遍历动词
+        #     for verb in self.verbs:
+        #         verb, position = wordAndIndex(verb)
+        #         if not self.model.isHedWord(verb):
+        #             target_word = self.model.vertexModel.wordForTargetIndexWord(position)
+        #             if degreeWord(verb):
+        #                 symobl = degreeSymbol(verb)
+        #                 self.sequence.append(symobl)
+        #             else:
+        #                 self.sequence.append(verb)
+        #             if not countWord(target_word) and target_word not in self.sequence:
+        #                 self.sequence.append(target_word)
+        #
+        #     if not self.final_action_dict["count"]:
+        #         for value in self.values:
+        #             value, _ = wordAndIndex(value)
+        #             self.sequence.append(value)
+        #
+        #     self.final_action_dict["values"] = True
+        # else:
+        #     for verb in self.verbs:
+        #         verb, position = wordAndIndex(verb)
+        #         if not self.model.isHedWord(verb):
+        #             target_word = self.model.vertexModel.wordForTargetIndexWord(position)
+        #             self.sequence.append(verb)
+        #             if target_word not in self.sequence:
+        #                 self.sequence.append(target_word)
+        #
+        #     for noun in self.nouns:
+        #         noun, position = wordAndIndex(noun)
+        #         target_word = self.model.vertexModel.wordForTargetIndexWord(position)
+        #         if self.model.isHedWord(target_word):
+        #             if target_word not in self.sequence:
+        #                 self.sequence.append(target_word)
+        #
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
@@ -255,7 +299,8 @@ class Template:
                 noun, position = wordAndIndex(noun)
                 noun_target_index = self.model.vertexModel.wordForTargetIndex(position)
                 # print("target word", noun_target_index)
-                if position not in self.sequence and position not in self.entities:
+                if position not in self.sequence \
+                        and position not in self.entities:
                     # 如果是目标的sbv就插入目标词之前
                     if self.model.vertexModel.wordForDeprel(noun) == "SBV":
                         self.sequence.insert(self.sequence.index(noun_target_index), position)
@@ -270,7 +315,8 @@ class Template:
                                 self.sequence.insert(0, position)
                             else:
                                 # 插入到修饰词前面 / 如果不是时间词(时间词放最后)
-                                if not isTimeWord(self.model.vertexModel.wordForPos(noun)):
+                                if not isTimeWord(
+                                        self.model.vertexModel.wordForPos(noun)) and noun_target_index in self.sequence:
                                     self.sequence.insert(self.sequence.index(noun_target_index), position)
                                 else:
                                     self.sequence.append(position)
