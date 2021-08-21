@@ -159,20 +159,6 @@ class Template:
                         and not countWord(noun):
                     self.sequence.append(position)
 
-            # for verb in self.verbs:
-            #     word, position = wordAndIndex(verb)
-            #     head = self.head_list[position]
-            #     if head != -1:
-            #         targetword = self.word_list[head]
-            #     modified_word = self.model.vertexModel.modifiedWord(verb)
-            #     # 如果动词对应的词是HED，则是独立的，直接添加
-            #     if self.model.isHedWord(targetword):
-            #         self.sequence.append(targetword)
-            #         self.sequence.append(word)
-            #     else:
-            #         self.sequence.append(word)
-            #         self.sequence = modified_word + self.sequence
-
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
@@ -324,8 +310,8 @@ class Template:
                     # 不是程度词则组合
                     # 如果是中心词
                     if self.model.isHedWord(verb):
-                        # print("position>>>>", position, target_word)
-                        if not not isVerbContainedSkipHEDwords(verb):
+                        # print("position>>>>", position, target_word,verb)
+                        if not isVerbContainedSkipHEDwords(verb):
                             self.sequence.append(position)
                             self.sequence.append(target_word)
 
