@@ -554,6 +554,34 @@ class Template:
                     else:
                         self.sequence.append(position)
 
+        else:
+            # 遍历属性词
+            for attirbute in self.attribute:
+                attirbute_word,position = wordAndIndex(attirbute)
+                self.sequence.append(position)
+
+            # 遍历动词
+            for verb in self.verbs:
+                verb, position = wordAndIndex(verb)
+                modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+                for modi_index in modified_word_index:
+                    modi_word = self.model.vertexModel.indexForWord(modi_index)
+                    if not isVerbContainedSkipHEDwords(modi_word) \
+                            and not self.model.isSkipWordsIndex(modi_index):
+                        self.sequence.append(modi_index)
+                        if position not in self.sequence:
+                            self.sequence.append(position)
+
+            # 处理剩下的名词
+            for noun in self.nouns:
+                noun, position = wordAndIndex(noun)
+                target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                if position not in self.sequence:
+                    if target_word_index in self.sequence and not self.model.isHedIndex(position):
+                        self.sequence.insert(self.sequence.index(target_word_index) + 1, position)
+                    else:
+                        self.sequence.append(position)
+
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
