@@ -7,7 +7,7 @@ lexicon = Lexicon()
 class Template:
     def __init__(self, model: SematicAnalysisModel):
         self.model = model
-        self.final_action_dict = {"entities": [], "sequences": [], "count": False, "count_num": ""}
+        self.final_action_dict = {"entities": [], "sequences": [], "count": False}
         self.sequence = []
         self.degrees = ""
         self.values_str = ""
@@ -72,7 +72,10 @@ class Template:
         # 处理剩余的名词(如果词不在序列中并且不是问句词就添加)
         for noun in self.nouns:
             noun, position = wordAndIndex(noun)
-            if position not in self.sequence and not isQuestionWord(noun):
+            # targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
+            if position not in self.sequence \
+                    and not isQuestionWord(noun) \
+                    and position not in self.entities:
                 self.sequence.append(position)
 
         self.dealWithEnd(self.sequence)
@@ -81,7 +84,11 @@ class Template:
     # 如果只有主语和中心词
     # 第②种情况
     def has_SBV_HED_Words(self):
+        # FIXME: situation 2.1：有ATT，SBV和HED
+        #   eg:中标最多的单位？ - 刘德华老婆出生于
+        # 没有形容词的时候
         if not self.adjs:
+            # 遍历动词
             for verb in self.verbs:
                 verb, position = wordAndIndex(verb)
                 if not self.model.isHedWord(verb):
@@ -97,28 +104,76 @@ class Template:
                     if hed and hed not in self.sequence and not isVerbContainedSkipHEDwords(hed):
                         self.sequence.append(hed)
                 else:
-                    # 如果是HED词
-                    sbv_word = self.model.getverbSBV(verb)
-                    if sbv_word:
-                        for sbv in sbv_word:
-                            if sbv not in self.sequence:
-                                self.sequence.append(sbv)
-        else:
-            for verb in self.verbs:
-                word, position = wordAndIndex(verb)
-                head = self.head_list[position]
-                if head != -1:
-                    targetword = self.word_list[head]
-                modified_word = self.model.vertexModel.modifiedWord(verb)
-                # 如果动词对应的词是HED，则是独立的，直接添加
-                if self.model.isHedWord(targetword):
-                    self.sequence.append(targetword)
-                    self.sequence.append(word)
-                else:
-                    self.sequence.append(word)
-                    self.sequence = modified_word + self.sequence
+                    # 如果是HED词 (刘德华老婆出生于)
+                    modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+                    for modi_index in modified_word_index:
+                        if modi_index not in self.entities \
+                                and modi_index not in self.sequence:
+                            self.sequence.append(modi_index)
+                        self.sequence.append(position)
 
-        self.final_action_dict["sequences"] = self.sequence
+                    # 处理剩余名词
+                    for noun in self.nouns:
+                        noun, position = wordAndIndex(noun)
+                        target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                        if position not in self.sequence:
+                            # 如果在实例库中就添加到第一个位置
+                            if target_word_index in self.entities:
+                                self.sequence.insert(0, position)
+                            else:
+                                # 如果目标词不在实例对象中，就添加到对应修饰的词后面 -（张学友老婆出生于）
+                                self.sequence.insert(self.sequence.index(target_word_index), position)
+        else:
+            # FIXME: 2.2 有形容词，比如最多，一般用于排序
+            # 遍历动词
+            for verb in self.verbs:
+                verb, position = wordAndIndex(verb)
+                target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                target_word = self.model.vertexModel.wordForTargetIndexWord(position)
+                if position not in self.sequence:
+                    self.sequence.append(position)
+                    if target_word_index not in self.sequence \
+                            and not countWord(target_word):
+                        self.sequence.append(target_word_index)
+
+            # 处理形容词
+            for adj in self.adjs:
+                adj, position = wordAndIndex(adj)
+                modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+                # 如果形容词是HED - （那家招标代理机构招标次数最多？）一般句尾是形容词
+                if self.model.isHedIndex(position):
+                    for modi_index in modified_word_index:
+                        modi_word = self.model.vertexModel.indexForWord(modi_index)
+                        if modi_index not in self.sequence and not countWord(modi_word):
+                            self.sequence.append(modi_index)
+                    self.sequence.append(position)
+                else:
+                    self.sequence.append(position)
+
+            # 处理剩下的名词
+            for noun in self.nouns:
+                noun, position = wordAndIndex(noun)
+                # target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                if position not in self.sequence \
+                        and position not in self.entities \
+                        and not countWord(noun):
+                    self.sequence.append(position)
+
+            # for verb in self.verbs:
+            #     word, position = wordAndIndex(verb)
+            #     head = self.head_list[position]
+            #     if head != -1:
+            #         targetword = self.word_list[head]
+            #     modified_word = self.model.vertexModel.modifiedWord(verb)
+            #     # 如果动词对应的词是HED，则是独立的，直接添加
+            #     if self.model.isHedWord(targetword):
+            #         self.sequence.append(targetword)
+            #         self.sequence.append(word)
+            #     else:
+            #         self.sequence.append(word)
+            #         self.sequence = modified_word + self.sequence
+
+        self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
     # 如果有谓宾三个
@@ -332,10 +387,9 @@ class Template:
                 self.sequence.remove(index)
 
     def clearRepeatWord(self):
-        for index in self.sequence:
-            # word = self.model.vertexModel.indexForWord(index)
-            if index in self.entities:
-                self.sequence.remove(index)
+        for x in self.sequence:
+            while self.sequence.count(x) > 1:
+                del self.sequence[self.sequence.index(x)]
 
     def dealWithEnd(self, sequences):
         # 清除重复词

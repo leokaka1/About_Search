@@ -60,7 +60,11 @@ class SemanticModel:
 
     # 找到target_word的index
     def wordForTargetIndex(self,position):
-        return self.head_list[position]
+        index = self.head_list[position]
+        if index != -1:
+            return index
+
+        return 0
 
     def posForWord(self, pos):
         index = self.pos_list.index(pos)

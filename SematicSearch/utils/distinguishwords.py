@@ -92,7 +92,7 @@ def countWord(word):
 
 # 疑问词结尾
 def isQuestionWord(word):
-    question_word = ["哪些", "什么", "那里", "那些"]
+    question_word = ["哪些", "什么", "那里", "那些", "哪", "那"]
     if word in question_word:
         return True
 
