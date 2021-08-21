@@ -30,26 +30,6 @@ class Template:
         for word in self.model.vertexModel.word_list:
             if countWord(word):
                 self.final_action_dict["count"] = True
-        #         if self.values:
-        #             for value in self.values:
-        #                 value, _ = wordAndIndex(value)
-        #                 self.final_action_dict["count_num"] = value
-
-        # 时间赋值
-        # if self.values:
-        #     for value in self.values:
-        #         value, _ = wordAndIndex(value)
-        #         if self.model.vertexModel.wordForPos(value) == "TIME":
-        #             self.final_action_dict["time"] = value
-
-        # 如果形容词和动词都修饰HED，那么就把adj给v
-        # if self.adjs:
-        #     for word in self.adjs:
-        #         word, _ = wordAndIndex(word)
-        #         if degreeWord(word) and word not in self.degrees:
-        #             self.degrees = word
-        #         self.final_action_dict["count"] = True
-        #         self.final_action_dict["count_num"] = word
 
     # 如果只有ATT修饰HED
     # 第①种情况
@@ -221,48 +201,6 @@ class Template:
             if not countWord(target_word) \
                     and target_word in self.sequence:
                 self.sequence.insert(self.sequence.index(target_word_index), position)
-
-        # if self.values:
-        #     vob_word = self.model.getVOBWord()
-        #     for vobs in vob_word:
-        #         if self.model.vertexModel.wordForPos(vobs) != "m":
-        #             self.sequence.append(vobs)
-        #
-        #     # 遍历动词
-        #     for verb in self.verbs:
-        #         verb, position = wordAndIndex(verb)
-        #         if not self.model.isHedWord(verb):
-        #             target_word = self.model.vertexModel.wordForTargetIndexWord(position)
-        #             if degreeWord(verb):
-        #                 symobl = degreeSymbol(verb)
-        #                 self.sequence.append(symobl)
-        #             else:
-        #                 self.sequence.append(verb)
-        #             if not countWord(target_word) and target_word not in self.sequence:
-        #                 self.sequence.append(target_word)
-        #
-        #     if not self.final_action_dict["count"]:
-        #         for value in self.values:
-        #             value, _ = wordAndIndex(value)
-        #             self.sequence.append(value)
-        #
-        #     self.final_action_dict["values"] = True
-        # else:
-        #     for verb in self.verbs:
-        #         verb, position = wordAndIndex(verb)
-        #         if not self.model.isHedWord(verb):
-        #             target_word = self.model.vertexModel.wordForTargetIndexWord(position)
-        #             self.sequence.append(verb)
-        #             if target_word not in self.sequence:
-        #                 self.sequence.append(target_word)
-        #
-        #     for noun in self.nouns:
-        #         noun, position = wordAndIndex(noun)
-        #         target_word = self.model.vertexModel.wordForTargetIndexWord(position)
-        #         if self.model.isHedWord(target_word):
-        #             if target_word not in self.sequence:
-        #                 self.sequence.append(target_word)
-        #
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
@@ -595,7 +533,6 @@ class Template:
         for noun in nouns:
             noun = noun.split("-")[0]
             if noun in entities:
-                # word = lexicon.receiveEntitiesWordAndType(noun)
                 entity_list.append(noun)
 
         if not len(entity_list):
