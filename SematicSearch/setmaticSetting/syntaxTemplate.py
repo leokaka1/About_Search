@@ -53,63 +53,27 @@ class Template:
     # 如果只有ATT修饰HED
     # 第①种情况
     def has_HED_Words(self):
-        # FIXME: situation 1.1：没有形容词修饰，比如有形容词修饰：最多-最少之类的
+        # FIXME: situation 1.1：只有ATT和HED，一般最后是HED结尾，结尾的词是名词
         #   eg:远光软件股份有限公司投标项目的中标人。
-        if not self.adjs:
-            # 有verb的时候
-            if self.verbs:
-                for index, verb in enumerate(self.verbs):
-                    verb, position = wordAndIndex(verb)
-                    # 找到这个verb对应的target_word的index然后拼接到sequence中
-                    targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
-                    self.sequence.append(position)
-                    self.sequence.append(targetWord_index)
+        # 有verb的时候
+        if self.verbs:
+            for index, verb in enumerate(self.verbs):
+                verb, position = wordAndIndex(verb)
+                # 找到这个verb对应的target_word的index然后拼接到sequence中
+                targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
+                self.sequence.append(position)
+                self.sequence.append(targetWord_index)
 
-                # 判断HED在不在句子中，如果不在就添加到末尾targetWordIndex
-                hed_word, hed_index = self.model.getHEDWord()
-                if hed_index and hed_index not in self.sequence:
-                    self.sequence.append(hed_index)
-                    print(self.sequence)
+            # 判断HED在不在句子中，如果不在就添加到末尾targetWordIndex
+            hed_word, hed_index = self.model.getHEDWord()
+            if hed_index and hed_index not in self.sequence:
+                self.sequence.append(hed_index)
 
-            # 处理剩余的名词(如果词不在序列中并且不是问句词就添加)
-            for noun in self.nouns:
-                noun, position = wordAndIndex(noun)
-                if position not in self.sequence and not isQuestionWord(noun):
-                    self.sequence.append(position)
-        else:
-            # FIXME :Situation 1.2 如果有形容词
-            #   eg：中标最多的单位？
-            # 如果有动词
-            if self.verbs:
-                # 处理动词
-                for word in self.verbs:
-                    word, position = wordAndIndex(word)
-                    targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
-                    print("index",targetWord_index)
-                    # 如果动词对应的词是HED，则是独立的，直接添加
-                    if self.model.isHedIndex(targetWord_index):
-                        self.sequence.append(position)
-                        self.sequence.append(targetWord_index)
-
-                # 判断HED在不在句子中，如果不在就添加到末尾
-                hed_word, hed_index = self.model.getHEDWord()
-                if hed_index and hed_index not in self.sequence:
-                    self.sequence.append(hed_index)
-                    print(self.sequence)
-            else:
-                for noun in self.nouns:
-                    noun, position = wordAndIndex(noun)
-                    self.sequence.append(position)
-            #
-            #
-            # # 处理形容词
-            # for adj_word in self.adjs:
-            #     adj_word,position = wordAndIndex(adj_word)
-            #     # targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
-            #     if countWord(adj_word):
-            #         self.sequence[""]
-
-
+        # 处理剩余的名词(如果词不在序列中并且不是问句词就添加)
+        for noun in self.nouns:
+            noun, position = wordAndIndex(noun)
+            if position not in self.sequence and not isQuestionWord(noun):
+                self.sequence.append(position)
 
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
