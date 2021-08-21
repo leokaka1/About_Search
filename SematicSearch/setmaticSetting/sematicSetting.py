@@ -38,6 +38,14 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
         res = template.has_ADV_SBV_VOB_HED_Words()
     elif type == s_type.HED_ADV_SBV_VOB_POB.value:
         print("Situation 7: - 主 谓 宾 状 介")
+        res = template.has_HED_ADV_SBV_VOB_POB_Words()
+    elif type == s_type.COO_HED.value:
+        print("Situation 8: - 并列 主")
+        res = template.has_COO_HED()
+    elif type == s_type.COO_HED_SBV_VOB.value:
+        print("Situation 9: - 并列，主谓宾")
+        res = template.has_COO_HED_SBV_VOB()
+
 
     print("final_sequence_res=======>>>>", res)
     # return res

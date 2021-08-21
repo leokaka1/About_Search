@@ -14,6 +14,7 @@ class Template:
         self.nouns = self.model.nouns
         self.verbs = self.model.verbs
         self.adjs = self.model.adjs
+        self.coos = self.model.coos
         self.attribute = self.model.attribute
         self.head_list = self.model.vertexModel.head_list
         self.word_list = self.model.vertexModel.word_list
@@ -169,6 +170,15 @@ class Template:
                         and position not in self.entities \
                         and not countWord(noun):
                     self.sequence.append(position)
+
+            # 处理剩下的属性词
+            if self.attribute:
+                for attribute in self.attribute:
+                    attribute_word, position = wordAndIndex(attribute)
+                    target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                    if position not in self.sequence \
+                            and target_word_index in self.sequence:
+                        self.sequence.insert(self.sequence.index(target_word_index), position)
 
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
@@ -381,8 +391,7 @@ class Template:
     def has_ADV_SBV_VOB_HED_Words(self):
         # 遍历动词
         for verb in self.verbs:
-            verb,position = wordAndIndex(verb)
-            target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+            verb, position = wordAndIndex(verb)
             modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
             if not self.model.isHedIndex(position):
                 self.sequence.append(position)
@@ -393,8 +402,7 @@ class Template:
 
         # 处理剩下的名词
         for noun in self.nouns:
-            noun,position = wordAndIndex(noun)
-            modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+            noun, position = wordAndIndex(noun)
             if not isSkipNounWord(noun) \
                     and position not in self.sequence \
                     and position not in self.entities:
@@ -407,15 +415,95 @@ class Template:
             if self.model.indexOfTimeWord(position):
                 self.sequence.append(position)
 
-
-
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
     # 只有状中，介宾，
     # 第⑦种情况
-    def has_ADV_POB_VOB_HED_Words(self):
-        pass
+    def has_HED_ADV_SBV_VOB_POB_Words(self):
+        # FIXME： 主谓宾状介，
+        #   eg:与远光软件股份有限公司签订合同的企业有哪些
+        # 遍历动词
+        for verb in self.verbs:
+            verb, position = wordAndIndex(verb)
+            modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+
+            if not isVerbContainedSkipHEDwords(verb):
+                self.sequence.append(position)
+
+            for modi_index in modified_word_index:
+                modi_word = self.model.vertexModel.indexForWord(modi_index)
+                if modi_index not in self.sequence \
+                        and modi_index not in self.entities \
+                        and not self.model.isSkipWordsIndex(modi_index) \
+                        and not isVerbContainedSkipHEDwords(modi_word):
+                    self.sequence.append(modi_index)
+
+        # 处理属性词
+        # 合同总价和招标总价相同的项目
+        if self.attribute:
+            for attribute_word in self.attribute:
+                attribute_word, position = wordAndIndex(attribute_word)
+                target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                target_word_pos = self.model.vertexModel.wordForPos(
+                    self.model.vertexModel.indexForWord(target_word_index))
+                # print(target_word_pos)
+                # 法人与联系人相同的企业
+                if target_word_pos == "c" or target_word_pos == "p":
+                    target_word_index = self.model.vertexModel.wordForTargetIndex(target_word_index)
+                else:
+                    self.sequence.append(target_word_index)
+                self.sequence.insert(self.sequence.index(target_word_index), position)
+
+        # 处理名词
+        for noun in self.nouns:
+            noun, position = wordAndIndex(noun)
+            if position not in self.sequence:
+                self.sequence.append(position)
+
+        self.dealWithEnd(self.sequence)
+        return self.final_action_dict
+
+    # 并列关系
+    # 第⑧种情况
+    def has_COO_HED(self):
+        for verb in self.verbs:
+            verb, position = wordAndIndex(verb)
+            target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+            if not isVerbContainedSkipHEDwords(verb):
+                self.sequence.append(position)
+            if target_word_index not in self.entities:
+                self.sequence.append(target_word_index)
+
+        # 处理剩下的名词
+        for noun in self.nouns:
+            noun, position = wordAndIndex(noun)
+            if position not in self.sequence:
+                self.sequence.append(position)
+
+        # 如果有属性的情况
+        for attribute in self.attribute:
+            attribute, position = wordAndIndex(attribute)
+            if position not in self.sequence:
+                self.sequence.append(position)
+
+        self.dealWithEnd(self.sequence)
+        return self.final_action_dict
+
+    # 并列主谓宾
+    # 第⑨种情况
+    def has_COO_HED_SBV_VOB(self):
+        for verb in self.verbs:
+            verb, position = wordAndIndex(verb)
+            target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+            if not self.model.isHedIndex(position):
+                if not isVerbContainedSkipHEDwords(verb):
+                    self.sequence.append(position)
+                if target_word_index not in self.entities:
+                    self.sequence.append(target_word_index)
+
+        self.dealWithEnd(self.sequence)
+        return self.final_action_dict
 
     # 查找句子中的实例
     def findEntityWords(self):

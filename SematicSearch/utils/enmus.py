@@ -14,3 +14,5 @@ class SematicStituations(Enum):
     HED_ADV = 5
     HED_ADV_SBV_VOB = 6
     HED_ADV_SBV_VOB_POB = 7
+    COO_HED =8
+    COO_HED_SBV_VOB = 9

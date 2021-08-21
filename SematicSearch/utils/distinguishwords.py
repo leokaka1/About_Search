@@ -76,18 +76,20 @@ def isAdjWord(pos):
 
 # 是否包含一些HED的虚拟动词
 def isVerbContainedSkipHEDwords(word):
-    hed_ver_list = ["有", "是", "包含", "为"]
+    hed_ver_list = ["有", "是", "包含", "为", "与", "跟", "和"]
     if word in hed_ver_list:
         return True
     else:
         return False
 
+
 def isSkipNounWord(word):
-    skip_word_list = ["哪家","那家","什么","那种"]
+    skip_word_list = ["哪家", "那家", "什么", "那种"]
     if word in skip_word_list:
         return True
     else:
         return False
+
 
 def countWord(word):
     countwords = ['次数', "排", "最多", "最少", "仅次于"]

@@ -65,7 +65,7 @@ class SematicAnalysisModel:
         else:
             return False
 
-    def isHedIndex(self,index):
+    def isHedIndex(self, index):
         deprel = self.vertexModel.deprel_list[index]
         if deprel == "HED":
             return True
@@ -114,7 +114,7 @@ class SematicAnalysisModel:
         return False
 
     # 是否是时间词
-    def indexOfTimeWord(self,index):
+    def indexOfTimeWord(self, index):
         pos = self.vertexModel.pos_list[index]
         word = self.vertexModel.word_list[index]
         if pos == "TIME" or word == "今年" or word == "去年" or word == "明年" or word == "前年":
@@ -186,5 +186,7 @@ class SematicAnalysisModel:
         # 状，介宾，主，谓，宾 eg:与(ADV)远光软件股份有限公司(POB)签订合同(VOB)的企业(SBV)有哪些
         elif self.sentenceContainWhichDeqrel(["ADV", "POB", "VOB", "SBV", "HED"]):
             return 7
-        elif self.sentenceContainWhichDeqrel(["SBV", "IC", "HED"]):
-            pass
+        elif self.sentenceContainWhichDeqrel(["COO", "HED"]):
+            return 8
+        elif self.sentenceContainWhichDeqrel(["COO", "HED", "SBV", "VOB"]):
+            return 9
