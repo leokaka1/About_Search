@@ -127,8 +127,8 @@ class SematicAnalysisModel:
     def getHEDWord(self):
         for index, deprel in enumerate(self.vertexModel.deprel_list):
             if deprel == "HED":
-                return self.vertexModel.word_list[index]
-        return ""
+                return self.vertexModel.word_list[index], index
+        return "", 0
 
     def getVOBWord(self):
         vob_list = []

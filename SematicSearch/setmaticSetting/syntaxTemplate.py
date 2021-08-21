@@ -53,52 +53,55 @@ class Template:
     # 如果只有ATT修饰HED
     # 第①种情况
     def has_HED_Words(self):
-        # 没有形容词修饰，比如有形容词修饰：最多-最少之类的
+        # FIXME: situation 1：没有形容词修饰，比如有形容词修饰：最多-最少之类的
+        #   eg:远光软件股份有限公司投标项目的中标人
         if not self.adjs:
             # 有verb的时候
             if self.verbs:
                 for index, verb in enumerate(self.verbs):
-                    word, position = wordAndIndex(verb)
-                    head = self.head_list[position]
-                    target_word = self.word_list[head]
-                    self.sequence.append(word)
-                    self.sequence.append(target_word)
+                    verb, position = wordAndIndex(verb)
+                    # 找到这个verb对应的target_word的index然后拼接到sequence中
+                    targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
+                    self.sequence.append(position)
+                    self.sequence.append(targetWord_index)
 
-                # 判断HED在不在句子中，如果不在就添加到末尾
-                hed = self.model.getHEDWord()
-                if hed and hed not in self.sequence:
-                    self.sequence.append(hed)
+                # 判断HED在不在句子中，如果不在就添加到末尾targetWordIndex
+                hed_word, hed_index = self.model.getHEDWord()
+                if hed_index and hed_index not in self.sequence:
+                    self.sequence.append(hed_index)
+                    print(self.sequence)
             else:
                 for noun in self.nouns:
                     noun, position = wordAndIndex(noun)
-                    if not lexicon.isInstanceWords(noun):
-                        self.sequence.append(noun)
+                    if position not in self.sequence:
+                        self.sequence.append(position)
         else:
-            # 如果有动词
-            if self.verbs:
-                # 再处理动词
-                for word in self.verbs:
-                    word, position = wordAndIndex(word)
-                    head = self.head_list[position]
-                    targetword = self.word_list[head]
-                    # 如果动词对应的词是HED，则是独立的，直接添加
-                    if self.model.isHedWord(targetword):
-                        self.sequence.append(targetword)
-                        self.sequence.append(word)
-                    else:
-                        # 如果对应的词不是独立的就拼接
-                        actionword = word + targetword
-                        self.sequence.append(actionword)
-                # 判断HED在不在句子中，如果不在就添加到末尾
-                hed = self.model.getHEDWord()
-                if hed and hed not in self.sequence:
-                    self.sequence.append(hed)
-            else:
-                for noun in self.nouns:
-                    noun, position = wordAndIndex(noun)
-                    self.sequence.append(noun)
-        self.final_action_dict["sequences"] = self.sequence
+            pass
+            # # 如果有动词
+            # if self.verbs:
+            #     # 再处理动词
+            #     for word in self.verbs:
+            #         word, position = wordAndIndex(word)
+            #         head = self.head_list[position]
+            #         targetword = self.word_list[head]
+            #         # 如果动词对应的词是HED，则是独立的，直接添加
+            #         if self.model.isHedWord(targetword):
+            #             self.sequence.append(targetword)
+            #             self.sequence.append(word)
+            #         else:
+            #             # 如果对应的词不是独立的就拼接
+            #             actionword = word + targetword
+            #             self.sequence.append(actionword)
+            #     # 判断HED在不在句子中，如果不在就添加到末尾
+            #     hed = self.model.getHEDWord()
+            #     if hed and hed not in self.sequence:
+            #         self.sequence.append(hed)
+            # else:
+            #     for noun in self.nouns:
+            #         noun, position = wordAndIndex(noun)
+            #         self.sequence.append(noun)
 
+        self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
     # 如果只有主语和中心词
@@ -191,7 +194,7 @@ class Template:
                     if target_word not in self.sequence:
                         self.sequence.append(target_word)
 
-        self.final_action_dict["sequences"] = self.sequence
+        self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
     # 如果有主谓宾三个
@@ -205,7 +208,7 @@ class Template:
                 # 修饰动词的词
                 modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
                 # 被动词修饰的词
-                target_word_index = self.model.vertexModel.targetWordIndex(position)
+                target_word_index = self.model.vertexModel.wordForTargetIndex(position)
                 # print(target_word_index)
                 # step 1.1 判断是否是HED动词
                 # 不是HED动词
@@ -231,12 +234,12 @@ class Template:
                     # 如果中心词不是有，是，这种词，就添加
                     if not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
-            print("sequence>>>>>>>", self.sequence)
+            # print("sequence>>>>>>>", self.sequence)
             # FIXME:有可能出现的情况，还有名词修饰名词的时候，必须把名词遍历统计完
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
-                noun_target_index = self.model.vertexModel.targetWordIndex(position)
-                print("target word", noun_target_index)
+                noun_target_index = self.model.vertexModel.wordForTargetIndex(position)
+                # print("target word", noun_target_index)
                 if position not in self.sequence and position not in self.entities:
                     # 如果是目标的sbv就插入目标词之前
                     if self.model.vertexModel.wordForDeprel(noun) == "SBV":
@@ -253,7 +256,7 @@ class Template:
                             else:
                                 # 插入到修饰词前面 / 如果不是时间词(时间词放最后)
                                 if not isTimeWord(self.model.vertexModel.wordForPos(noun)):
-                                    self.sequence.insert(self.sequence.index(noun_target_index),position)
+                                    self.sequence.insert(self.sequence.index(noun_target_index), position)
                                 else:
                                     self.sequence.append(position)
         else:
@@ -262,7 +265,7 @@ class Template:
             for verb in self.verbs:
                 verb, position = wordAndIndex(verb)
                 # 目标词序号
-                target_word = self.model.vertexModel.targetWordIndex(position)
+                target_word = self.model.vertexModel.wordForTargetIndex(position)
                 # 被修饰词序号
                 modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
 
@@ -303,58 +306,7 @@ class Template:
                 if position not in self.sequence:
                     self.sequence.append(position)
 
-            #         if target_word and self.model.vertexModel.wordForPos(target_word) != "u":
-            #             self.sequence.append(target_word)
-            #         else:
-            #             self.sequence.append(verb)
-            #
-            #         # 判断modified_word中有没有sbv
-            #         # step 2 找出修饰这个词的modified_word
-            #         for modi_word in modified_words:
-            #             # 说明修饰词是SBV主语，添加到最前
-            #             if self.model.vertexModel.wordForDeprel(modi_word) == "SBV":
-            #                 self.sequence.append(modi_word)
-            #                 self.sequence.append(verb)
-            #             if valueWord(self.model.vertexModel.wordForPos(modi_word)):
-            #                 self.sequence.append(modi_word)
-            #     else:
-            #         # 如果不是中心词则直接添加动词
-            #         if not self.model.isHedWord(verb):
-            #             self.sequence.append(verb)
-            #         else:
-            #             # 如果是中心词，则找到修饰中心动词的词并且不是问句词和SBV的词添加
-            #             for modi_word in modified_words:
-            #                 if not isQuestionWord(modi_word) and self.model.vertexModel.wordForDeprel(
-            #                         modi_word) == "SBV" and modi_word not in self.sequence:
-            #                     self.sequence.append(modi_word)
-            #         if target_word:
-            #             self.sequence.append(target_word)
-            #
-            # # 判断有没有遗漏的value
-            # for value in self.attribute:
-            #     value, _ = wordAndIndex(value)
-            #     if value not in self.sequence:
-            #         self.sequence.append(value)
-
-        # 判断有count的情况
-        # FIXME: eg:中标次数排前十的单位
-        # if self.final_action_dict["count"]:
-        #     temp_clear_list = []
-        #     # 先清除sequence
-        #     if self.final_action_dict["count_num"]:
-        #         self.sequence.remove(self.final_action_dict["count_num"])
-        #     for index, word in enumerate(self.sequence):
-        #         if countWord(word):
-        #             temp_clear_list.append(index)
-        #     for i in temp_clear_list[::-1]:
-        #         del self.sequence[i]
-
-        # 清理疑问词
-        self.clearQuestionWord()
-        # 清除重复词
-        self.clearRepeatWord()
-        # 将sequences赋值给最终字典
-        self.final_action_dict["sequences"] = self.sequence
+        self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
     # 如果只有宾
@@ -410,6 +362,14 @@ class Template:
             # word = self.model.vertexModel.indexForWord(index)
             if index in self.entities:
                 self.sequence.remove(index)
+
+    def dealWithEnd(self, sequences):
+        # 清除重复词
+        self.clearRepeatWord()
+        # 清理疑问词
+        self.clearQuestionWord()
+        # 将sequences赋值给最终字典
+        self.final_action_dict["sequences"] = sequences
 
 
 def wordAndIndex(word):

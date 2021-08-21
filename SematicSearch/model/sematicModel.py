@@ -58,6 +58,10 @@ class SemanticModel:
             word = ""
         return word
 
+    # 找到target_word的index
+    def wordForTargetIndex(self,position):
+        return self.head_list[position]
+
     def posForWord(self, pos):
         index = self.pos_list.index(pos)
         return self.word_list[index]
@@ -91,9 +95,7 @@ class SemanticModel:
                 position_list.append(index)
         return position_list
 
-    # 找到target_word的index
-    def targetWordIndex(self,position):
-        return self.head_list[position]
+
 
     def indexForWord(self,index):
         return self.word_list[index]
