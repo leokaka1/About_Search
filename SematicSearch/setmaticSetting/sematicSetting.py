@@ -1,5 +1,5 @@
 from SematicSearch.model.analysisModel import SematicAnalysisModel
-from SematicSearch.setmaticSetting.syntaxPasing import SematicPasing
+from SematicSearch.relationTranslation.relationTranslation import RelationTranslation
 from SematicSearch.utils import *
 from Search_Demo_1.createCypher import createCypher
 from SematicSearch.setmaticSetting.syntaxTemplate import Template
@@ -15,6 +15,7 @@ analysisModel - 词性语义分析模型
 """
 
 def sematicSetting(analysisModel: SematicAnalysisModel):
+    print("Step:3 解析成语法情况:>>>>>>\n")
     template = Template(analysisModel)
     type = analysisModel.sentenceSematicSituations()
     s_type = SematicStituations
@@ -52,9 +53,12 @@ def sematicSetting(analysisModel: SematicAnalysisModel):
         print("Situation 11 - 并列，主谓宾状中")
         res = template.has_COO_SBV_HED_ADV_VOB()
 
-
     print("final_sequence_res=======>>>>", res)
-    # return res
+    print("--------------------------------------------")
+
+    RelationTranslation(analysisModel, res)
+
+
 
 # def sematicSetting(analysisModel: SematicAnalysisModel):
 #     sematicPasing = SematicPasing(analysisModel)

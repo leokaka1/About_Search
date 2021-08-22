@@ -76,7 +76,7 @@ def isAdjWord(pos):
 
 # 是否包含一些HED的虚拟动词
 def isVerbContainedSkipHEDwords(word):
-    hed_ver_list = ["有", "是", "包含", "为", "与", "跟", "和","都"]
+    hed_ver_list = ["有", "是", "包含", "为", "与", "跟", "和","都","是不是","要","开"]
     if word in hed_ver_list:
         return True
     else:
@@ -100,7 +100,7 @@ def countWord(word):
 
 # 疑问词结尾
 def isQuestionWord(word):
-    question_word = ["哪些", "什么", "那里", "那些", "哪", "那", "吗"]
+    question_word = ["哪些", "什么","那些", "哪", "那", "吗","么","呢"]
     if word in question_word:
         return True
 
