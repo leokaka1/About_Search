@@ -7,6 +7,7 @@ class Lexicon:
         self.relations_lines = open(relations_path, encoding="utf-8").readlines()
         self.attribute_lines = open(attribute_path, encoding="utf-8").readlines()
         self.types_lines = open(types_path, encoding="utf-8").readlines()
+        self.distinguishwords = open(disambiguation_path, encoding="utf-8").readline()
 
     # 是否是属性词
     def isAttributeWords(self, word):
@@ -21,7 +22,7 @@ class Lexicon:
                 return True
         return False
 
-    def findWordAndType(self,word,type):
+    def findWordAndType(self, word, type):
         for line in self.types_lines:
             target = line.split("-")[0].strip()
             target_type = line.split("-")[1].strip()
@@ -32,8 +33,18 @@ class Lexicon:
             # print("type",type)
             if word == target and type == target_type:
                 return True
-
         return False
+
+    def findDisWord(self):
+        word_list = []
+        dis_word_list = []
+        for dis_word in self.distinguishwords:
+            word = dis_word.split("\t")[0].strip()
+             type = dis_word.split("\t")[1].strip()
+            word_list.append(word)
+            dis_word_list.append(type)
+
+        return word_list,dis_word_list
 
     def isInstanceWords(self, word):
         for line in self.entities_lines:
@@ -64,7 +75,7 @@ class Lexicon:
         return entities, entities_type
 
     # 获取实例的名称和type列表
-    def  receiveAttributeInfo(self):
+    def receiveAttributeInfo(self):
         attributes = []
         attributes_type = []
         for item in self.attribute_lines:
@@ -76,8 +87,6 @@ class Lexicon:
             attributes.append(attribute)
             attributes_type.append(attribute_type)
         return attributes, attributes_type
-
-
 
     # 获取实例的词
     def receiveEntitiesWordAndType(self, word):
