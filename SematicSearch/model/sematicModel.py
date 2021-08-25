@@ -100,6 +100,7 @@ class SemanticModel:
         return position_list
 
     def indexForWord(self,index):
+        # print(index)
         return self.word_list[index]
 
     def indexForDeprel(self,index):

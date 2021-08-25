@@ -7,7 +7,7 @@ lexicon = Lexicon()
 class Template:
     def __init__(self, model: SematicAnalysisModel):
         self.model = model
-        self.final_action_dict = {"instances": [], "entities": [], "sequences": [], "count": False,
+        self.final_action_dict = {"instances": [], "entities": [], "sequences": [], "attributes": [], "count": False,
                                   "isContainValue": False}
         self.sequence = []
         self.degrees = ""
@@ -39,6 +39,10 @@ class Template:
             if lexicon.isContainAtrributeWord(word) or self.model.isValueWord(word):
                 self.final_action_dict["isContainValue"] = True
 
+
+        # FIXME: 执行属性
+        self.isAttributeSequence()
+
     # 如果只有ATT修饰HED
     # 第①种情况
     def has_HED_Words(self):
@@ -66,7 +70,9 @@ class Template:
             # targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
             if position not in self.sequence \
                     and not isQuestionWord(noun) \
-                    and position not in self.entities:
+                    and position not in self.entities \
+                    and position not in self.instances:
+
                 self.sequence.append(position)
 
         self.dealWithEnd(self.sequence)
@@ -280,6 +286,7 @@ class Template:
                                 else:
                                     self.sequence.append(position)
         else:
+            print("有属性的情况")
             # 有属性值的情况
             # 遍历动词
             for verb in self.verbs:
@@ -291,19 +298,19 @@ class Template:
                 # 被修饰词的deprel
                 target_word_deprel = self.model.vertexModel.indexForDeprel(target_word_index)
 
+                # print(degreeWord(verb))
                 # 判断是不是程度词，比如有大于，等于，为之类的
                 if degreeWord(verb):
-                    # print("position>>>>", position, target_word)
+                    # print("position>>>>", position, target_word_index)
                     # step 1 找出targetword并且添加到sequence
                     if target_word_index \
                             and not self.model.isSkipWordsIndex(target_word_index) \
                             and not isVerbContainedSkipHEDwords(verb):
                         # 如果这个target_word是HED，SBV或者Att并且在entities中
-                        if target_word_deprel == "SBV" or target_word_deprel == "ATT" or target_word_deprel == "HED":
-                            if lexicon.isEntityWords(self.model.vertexModel.indexForWord(target_word_index)):
-                                self.dealWithEntities(target_word_index)
-                            else:
-                                self.sequence.append(target_word_index)
+                        if self.makeEntityWord(target_word_deprel,target_word_index):
+                            self.dealWithEntities(target_word_index)
+                        else:
+                            self.sequence.append(target_word_index)
 
                     # step 2 找到修饰自己的词，一般来说是SBV和VOB的主谓语和宾语
                     # print(modified_word_index)
@@ -317,12 +324,14 @@ class Template:
                             self.sequence.append(index)
                             self.sequence.append(position)
                         elif self.model.vertexModel.wordForDeprel(word) == "VOB":
-                            self.sequence.append(index)
+                            if not self.model.isSkipWordsIndex(position):
+                                self.sequence.append(index)
                 else:
                     # 不是程度词则组合
                     # 如果是中心词
+                    # print("word is",verb)
                     if self.model.isHedWord(verb):
-                        # print("position>>>>", position, target_word,verb)
+                        # print("position>>>>", position, target_word_index,verb)
                         if not isVerbContainedSkipHEDwords(verb):
                             self.sequence.append(position)
                             self.sequence.append(target_word_index)
@@ -330,14 +339,17 @@ class Template:
             # 补充名词
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
-                word_pos = self.model.vertexModel.wordForDeprel(noun)
+                noun_deprel = self.model.vertexModel.wordForDeprel(noun)
                 # print(lexicon.isEntityWords(noun))
                 if position not in self.sequence \
                         and position not in self.entities \
                         and position not in self.instances:
-                    if word_pos == "SBV" or word_pos == "ATT" or word_pos == "HED":
-                        if lexicon.isEntityWords(noun):
-                            self.dealWithEntities(position)
+
+                    if self.makeEntityWord(noun_deprel,word=noun):
+                        self.dealWithEntities(position)
+                    else:
+                        if not self.model.isSkipWordsIndex(position):
+                            self.sequence.append(position)
 
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
@@ -600,7 +612,9 @@ class Template:
     # 清理疑问词
     def clearQuestionWord(self):
         for index in self.sequence:
+            # print(index)
             word = self.model.vertexModel.indexForWord(index)
+            # print(word)
             if isQuestionWord(word):
                 self.sequence.remove(index)
 
@@ -619,6 +633,24 @@ class Template:
 
     def dealWithEntities(self, entity):
         self.final_action_dict["entities"].append(entity)
+
+    def makeEntityWord(self,word_deprel,word_index=0,word=""):
+        if word_deprel == "SBV" or word_deprel == "ATT" or word_deprel == "HED":
+            if word_index:
+                if lexicon.isEntityWords(self.model.vertexModel.indexForWord(word_index)):
+                    return True
+            else:
+                if lexicon.isEntityWords(word):
+                    return True
+        return False
+
+    #FIXME: eg:2020年合同总价为100万的项目的投标人是谁
+    #      eg:
+    def isAttributeSequence(self):
+        # 首先判断时间或者金额
+        print("123")
+        self.model.isContainAmountOrTime()
+
 
 
 def wordAndIndex(word):

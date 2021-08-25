@@ -93,7 +93,7 @@ class SematicAnalysisModel:
     def isValueWord(self, word):
         if word in self.vertexModel.word_list:
             posWord = self.vertexModel.wordForPos(word)
-            if posWord == "TIME" or posWord == "m" or posWord == "PER":
+            if posWord == "TIME" or "m" or "PER":
                 return True
         return False
 
@@ -105,10 +105,9 @@ class SematicAnalysisModel:
         else:
             return False
 
-    # 判断是否
+    # 判断是否是规避词
     def isSkipWordsIndex(self, index):
-        if self.vertexModel.pos_list[index] == "xc" \
-                or self.vertexModel.pos_list[index] == "u":
+        if self.vertexModel.pos_list[index] == "xc" or "u" or "r":
             return True
         return False
 
@@ -116,10 +115,24 @@ class SematicAnalysisModel:
     def indexOfTimeWord(self, index):
         pos = self.vertexModel.pos_list[index]
         word = self.vertexModel.word_list[index]
-        if pos == "TIME" or word == "今年" or word == "去年" or word == "明年" or word == "前年":
+        if pos == "TIME" or "今年" or "去年" or "明年" or "前年":
             return True
         else:
             return False
+
+    # 判断整个句子中是否含有时间或者金额的词汇
+    def isContainAmountOrTime(self):
+        if "TIME" or "m" in self.vertexModel.pos_list:
+            return
+
+    # 找到金额和日期对应的index值
+    def findAmountOrTimeWordIndex(self):
+        temp_list = []
+        for pos in self.vertexModel.pos_list:
+            if pos == "TIME" or "m":
+                temp_list.append(pos)
+
+        return temp_list
 
     # 获取动词的SBV主语
     def getverbSBV(self, verb):
