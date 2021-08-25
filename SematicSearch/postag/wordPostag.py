@@ -7,7 +7,9 @@ from SematicSearch.utils import *
 Step 1 分词
 """
 
+
 lexicon = Lexicon()
+
 class WordPosttag:
     def __init__(self, ):
         self.lac = LAC()
@@ -25,6 +27,7 @@ class WordPosttag:
             # print("使用用户自定义词典分词结果:>>>>", seg_res)
             # 词语列表
             wordList = seg_res[0]
+
             # 替换近义词库
             wordlist,typelist = lexicon.findDisWord()
             for word in wordList:
@@ -36,15 +39,12 @@ class WordPosttag:
                     temp_dis_trans_list.append(word)
 
             wordList = temp_dis_trans_list
-
             # 再合并分词
             for word in wordList:
                 tempStr += word
 
             seg_res = self.lac.run(tempStr)
-            # 词性列表
             posList = seg_res[1]
-
             # 对分词后的词语进行依存分析
             col_res = self.ddp.parse_seg([wordList])
 
