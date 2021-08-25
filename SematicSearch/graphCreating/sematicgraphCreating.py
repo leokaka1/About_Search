@@ -30,9 +30,10 @@ def seperatingTypeOfWords(segAndPostList):
         # 遍历句法分析表
         for index, word in enumerate(sematic_Model.word_list):
             sematic_Model.sematicResponse(word)
-            # print(sematic.deprel)
-            # print(sematic.head)
-            # print(sematic.pos)
+            # print(sematic_Model.deprel)
+            # print(sematic_Model.head)
+            # print(word)
+            # print(sematic_Model.pos)
 
             # 判断是名词性节点还是动词性节点
             if isNounWord(sematic_Model.pos):

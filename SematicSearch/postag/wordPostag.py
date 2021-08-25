@@ -43,8 +43,12 @@ class WordPosttag:
             for word in wordList:
                 tempStr += word
 
-            seg_res = self.lac.run(tempStr)
-            posList = seg_res[1]
+            # print(tempStr)
+
+            new_seg_res = self.lac.run(tempStr)
+            # print(new_seg_res)
+            posList = new_seg_res[1]
+            wordList = new_seg_res[0]
             # 对分词后的词语进行依存分析
             col_res = self.ddp.parse_seg([wordList])
 

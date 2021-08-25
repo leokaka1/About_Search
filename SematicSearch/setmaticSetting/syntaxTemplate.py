@@ -7,7 +7,8 @@ lexicon = Lexicon()
 class Template:
     def __init__(self, model: SematicAnalysisModel):
         self.model = model
-        self.final_action_dict = {"entities": [], "sequences": [], "count": False}
+        self.final_action_dict = {"instances": [], "entities": [], "sequences": [], "count": False,
+                                  "isContainValue": False}
         self.sequence = []
         self.degrees = ""
         self.values_str = ""
@@ -23,8 +24,8 @@ class Template:
         self.entities = self.findEntityWords()
         for entities in self.entities:
             index = self.model.vertexModel.word_list.index(entities)
-            self.final_action_dict["entities"].append(index)
-        self.entities = self.final_action_dict["entities"]
+            self.final_action_dict["instances"].append(index)
+        self.entities = self.final_action_dict["instances"]
 
         # # 是否有次数,count
         for word in self.model.vertexModel.word_list:
