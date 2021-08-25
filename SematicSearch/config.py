@@ -10,3 +10,6 @@ instance_path = current_path + "\\instances"
 relations_path = current_path + "\\relations"
 types_path = current_path + "\\types"
 user_dicts = current_path + "\\user_dicts"
+
+if __name__ == '__main__':
+    print(open(instance_path,encoding="utf-8").readlines())

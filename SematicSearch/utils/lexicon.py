@@ -109,3 +109,8 @@ class Lexicon:
                 return True
 
         return False
+
+if __name__ == '__main__':
+    lexion =Lexicon()
+    # lexion.receiveInstanceInfo()
+    lexion.receiveAttributeInfo()

@@ -22,12 +22,11 @@ class Template:
 
         # 把找出来的实例给终极字典
         self.instances = self.findInstanceWords()
-        print(self.instances)
-        for entities in self.entities:
-            index = self.model.vertexModel.word_list.index(entities)
+        for instances in self.instances:
+            index = self.model.vertexModel.word_list.index(instances)
             self.final_action_dict["instances"].append(index)
+
         self.entities = self.final_action_dict["entities"]
-        # self.instances = self.final_action_dict["instances"]
         self.attributes = self.final_action_dict["attributes"]
 
         # # 是否有次数,count
@@ -220,7 +219,7 @@ class Template:
     # 第④种情况 - （important）
     def has_SBV_HED_VOB_Words(self):
         # 没有属性值的情况
-        if not self.attribute:
+        if not self.attributes:
             # step 1 遍历动词
             for verb in self.verbs:
                 verb, position = wordAndIndex(verb)
@@ -656,18 +655,46 @@ class Template:
             # 找到对应的修饰词
             for index in r_list:
                 temp_list = []
+                time_word_target_index = ""
                 target_word_index = self.model.vertexModel.wordForTargetIndex(index)
                 # 找到modified_word
                 modi_word_index = self.model.vertexModel.modifiedWordIndex(target_word_index)
-                print("modi_index",modi_word_index,target_word_index)
+                # print("modi_index",modi_word_index,target_word_index)
                 if modi_word_index:
                     for modi_index in modi_word_index:
                         if not isVerbContainedSkipHEDwords(self.model.vertexModel.indexForWord(modi_index)):
-                            temp_list.append(modi_index)
+                            # 有time和么有time区分处理
+                            if not self.model.indexOfTimeWord(modi_index):
+                                temp_list.append(modi_index)
+                                if target_word_index not in temp_list \
+                                        and target_word_index not in self.entities \
+                                        and target_word_index not in self.instances:
+                                    temp_list.append(target_word_index)
+                            else:
+                                # 有时间的情况
+                                # 中标日期是2020年的项目有哪些
+                                time_index_list = self.model.findTimeIndex()
+                                for time in time_index_list:
+                                    # 判断word_list中有没有带日期的字段
+                                    time_word_index = self.model.findTimeWordIndexFromWordList()
+                                    if time_word_index != "":
+                                        time_word_target_index = self.model.vertexModel.wordForTargetIndex(
+                                            time_word_index)
+                                        print(time_word_target_index)
+                                    if time_word_index != "":
+                                        if time_word_index not in temp_list:
+                                            temp_list.append(time_word_index)
+                                            temp_list.append(time_word_target_index)
+                                        temp_list.append(time)
+                                    else:
+                                        temp_list.append(time)
+                """
+                temp_list.append(modi_index)
                             if target_word_index not in temp_list \
                                     and target_word_index not in self.entities \
                                     and target_word_index not in self.instances:
                                 temp_list.append(target_word_index)
+                """
                 # print(temp_list)
                 self.attributes.append(temp_list)
 

@@ -118,8 +118,8 @@ class SematicAnalysisModel:
         word = self.vertexModel.word_list[index]
         if pos == "TIME" or word == "今年" or word == "去年" or word == "明年" or word == "前年":
             return True
-        else:
-            return False
+
+        return False
 
     # 判断整个句子中是否含有时间或者金额的词汇
     def isContainAmountOrTime(self):
@@ -136,6 +136,23 @@ class SematicAnalysisModel:
                 temp_index_list.append(index)
 
         return temp_index_list
+
+    # 找到日期对应的index
+    def findTimeIndex(self):
+        temp_index_list = []
+        for index,pos in enumerate(self.vertexModel.pos_list):
+            if pos == "TIME":
+                temp_index_list.append(index)
+
+        return temp_index_list
+
+    # 判断wordlist中有没有带“日期”的字段
+    def findTimeWordIndexFromWordList(self):
+        for word in self.vertexModel.word_list:
+            if "日期" in word:
+                return self.vertexModel.word_list.index(word)
+
+        return ""
 
     # 获取动词的SBV主语
     def getverbSBV(self, verb):
