@@ -13,8 +13,15 @@ class RelationTranslation:
 
     def indexToRealWord(self):
         if self.res_dict:
+
+            instances = self.res_dict["instances"].copy()
             entities = self.res_dict["entities"].copy()
             sequences = self.res_dict["sequences"].copy()
+
+            temp_instance_list=[]
+            for instance_index in instances:
+                instance_word = self.model.vertexModel.indexForWord(instance_index)
+                temp_instance_list.append(instance_word)
 
             temp_entities_list = []
             for entity_index in entities:
@@ -28,3 +35,4 @@ class RelationTranslation:
 
             self.res_dict["entities"] = temp_entities_list
             self.res_dict["sequences"] = temp_sequence_list
+            self.res_dict["instances"] = temp_instance_list

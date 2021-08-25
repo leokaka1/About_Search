@@ -25,12 +25,19 @@ class Template:
         for entities in self.entities:
             index = self.model.vertexModel.word_list.index(entities)
             self.final_action_dict["instances"].append(index)
-        self.entities = self.final_action_dict["instances"]
+        self.entities = self.final_action_dict["entities"]
+        self.instances = self.final_action_dict["instances"]
 
         # # 是否有次数,count
         for word in self.model.vertexModel.word_list:
             if countWord(word):
                 self.final_action_dict["count"] = True
+
+        # 判断句子中是否含有属性词，如果含有就把isContainValue置为True
+        for word in self.model.vertexModel.word_list:
+            # 如果一句话里面含有属性词或者含有一些金额，日期等词，就判断包含属性
+            if lexicon.isContainAtrributeWord(word) or self.model.isValueWord(word):
+                self.final_action_dict["isContainValue"] = True
 
     # 如果只有ATT修饰HED
     # 第①种情况
@@ -222,7 +229,8 @@ class Template:
                     # 如果target_word是entity，就不添加,并且将动词插入到第一位
                     if target_word_index not in self.entities:
                         self.sequence.append(position)
-                        if target_word_index not in self.sequence \
+                        if target_word_index not in self.instances \
+                                and target_word_index not in self.sequence \
                                 and not self.model.isSkipWordsIndex(target_word_index):
                             self.sequence.append(target_word_index)
                     else:
@@ -234,7 +242,9 @@ class Template:
                         # 条件，如果修饰动词的词不是疑问词或者不是实体词，就添加进去
                         if modi_index not in self.entities \
                                 and not self.model.isSkipWordsIndex(modi_index) \
-                                and modi_index not in self.sequence:
+                                and modi_index not in self.sequence \
+                                and modi_index not in self.instances:
+                            # iscontainValue = True情况，并且modi_word = sbv
                             self.sequence.append(modi_index)
 
                     # 如果中心词不是有，是，这种词，就添加
@@ -247,7 +257,8 @@ class Template:
                 noun_target_index = self.model.vertexModel.wordForTargetIndex(position)
                 # print("target word", noun_target_index)
                 if position not in self.sequence \
-                        and position not in self.entities:
+                        and position not in self.entities \
+                        and position not in self.instances:
                     # 如果是目标的sbv就插入目标词之前
                     if self.model.vertexModel.wordForDeprel(noun) == "SBV":
                         self.sequence.insert(self.sequence.index(noun_target_index), position)
@@ -274,18 +285,25 @@ class Template:
             for verb in self.verbs:
                 verb, position = wordAndIndex(verb)
                 # 目标词序号
-                target_word = self.model.vertexModel.wordForTargetIndex(position)
+                target_word_index = self.model.vertexModel.wordForTargetIndex(position)
                 # 被修饰词序号
                 modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+                # 被修饰词的deprel
+                target_word_deprel = self.model.vertexModel.indexForDeprel(target_word_index)
 
                 # 判断是不是程度词，比如有大于，等于，为之类的
                 if degreeWord(verb):
                     # print("position>>>>", position, target_word)
                     # step 1 找出targetword并且添加到sequence
-                    if target_word \
-                            and not self.model.isSkipWordsIndex(target_word) \
+                    if target_word_index \
+                            and not self.model.isSkipWordsIndex(target_word_index) \
                             and not isVerbContainedSkipHEDwords(verb):
-                        self.sequence.append(target_word)
+                        # 如果这个target_word是HED，SBV或者Att并且在entities中
+                        if target_word_deprel == "SBV" or target_word_deprel == "ATT" or target_word_deprel == "HED":
+                            if lexicon.isEntityWords(self.model.vertexModel.indexForWord(target_word_index)):
+                                self.dealWithEntities(target_word_index)
+                            else:
+                                self.sequence.append(target_word_index)
 
                     # step 2 找到修饰自己的词，一般来说是SBV和VOB的主谓语和宾语
                     # print(modified_word_index)
@@ -307,14 +325,19 @@ class Template:
                         # print("position>>>>", position, target_word,verb)
                         if not isVerbContainedSkipHEDwords(verb):
                             self.sequence.append(position)
-                            self.sequence.append(target_word)
+                            self.sequence.append(target_word_index)
 
             # 补充名词
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
+                word_pos = self.model.vertexModel.wordForDeprel(noun)
+                # print(lexicon.isEntityWords(noun))
                 if position not in self.sequence \
-                        and position not in self.entities:
-                    self.sequence.append(position)
+                        and position not in self.entities \
+                        and position not in self.instances:
+                    if word_pos == "SBV" or word_pos == "ATT" or word_pos == "HED":
+                        if lexicon.isEntityWords(noun):
+                            self.dealWithEntities(position)
 
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
@@ -593,6 +616,9 @@ class Template:
         self.clearQuestionWord()
         # 将sequences赋值给最终字典
         self.final_action_dict["sequences"] = sequences
+
+    def dealWithEntities(self, entity):
+        self.final_action_dict["entities"].append(entity)
 
 
 def wordAndIndex(word):

@@ -95,8 +95,7 @@ class SematicAnalysisModel:
             posWord = self.vertexModel.wordForPos(word)
             if posWord == "TIME" or posWord == "m" or posWord == "PER":
                 return True
-            else:
-                return False
+        return False
 
     # 是否是虚词，可以过滤
     def isSkipWord(self, word):
@@ -193,8 +192,8 @@ class SematicAnalysisModel:
         elif self.sentenceContainWhichDeqrel(["COO", "HED", "SBV", "VOB"]):
             return 9
         # IC子句关系
-        elif self.sentenceContainWhichDeqrel(["SBV","VOB","ADV","IC","HED"]):
+        elif self.sentenceContainWhichDeqrel(["SBV", "VOB", "ADV", "IC", "HED"]):
             return 10
         # 并列结构 主 谓 宾 状 中
-        elif self.sentenceContainWhichDeqrel(["COO","SBV","ADV","HED","VOB"]):
+        elif self.sentenceContainWhichDeqrel(["COO", "SBV", "ADV", "HED", "VOB"]):
             return 11

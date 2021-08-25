@@ -7,7 +7,7 @@ class Lexicon:
         self.relations_lines = open(relations_path, encoding="utf-8").readlines()
         self.attribute_lines = open(attribute_path, encoding="utf-8").readlines()
         self.types_lines = open(types_path, encoding="utf-8").readlines()
-        self.disambiguation_lines = open(disambiguation_path,encoding="utf-8").readlines()
+        self.disambiguation_lines = open(disambiguation_path, encoding="utf-8").readlines()
 
     # 是否是属性词
     def isAttributeWords(self, word):
@@ -45,8 +45,7 @@ class Lexicon:
             word_list.append(word)
             type_list.append(type)
 
-        return word_list,type_list
-
+        return word_list, type_list
 
     def isInstanceWords(self, word):
         for line in self.entities_lines:
@@ -100,11 +99,12 @@ class Lexicon:
 
         return final_word
 
-    # def entitiesList(self,type_flag):
-    #     word_list = []
-    #     type_list = []
-    #     relation_list = []
-    #     if type_flag == "t":
-    #         for line in self.entities_lines:
-    #             word_list.append(line.split("-")[0].strip())
-    #             type_list.append(line.split("-")[1].strip())
+    # 判断是否含有属性词
+    def isContainAtrributeWord(self, word):
+        for type in self.types_lines:
+            type_word = type.split("-")[0].strip()
+            type = type.split("-")[1].strip()
+            if word == type_word and type == "attribute":
+                return True
+
+        return False

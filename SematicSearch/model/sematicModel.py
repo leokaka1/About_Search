@@ -99,7 +99,8 @@ class SemanticModel:
                 position_list.append(index)
         return position_list
 
-
-
     def indexForWord(self,index):
         return self.word_list[index]
+
+    def indexForDeprel(self,index):
+        return self.deprel_list[index]
