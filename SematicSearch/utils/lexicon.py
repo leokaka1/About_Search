@@ -7,6 +7,7 @@ class Lexicon:
         self.relations_lines = open(relations_path, encoding="utf-8").readlines()
         self.attribute_lines = open(attribute_path, encoding="utf-8").readlines()
         self.types_lines = open(types_path, encoding="utf-8").readlines()
+        self.disambiguation_lines = open(disambiguation_path,encoding="utf-8").readlines()
 
     # 是否是属性词
     def isAttributeWords(self, word):
@@ -34,6 +35,18 @@ class Lexicon:
                 return True
 
         return False
+
+    def findDisWord(self):
+        word_list = []
+        type_list = []
+        for dis_word in self.disambiguation_lines:
+            # print(dis_word)
+            word = dis_word.split(",")[0].strip()
+            type = dis_word.split(",")[1].strip()
+            word_list.append(word)
+            type_list.append(type)
+
+        return word_list,type_list
 
     def isInstanceWords(self, word):
         for line in self.entities_lines:
