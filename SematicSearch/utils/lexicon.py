@@ -3,7 +3,7 @@ from SematicSearch.config import *
 
 class Lexicon:
     def __init__(self):
-        self.entities_lines = open(entities_path, encoding="utf-8").readlines()
+        self.instances_lines = open(instance_path, encoding="utf-8").readlines()
         self.relations_lines = open(relations_path, encoding="utf-8").readlines()
         self.attribute_lines = open(attribute_path, encoding="utf-8").readlines()
         self.types_lines = open(types_path, encoding="utf-8").readlines()
@@ -48,7 +48,7 @@ class Lexicon:
         return word_list, type_list
 
     def isInstanceWords(self, word):
-        for line in self.entities_lines:
+        for line in self.instances_lines:
             if word == line.split("-")[0].strip():
                 return True
 
@@ -62,18 +62,18 @@ class Lexicon:
         return False
 
     # 获取实例的名称和type列表
-    def receiveEntitiesInfo(self):
-        entities = []
-        entities_type = []
-        for item in self.entities_lines:
+    def receiveInstanceInfo(self):
+        instances = []
+        instances_type = []
+        for item in self.instances_lines:
             item = item.strip().split("-")
             # 用"-"分割
-            entity = item[0]
-            entity_type = item[1]
+            instance = item[0]
+            instance_type = item[1]
             # 将类型和type组装成词典
-            entities.append(entity)
-            entities_type.append(entity_type)
-        return entities, entities_type
+            instances.append(instance)
+            instances_type.append(instance_type)
+        return instances, instances_type
 
     # 获取实例的名称和type列表
     def receiveAttributeInfo(self):
@@ -90,11 +90,12 @@ class Lexicon:
         return attributes, attributes_type
 
     # 获取实例的词
-    def receiveEntitiesWordAndType(self, word):
-        entities, entities_type = self.receiveEntitiesInfo()
-        if word in entities:
-            index = entities.index(word)
-            e_type = entities_type[index]
+    def receiveInstancesWordAndType(self, word):
+        final_word = ""
+        instances, instances_type = self.receiveInstanceInfo()
+        if word in instances:
+            index = instances.index(word)
+            e_type = instances_type[index]
             final_word = word + "/" + e_type
 
         return final_word

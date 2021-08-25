@@ -50,7 +50,7 @@ def seperatingTypeOfWords(segAndPostList):
         temp_attribute = []
         for nounWord in nounList:
             orign_word = nounWord.split("-")[0]
-            if findEntitiesWord(orign_word):
+            if findInstanceWord(orign_word):
                 temp_coos.append(nounWord)
             if lexicon.findWordAndType(orign_word,"attribute"):
                 temp_attribute.append(nounWord)
@@ -97,9 +97,9 @@ def combineWords(word, id):
     return combine_word
 
 
-def findEntitiesWord(word):
-    entities, entities_type = lexicon.receiveEntitiesInfo()
-    if word in entities:
+def findInstanceWord(word):
+    instance, instance_type = lexicon.receiveInstanceInfo()
+    if word in instance:
         return True
 
     return False

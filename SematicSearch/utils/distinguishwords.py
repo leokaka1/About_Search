@@ -76,7 +76,7 @@ def isAdjWord(pos):
 
 # 是否包含一些HED的虚拟动词
 def isVerbContainedSkipHEDwords(word):
-    hed_ver_list = ["有", "是", "包含", "为", "与", "跟", "和", "都", "是不是", "要", "开"]
+    hed_ver_list = ["有", "是", "包含", "为", "与", "跟", "和", "都", "是不是", "要", "开", "的", "并且"]
     if word in hed_ver_list:
         return True
     else:

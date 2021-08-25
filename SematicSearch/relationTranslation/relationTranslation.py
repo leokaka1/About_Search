@@ -1,7 +1,8 @@
 from SematicSearch.model.analysisModel import SematicAnalysisModel
 
+
 class RelationTranslation:
-    def __init__(self,analysisModel: SematicAnalysisModel,res_dict):
+    def __init__(self, analysisModel: SematicAnalysisModel, res_dict):
         self.model = analysisModel
         self.res_dict = res_dict
         self.relationTranslate()
@@ -17,8 +18,9 @@ class RelationTranslation:
             instances = self.res_dict["instances"].copy()
             entities = self.res_dict["entities"].copy()
             sequences = self.res_dict["sequences"].copy()
+            attributes = self.res_dict["attributes"].copy()
 
-            temp_instance_list=[]
+            temp_instance_list = []
             for instance_index in instances:
                 instance_word = self.model.vertexModel.indexForWord(instance_index)
                 temp_instance_list.append(instance_word)
@@ -33,6 +35,16 @@ class RelationTranslation:
                 sequence_word = self.model.vertexModel.indexForWord(sequence_index)
                 temp_sequence_list.append(sequence_word)
 
+            final_attributes_list = []
+            if attributes:
+                for attris in attributes:
+                    temp_attributes_list = []
+                    for attributes_index in attris:
+                        attribute_word = self.model.vertexModel.indexForWord(attributes_index)
+                        temp_attributes_list.append(attribute_word)
+                    final_attributes_list.append(temp_attributes_list)
+
             self.res_dict["entities"] = temp_entities_list
             self.res_dict["sequences"] = temp_sequence_list
             self.res_dict["instances"] = temp_instance_list
+            self.res_dict["attributes"] = final_attributes_list

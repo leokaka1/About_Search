@@ -21,12 +21,14 @@ class Template:
         self.word_list = self.model.vertexModel.word_list
 
         # 把找出来的实例给终极字典
-        self.entities = self.findEntityWords()
+        self.instances = self.findInstanceWords()
+        print(self.instances)
         for entities in self.entities:
             index = self.model.vertexModel.word_list.index(entities)
             self.final_action_dict["instances"].append(index)
         self.entities = self.final_action_dict["entities"]
-        self.instances = self.final_action_dict["instances"]
+        # self.instances = self.final_action_dict["instances"]
+        self.attributes = self.final_action_dict["attributes"]
 
         # # 是否有次数,count
         for word in self.model.vertexModel.word_list:
@@ -38,7 +40,6 @@ class Template:
             # 如果一句话里面含有属性词或者含有一些金额，日期等词，就判断包含属性
             if lexicon.isContainAtrributeWord(word) or self.model.isValueWord(word):
                 self.final_action_dict["isContainValue"] = True
-
 
         # FIXME: 执行属性
         self.isAttributeSequence()
@@ -72,7 +73,6 @@ class Template:
                     and not isQuestionWord(noun) \
                     and position not in self.entities \
                     and position not in self.instances:
-
                 self.sequence.append(position)
 
         self.dealWithEnd(self.sequence)
@@ -307,7 +307,7 @@ class Template:
                             and not self.model.isSkipWordsIndex(target_word_index) \
                             and not isVerbContainedSkipHEDwords(verb):
                         # 如果这个target_word是HED，SBV或者Att并且在entities中
-                        if self.makeEntityWord(target_word_deprel,target_word_index):
+                        if self.makeEntityWord(target_word_deprel, target_word_index):
                             self.dealWithEntities(target_word_index)
                         else:
                             self.sequence.append(target_word_index)
@@ -345,7 +345,7 @@ class Template:
                         and position not in self.entities \
                         and position not in self.instances:
 
-                    if self.makeEntityWord(noun_deprel,word=noun):
+                    if self.makeEntityWord(noun_deprel, word=noun):
                         self.dealWithEntities(position)
                     else:
                         if not self.model.isSkipWordsIndex(position):
@@ -585,21 +585,21 @@ class Template:
         return self.final_action_dict
 
     # 查找句子中的实例
-    def findEntityWords(self):
+    def findInstanceWords(self):
         nouns = self.model.nouns
         coos = self.model.coos
-        entities, entities_type = lexicon.receiveEntitiesInfo()
+        instances, instances_type = lexicon.receiveInstanceInfo()
         entity_list = []
 
         for noun in nouns:
             noun = noun.split("-")[0]
-            if noun in entities:
+            if noun in instances:
                 entity_list.append(noun)
 
         if not len(entity_list):
             for coo in coos:
                 coo = coo.split("-")[0]
-                if coo in entities:
+                if coo in instances:
                     entity_list.append(coo)
 
         print("1.搜索实例词>>>>>>>", entity_list)
@@ -634,7 +634,7 @@ class Template:
     def dealWithEntities(self, entity):
         self.final_action_dict["entities"].append(entity)
 
-    def makeEntityWord(self,word_deprel,word_index=0,word=""):
+    def makeEntityWord(self, word_deprel, word_index=0, word=""):
         if word_deprel == "SBV" or word_deprel == "ATT" or word_deprel == "HED":
             if word_index:
                 if lexicon.isEntityWords(self.model.vertexModel.indexForWord(word_index)):
@@ -644,13 +644,32 @@ class Template:
                     return True
         return False
 
-    #FIXME: eg:2020年合同总价为100万的项目的投标人是谁
-    #      eg:
+    # FIXME: eg:2020年合同总价为100万的项目的投标人是谁
+    #      eg: 中标日期为2020年并且合同总价为100万的项目是
+    #       eg:2020年合同总价为100万的项目
     def isAttributeSequence(self):
-        # 首先判断时间或者金额
-        print("123")
-        self.model.isContainAmountOrTime()
+        # 首先判断居中是否有时间或者金额
+        if self.model.isContainAmountOrTime():
+            r_list = self.model.findAmountOrTimeWordIndex()
+            # print("time or amount list", self.model.findAmountOrTimeWordIndex())
 
+            # 找到对应的修饰词
+            for index in r_list:
+                temp_list = []
+                target_word_index = self.model.vertexModel.wordForTargetIndex(index)
+                # 找到modified_word
+                modi_word_index = self.model.vertexModel.modifiedWordIndex(target_word_index)
+                print("modi_index",modi_word_index,target_word_index)
+                if modi_word_index:
+                    for modi_index in modi_word_index:
+                        if not isVerbContainedSkipHEDwords(self.model.vertexModel.indexForWord(modi_index)):
+                            temp_list.append(modi_index)
+                            if target_word_index not in temp_list \
+                                    and target_word_index not in self.entities \
+                                    and target_word_index not in self.instances:
+                                temp_list.append(target_word_index)
+                # print(temp_list)
+                self.attributes.append(temp_list)
 
 
 def wordAndIndex(word):
