@@ -258,7 +258,7 @@ class Template:
                 modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
                 # 被动词修饰的词
                 target_word_index = self.model.vertexModel.wordForTargetIndex(position)
-                # print(target_word_index)
+                # print("target_word_index",target_word_index)
                 # step 1.1 判断是否是HED动词
                 # 不是HED动词
                 if not self.model.isHedWord(verb):
@@ -268,10 +268,12 @@ class Template:
                         if target_word_index not in self.entities \
                                 and target_word_index not in self.sequence \
                                 and not self.model.isSkipWordsIndex(target_word_index) \
-                                and isVerbContainedSkipHEDwords(verb):
+                                and not isVerbContainedSkipHEDwords(verb):
                             self.sequence.append(target_word_index)
                     else:
                         self.sequence.insert(0, position)
+
+                    # print("self.sequence", self.sequence)
                 else:
                     # print(self.instances)
                     # 是HED动词
@@ -283,7 +285,7 @@ class Template:
                                 and modi_index not in self.sequence \
                                 and modi_index not in self.instances:
                             # iscontainValue = True情况，并且modi_word = sbv
-                            print(modi_index)
+                            # print(modi_index)
                             self.sequence.append(modi_index)
 
                     # 如果中心词不是有，是，这种词，就添加
@@ -658,8 +660,8 @@ class Template:
                     and position not in self.instances:
 
                 if self.makeEntityWord(noun_deprel, word=noun):
-                    # self.dealWithEntities(position)
-                    pass
+                    self.dealWithEntities(position)
+                    # pass
                 else:
                     if not self.model.isSkipWordsIndex(position):
                         # 有一种情况是实体词和形容词分离（服务类有超过一千万的项目吗）
