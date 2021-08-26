@@ -87,19 +87,20 @@ class Template:
                     self.sequence.append(targetWord_index)
 
             # 判断HED在不在句子中，如果不在就添加到末尾targetWordIndex
-            hed_word, hed_index = self.model.getHEDWord()
-            if hed_index and hed_index not in self.sequence:
-                self.sequence.append(hed_index)
+            # hed_word, hed_index = self.model.getHEDWord()
+            # if hed_index and hed_index not in self.sequence:
+            #     self.sequence.append(hed_index)
 
-        # 处理剩余的名词(如果词不在序列中并且不是问句词就添加)
-        for noun in self.nouns:
-            noun, position = wordAndIndex(noun)
-            # targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
-            if position not in self.sequence \
-                    and not isQuestionWord(noun) \
-                    and position not in self.entities \
-                    and position not in self.instances:
-                self.sequence.append(position)
+        self.dealWithNouns()
+        # # 处理剩余的名词(如果词不在序列中并且不是问句词就添加)
+        # for noun in self.nouns:
+        #     noun, position = wordAndIndex(noun)
+        #     # targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
+        #     if position not in self.sequence \
+        #             and not isQuestionWord(noun) \
+        #             and position not in self.entities \
+        #             and position not in self.instances:
+        #         self.sequence.append(position)
 
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
@@ -387,6 +388,7 @@ class Template:
                                     and position not in self.entities:
                                 self.sequence.append(position)
 
+
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
@@ -649,6 +651,27 @@ class Template:
     def dealWithEntities(self, entity):
         if entity not in self.entities:
             self.final_action_dict["entities"].append(entity)
+
+    # 处理剩下的的名词
+    def dealWithNouns(self):
+        # 补充名词
+        for noun in self.nouns:
+            noun, position = wordAndIndex(noun)
+            noun_deprel = self.model.vertexModel.wordForDeprel(noun)
+            # print(lexicon.isEntityWords(noun))
+            if position not in self.sequence \
+                    and position not in self.entities \
+                    and position not in self.instances:
+
+                if self.makeEntityWord(noun_deprel, word=noun):
+                    self.dealWithEntities(position)
+                else:
+                    if not self.model.isSkipWordsIndex(position):
+                        # 有一种情况是实体词和形容词分离（服务类有超过一千万的项目吗）
+                        # 做一个拼接然后判断拼接了的词是否在实体词中，如果在就保存，如果不在就放弃直接添加
+                        if position not in self.sequence \
+                                and position not in self.entities:
+                            self.sequence.append(position)
 
     # 处理实体词
     def makeEntityWord(self, word_deprel, word_index=0, word=""):
