@@ -367,6 +367,7 @@ class Template:
                     else:
                         self.sequence.append(position)
 
+            # print(self.sequence)
             # 补充名词
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
@@ -380,7 +381,11 @@ class Template:
                         self.dealWithEntities(position)
                     else:
                         if not self.model.isSkipWordsIndex(position):
-                            self.sequence.append(position)
+                            # 有一种情况是实体词和形容词分离（服务类有超过一千万的项目吗）
+                            # 做一个拼接然后判断拼接了的词是否在实体词中，如果在就保存，如果不在就放弃直接添加
+                            if position not in self.sequence \
+                                    and position not in self.entities:
+                                self.sequence.append(position)
 
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
