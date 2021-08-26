@@ -264,7 +264,8 @@ class Template:
                         self.sequence.append(position)
                         if target_word_index not in self.entities \
                                 and target_word_index not in self.sequence \
-                                and not self.model.isSkipWordsIndex(target_word_index):
+                                and not self.model.isSkipWordsIndex(target_word_index) \
+                                and isVerbContainedSkipHEDwords(verb):
                             self.sequence.append(target_word_index)
                     else:
                         self.sequence.insert(0, position)
@@ -699,7 +700,6 @@ class Template:
             # 找到对应的修饰词
             for index in r_list:
                 temp_list = []
-                time_word_target_index = ""
                 target_word_index = self.model.vertexModel.wordForTargetIndex(index)
                 traget_word = self.model.vertexModel.indexForWord(target_word_index)
                 # 找到modified_word
