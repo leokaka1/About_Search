@@ -91,7 +91,7 @@ class Template:
             # if hed_index and hed_index not in self.sequence:
             #     self.sequence.append(hed_index)
 
-        self.dealWithNouns()
+        # self.dealWithNouns()
         # # 处理剩余的名词(如果词不在序列中并且不是问句词就添加)
         # for noun in self.nouns:
         #     noun, position = wordAndIndex(noun)
@@ -369,24 +369,24 @@ class Template:
                         self.sequence.append(position)
 
             # print(self.sequence)
-            # 补充名词
-            for noun in self.nouns:
-                noun, position = wordAndIndex(noun)
-                noun_deprel = self.model.vertexModel.wordForDeprel(noun)
-                # print(lexicon.isEntityWords(noun))
-                if position not in self.sequence \
-                        and position not in self.entities \
-                        and position not in self.instances:
-
-                    if self.makeEntityWord(noun_deprel, word=noun):
-                        self.dealWithEntities(position)
-                    else:
-                        if not self.model.isSkipWordsIndex(position):
-                            # 有一种情况是实体词和形容词分离（服务类有超过一千万的项目吗）
-                            # 做一个拼接然后判断拼接了的词是否在实体词中，如果在就保存，如果不在就放弃直接添加
-                            if position not in self.sequence \
-                                    and position not in self.entities:
-                                self.sequence.append(position)
+            # # 补充名词
+            # for noun in self.nouns:
+            #     noun, position = wordAndIndex(noun)
+            #     noun_deprel = self.model.vertexModel.wordForDeprel(noun)
+            #     # print(lexicon.isEntityWords(noun))
+            #     if position not in self.sequence \
+            #             and position not in self.entities \
+            #             and position not in self.instances:
+            #
+            #         if self.makeEntityWord(noun_deprel, word=noun):
+            #             self.dealWithEntities(position)
+            #         else:
+            #             if not self.model.isSkipWordsIndex(position):
+            #                 # 有一种情况是实体词和形容词分离（服务类有超过一千万的项目吗）
+            #                 # 做一个拼接然后判断拼接了的词是否在实体词中，如果在就保存，如果不在就放弃直接添加
+            #                 if position not in self.sequence \
+            #                         and position not in self.entities:
+            #                     self.sequence.append(position)
 
 
         self.dealWithEnd(self.sequence)
@@ -561,6 +561,7 @@ class Template:
             if not isVerbContainedSkipHEDwords(verb):
                 self.sequence.append(position)
 
+
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
@@ -700,6 +701,7 @@ class Template:
                 temp_list = []
                 time_word_target_index = ""
                 target_word_index = self.model.vertexModel.wordForTargetIndex(index)
+                traget_word = self.model.vertexModel.indexForWord(target_word_index)
                 # 找到modified_word
                 modi_word_index = self.model.vertexModel.modifiedWordIndex(target_word_index)
                 # print("modi_index",modi_word_index,target_word_index)
@@ -711,11 +713,13 @@ class Template:
                                 temp_list.append(modi_index)
                                 if target_word_index not in temp_list \
                                         and target_word_index not in entities \
-                                        and target_word_index not in instances:
+                                        and target_word_index not in instances \
+                                        and not isVerbContainedSkipHEDwords(traget_word):
                                     temp_list.append(target_word_index)
                             else:
                                 # 有时间的情况
                                 # 中标日期是2020年的项目有哪些
+                                # 2020年公司投标有哪些项目
                                 time_index_list = self.model.findTimeIndex()
                                 for time in time_index_list:
                                     # 判断word_list中有没有带日期的字段
@@ -723,8 +727,6 @@ class Template:
                                     if time_word_index != "":
                                         time_word_target_index = self.model.vertexModel.wordForTargetIndex(
                                             time_word_index)
-                                        # print(time_word_target_index)
-                                    if time_word_index != "":
                                         if time_word_index not in temp_list:
                                             temp_list.append(time_word_index)
                                             temp_list.append(time_word_target_index)
@@ -733,7 +735,7 @@ class Template:
                                     else:
                                         if time not in temp_list:
                                             temp_list.append(time)
-                # print(temp_list)
+
                 self.final_action_dict["attributes"].append(temp_list)
 
     # 清理疑问词
@@ -776,6 +778,8 @@ class Template:
         self.clearQuestionWord()
         # 清理sequence中包含的多余词
         self.clearSequenceRepeatWord()
+        # 处理剩下的名词
+        self.dealWithNouns()
         # 将sequences赋值给最终字典
         self.final_action_dict["sequences"] = sequences
 
