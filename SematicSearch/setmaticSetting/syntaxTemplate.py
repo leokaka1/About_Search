@@ -109,7 +109,8 @@ class Template:
     # 第②种情况
     def has_SBV_HED_Words(self):
         # FIXME: situation 2.1：有ATT，SBV和HED
-        #   eg:中标最多的单位？ - 刘德华老婆出生于
+        #   eg:中标最多的单位？ - 刘德华老婆出生于 中标最多的单位？
+        # 中标最多的单位？
         # 没有形容词的时候
         if not self.adjs:
             # 遍历动词
@@ -133,7 +134,8 @@ class Template:
                     for modi_index in modified_word_index:
                         if modi_index not in self.entities and modi_index not in self.sequence:
                             self.sequence.append(modi_index)
-                        self.sequence.append(position)
+                        if not isVerbContainedSkipHEDwords(verb):
+                            self.sequence.append(position)
 
                     # print(self.sequence)
 
@@ -156,6 +158,7 @@ class Template:
                         self.sequence.append(target_word_index)
         else:
             # FIXME: 2.2 有形容词，比如最多，一般用于排序
+            # 中标最多的单位？
             # 遍历动词
             for verb in self.verbs:
                 verb, position = wordAndIndex(verb)
@@ -367,7 +370,8 @@ class Template:
                             self.sequence.append(position)
                             self.sequence.append(target_word_index)
                     else:
-                        self.sequence.append(position)
+                        if not isVerbContainedSkipHEDwords(verb):
+                            self.sequence.append(position)
 
             # print(self.sequence)
             # # 补充名词
@@ -661,7 +665,8 @@ class Template:
                         # 有一种情况是实体词和形容词分离（服务类有超过一千万的项目吗）
                         # 做一个拼接然后判断拼接了的词是否在实体词中，如果在就保存，如果不在就放弃直接添加
                         if position not in self.sequence \
-                                and position not in self.entities:
+                                and position not in self.entities \
+                                and not countWord(noun):
                             self.sequence.append(position)
 
     # 处理实体词
