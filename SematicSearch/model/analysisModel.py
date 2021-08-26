@@ -14,6 +14,7 @@ class SematicAnalysisModel:
         self.verbs = verbs
         self.adjs = adjs
         self.attribute = attribute
+        self.lexicon = Lexicon()
 
         self.nounsHasWords = True if len(nouns) > 0 else False
         self.coosHasWords = True if len(coos) > 0 else False
@@ -177,6 +178,14 @@ class SematicAnalysisModel:
             if deprel == "VOB":
                 vob_list.append(self.vertexModel.word_list[index])
         return vob_list
+
+    # 判断词是否在实体中
+    def isWordInEntitiesList(self,index):
+        word = self.vertexModel.indexForWord(index)
+        if self.lexicon.isEntityWords(word):
+            return True
+
+        return False
 
     # 判断传入的deprel是否是在句子中
     def sentenceContainWhichDeqrel(self, deprels):
