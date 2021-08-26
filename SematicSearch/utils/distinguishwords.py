@@ -1,6 +1,6 @@
 # 是否包含程度词
 def degreeWord(word):
-    print("进来的词是i>>>>>",word)
+    # print("进来的词是i>>>>>",word)
     degree_word = ["超过", "大于", "越过", "少于", "小于", "等于", "第一", "最后", "相同", "仅次于", "最多","最少","最大","最小"]
     if word in degree_word:
         return True
