@@ -411,9 +411,11 @@ class Template:
         # 遍历动词
         for verb in self.verbs:
             verb, position = wordAndIndex(verb)
+            # print("test in ")
             modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
             if not self.model.isHedIndex(position) \
                     and not isVerbContainedSkipHEDwords(verb):
+                # print("self test in in ")
                 self.sequence.append(position)
                 for modi_index in modified_word_index:
                     if modi_index not in self.sequence \
@@ -421,7 +423,6 @@ class Template:
                             and not self.model.isSkipWordsIndex(modi_index):
                         self.sequence.append(modi_index)
 
-        print("sequence", self.sequence)
         self.dealWithEnd(self.sequence)
         return self.final_action_dict
 
@@ -698,22 +699,24 @@ class Template:
             for index in r_list:
                 temp_list = []
                 target_word_index = self.model.vertexModel.wordForTargetIndex(index)
-                traget_word = self.model.vertexModel.indexForWord(target_word_index)
+                target_word = self.model.vertexModel.indexForWord(target_word_index)
                 # 找到modified_word
                 modi_word_index = self.model.vertexModel.modifiedWordIndex(target_word_index)
                 # print("modi_index",modi_word_index,target_word_index)
                 if modi_word_index:
                     for modi_index in modi_word_index:
+                        modi_word = self.model.vertexModel.indexForWord(modi_index)
                         if not isVerbContainedSkipHEDwords(self.model.vertexModel.indexForWord(modi_index)):
                             # 有time和么有time区分处理
                             if not self.model.indexOfTimeWord(modi_index):
-                                if modi_index not in entities \
-                                        and modi_index not in instances:
+                                if degreeWord(modi_word) \
+                                        or lexicon.isAttributeWords(modi_word) \
+                                        or self.model.isValueWord(modi_word):
                                     temp_list.append(modi_index)
                                 if target_word_index not in temp_list \
                                         and target_word_index not in entities \
                                         and target_word_index not in instances \
-                                        and not isVerbContainedSkipHEDwords(traget_word):
+                                        and not isVerbContainedSkipHEDwords(target_word):
                                     # FIXME: 如果实例的对象词不等于目标词，就加入
                                     #   eg: 2020年远光软件股份有限公司投标的项目
                                     if instances:
@@ -721,7 +724,8 @@ class Template:
                                             if self.model.vertexModel.wordForTargetIndex(instance) != target_word_index:
                                                 temp_list.append(target_word_index)
                                     else:
-                                        temp_list.append(target_word_index)
+                                        if not degreeWord(target_word):
+                                            temp_list.append(target_word_index)
                             else:
                                 # print(modi_index)
                                 # 有时间的情况

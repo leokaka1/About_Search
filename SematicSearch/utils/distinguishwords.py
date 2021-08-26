@@ -1,6 +1,7 @@
 # 是否包含程度词
 def degreeWord(word):
-    degree_word = ["超过", "大于", "越过", "少于", "小于", "等于", "最高", "最大", "第一", "最少", "最小", "最后", "最多", "相同", "仅次于"]
+    print("进来的词是i>>>>>",word)
+    degree_word = ["超过", "大于", "越过", "少于", "小于", "等于", "第一", "最后", "相同", "仅次于", "最多","最少","最大","最小"]
     if word in degree_word:
         return True
 
@@ -36,8 +37,7 @@ def valueWord(word4pos):
     if word4pos:
         if word4pos in value_list:
             return True
-        else:
-            return False
+    return False
 
 
 # 判断是否是名词词性的词
@@ -46,8 +46,8 @@ def isNounWord(pos):
 
     if pos in nounList:
         return True
-    else:
-        return False
+
+    return False
 
 
 # 判断是否是动词词性的词
