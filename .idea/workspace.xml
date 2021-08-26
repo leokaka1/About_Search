@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43e13196-3b90-4094-90df-beddaa7a1642" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/SematicSearch/model/analysisModel.py" beforeDir="false" afterPath="$PROJECT_DIR$/SematicSearch/model/analysisModel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SematicSearch/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/SematicSearch/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SematicSearch/resources/user_dicts" beforeDir="false" afterPath="$PROJECT_DIR$/SematicSearch/resources/user_dicts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SematicSearch/setmaticSetting/syntaxTemplate.py" beforeDir="false" afterPath="$PROJECT_DIR$/SematicSearch/setmaticSetting/syntaxTemplate.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -13,11 +14,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SematicSearch/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="15" selection-start-line="15" selection-end-line="15" selection-end-column="13" />
+            <state relative-caret-position="-288">
+              <caret line="18" column="24" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
               <folding>
                 <element signature="e#0#53#0" expanded="true" />
               </folding>
@@ -26,16 +27,35 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SematicSearch/resources/instances">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="168">
+              <caret line="7" column="10" lean-forward="true" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/SematicSearch/resources/user_dicts">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="167">
+              <caret line="28" column="4" lean-forward="true" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SematicSearch/setmaticSetting/syntaxTemplate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1222">
-              <caret line="51" selection-start-line="51" selection-end-line="51" />
+            <state relative-caret-position="881">
+              <caret line="661" column="34" selection-start-line="661" selection-start-column="34" selection-end-line="661" selection-end-column="34" />
               <folding>
                 <element signature="e#0#66#0" expanded="true" />
                 <element signature="e#1754#3164#0" />
                 <element signature="e#3236#7888#0" />
                 <element signature="e#7957#9625#0" />
-                <element signature="e#9713#16894#0" />
+                <element signature="e#9768#13438#0" />
+                <element signature="e#15203#16780#0" />
                 <element signature="e#17046#18202#0" />
                 <element signature="e#18284#20196#0" />
                 <element signature="e#20256#21106#0" />
@@ -44,10 +64,11 @@
                 <element signature="e#23912#26564#0" />
                 <element signature="e#26622#27166#0" />
                 <element signature="e#27223#27264#0" />
-                <element signature="e#27319#27542#0" />
-                <element signature="e#27583#27710#0" />
-                <element signature="e#27758#27929#0" />
-                <element signature="e#28104#28445#0" />
+                <element signature="e#29088#29181#0" />
+                <element signature="e#29269#29610#0" />
+                <element signature="e#29433#32288#0" />
+                <element signature="e#31795#32018#0" />
+                <element signature="e#32072#32199#0" />
                 <element signature="e#31618#31704#0" />
                 <element signature="e#31747#31876#0" />
               </folding>
@@ -58,17 +79,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SematicSearch/utils/distinguishwords.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="222">
+            <state relative-caret-position="144">
               <caret line="77" column="4" selection-start-line="77" selection-start-column="4" selection-end-line="77" selection-end-column="4" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SematicSearch/manageProcess.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="192">
-              <caret line="8" selection-start-line="8" selection-end-line="8" />
             </state>
           </provider>
         </entry>
@@ -85,8 +97,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SematicSearch/setmaticSetting/sematicSetting.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="310">
-              <caret line="27" selection-start-line="27" selection-end-line="27" />
+            <state relative-caret-position="141">
+              <caret line="18" selection-start-line="18" selection-end-line="18" />
               <folding>
                 <element signature="e#0#66#0" expanded="true" />
               </folding>
@@ -99,18 +111,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1296">
               <caret line="54" column="20" lean-forward="true" selection-start-line="54" selection-start-column="20" selection-end-line="54" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/SematicSearch/model/analysisModel.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
-              <caret line="184" column="23" selection-start-line="184" selection-start-column="23" selection-end-line="184" selection-end-column="23" />
-              <folding>
-                <element signature="e#0#58#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -135,9 +135,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>segAndPostList</find>
-      <find>isContainAtrribute</find>
-      <find>isContain</find>
       <find>isAdjWord</find>
       <find>isContainQuestionWord</find>
       <find>hed word</find>
@@ -163,8 +160,11 @@
       <find>print</find>
       <find>投标单位</find>
       <find>2020年合同总价为100万的项目的中标人是</find>
-      <find>dealWithEntities</find>
       <find>entity</find>
+      <find>dealWithEntities</find>
+      <find>中标单位</find>
+      <find>verbcon</find>
+      <find>服务类项目</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -211,11 +211,8 @@
         <option value="$PROJECT_DIR$/SematicSearch/resources/types.csv" />
         <option value="$PROJECT_DIR$/SematicSearch/utils/tools.py" />
         <option value="$PROJECT_DIR$/SematicSearch/postag/wordPostag.py" />
-        <option value="$PROJECT_DIR$/SematicSearch/main.py" />
         <option value="$PROJECT_DIR$/SematicSearch/resources/entities" />
         <option value="$PROJECT_DIR$/SematicSearch/model/sematicModel.py" />
-        <option value="$PROJECT_DIR$/SematicSearch/resources/types" />
-        <option value="$PROJECT_DIR$/SematicSearch/resources/user_dicts" />
         <option value="$PROJECT_DIR$/SematicSearch/resources/disambiguation" />
         <option value="$PROJECT_DIR$/SematicSearch/utils/distinguishwords.py" />
         <option value="$PROJECT_DIR$/SematicSearch/relationTranslation/relationTranslation.py" />
@@ -223,7 +220,10 @@
         <option value="$PROJECT_DIR$/SematicSearch/config.py" />
         <option value="$PROJECT_DIR$/SematicSearch/utils/lexicon.py" />
         <option value="$PROJECT_DIR$/SematicSearch/model/analysisModel.py" />
+        <option value="$PROJECT_DIR$/SematicSearch/resources/types" />
         <option value="$PROJECT_DIR$/SematicSearch/setmaticSetting/syntaxTemplate.py" />
+        <option value="$PROJECT_DIR$/SematicSearch/main.py" />
+        <option value="$PROJECT_DIR$/SematicSearch/resources/user_dicts" />
       </list>
     </option>
   </component>
@@ -265,6 +265,12 @@
               <item name="About_Search" type="462c0819:PsiDirectoryNode" />
               <item name="SematicSearch" type="462c0819:PsiDirectoryNode" />
               <item name="relationTranslation" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="About_Search" type="b2602c69:ProjectViewProjectNode" />
+              <item name="About_Search" type="462c0819:PsiDirectoryNode" />
+              <item name="SematicSearch" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="About_Search" type="b2602c69:ProjectViewProjectNode" />
@@ -479,12 +485,12 @@
       <workItem from="1629868602643" duration="15129000" />
       <workItem from="1629894467427" duration="4551000" />
       <workItem from="1629899082653" duration="4137000" />
-      <workItem from="1629939295486" duration="2048000" />
+      <workItem from="1629939295486" duration="8788000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="552584000" />
+    <option name="totallyTimeSpent" value="559324000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -497,13 +503,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49833333" visible="true" weight="0.16524065" />
       <window_info id="Structure" order="1" sideWeight="0.50166667" side_tool="true" weight="0.1882353" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946523" visible="true" weight="0.25520262" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946523" visible="true" weight="0.23986857" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3603505" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -526,7 +533,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/About_Search$tools__1_.coverage" NAME="tools (1) Coverage Results" MODIFIED="1629771380638" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SematicSearch/utils" />
-    <SUITE FILE_PATH="coverage/About_Search$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1629941502948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SematicSearch" />
+    <SUITE FILE_PATH="coverage/About_Search$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1629947370382" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SematicSearch" />
     <SUITE FILE_PATH="coverage/About_Search$wordSegmentation.coverage" NAME="wordSegmentation Coverage Results" MODIFIED="1628232343084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Code/seg" />
     <SUITE FILE_PATH="coverage/About_Search$lexicon.coverage" NAME="lexicon Coverage Results" MODIFIED="1629899853946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SematicSearch/utils" />
     <SUITE FILE_PATH="coverage/About_Search$config.coverage" NAME="config Coverage Results" MODIFIED="1629899546127" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SematicSearch" />
@@ -771,20 +778,6 @@
     <entry file="file://$PROJECT_DIR$/SematicSearch/resources/attributes">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/SematicSearch/resources/types">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
-          <caret line="28" column="14" selection-start-line="28" selection-start-column="14" selection-end-line="28" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SematicSearch/resources/user_dicts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="33" column="4" selection-start-line="33" selection-start-column="4" selection-end-line="33" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SematicSearch/resources/disambiguation">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
@@ -793,13 +786,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/SematicSearch/resources/entities" />
-    <entry file="file://$PROJECT_DIR$/SematicSearch/resources/instances">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="17" column="17" selection-start-line="17" selection-start-column="17" selection-end-line="17" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SematicSearch/utils/tools.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="456">
@@ -844,40 +830,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SematicSearch/utils/distinguishwords.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="222">
-          <caret line="77" column="4" selection-start-line="77" selection-start-column="4" selection-end-line="77" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SematicSearch/setmaticSetting/sematicSetting.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="310">
-          <caret line="27" selection-start-line="27" selection-end-line="27" />
-          <folding>
-            <element signature="e#0#66#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SematicSearch/utils/lexicon.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1296">
-          <caret line="54" column="20" lean-forward="true" selection-start-line="54" selection-start-column="20" selection-end-line="54" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SematicSearch/model/analysisModel.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="184" column="23" selection-start-line="184" selection-start-column="23" selection-end-line="184" selection-end-column="23" />
-          <folding>
-            <element signature="e#0#58#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/SematicSearch/relationTranslation/relationTranslation.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
@@ -892,16 +844,82 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/SematicSearch/utils/distinguishwords.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="144">
+          <caret line="77" column="4" selection-start-line="77" selection-start-column="4" selection-end-line="77" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SematicSearch/model/analysisModel.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="159">
+          <caret line="109" column="8" selection-start-line="109" selection-start-column="8" selection-end-line="109" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#58#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SematicSearch/utils/lexicon.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1296">
+          <caret line="54" column="20" lean-forward="true" selection-start-line="54" selection-start-column="20" selection-end-line="54" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SematicSearch/setmaticSetting/sematicSetting.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="141">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
+          <folding>
+            <element signature="e#0#66#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SematicSearch/resources/types">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="29" column="14" lean-forward="true" selection-start-line="29" selection-start-column="14" selection-end-line="29" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SematicSearch/resources/user_dicts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="167">
+          <caret line="28" column="4" lean-forward="true" selection-start-line="28" selection-start-column="4" selection-end-line="28" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SematicSearch/resources/instances">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="7" column="10" lean-forward="true" selection-start-line="7" selection-start-column="10" selection-end-line="7" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SematicSearch/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-288">
+          <caret line="18" column="24" selection-start-line="18" selection-start-column="24" selection-end-line="18" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/SematicSearch/setmaticSetting/syntaxTemplate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1222">
-          <caret line="51" selection-start-line="51" selection-end-line="51" />
+        <state relative-caret-position="881">
+          <caret line="661" column="34" selection-start-line="661" selection-start-column="34" selection-end-line="661" selection-end-column="34" />
           <folding>
             <element signature="e#0#66#0" expanded="true" />
             <element signature="e#1754#3164#0" />
             <element signature="e#3236#7888#0" />
             <element signature="e#7957#9625#0" />
-            <element signature="e#9713#16894#0" />
+            <element signature="e#9768#13438#0" />
+            <element signature="e#15203#16780#0" />
             <element signature="e#17046#18202#0" />
             <element signature="e#18284#20196#0" />
             <element signature="e#20256#21106#0" />
@@ -910,22 +928,13 @@
             <element signature="e#23912#26564#0" />
             <element signature="e#26622#27166#0" />
             <element signature="e#27223#27264#0" />
-            <element signature="e#27319#27542#0" />
-            <element signature="e#27583#27710#0" />
-            <element signature="e#27758#27929#0" />
-            <element signature="e#28104#28445#0" />
+            <element signature="e#29088#29181#0" />
+            <element signature="e#29269#29610#0" />
+            <element signature="e#29433#32288#0" />
+            <element signature="e#31795#32018#0" />
+            <element signature="e#32072#32199#0" />
             <element signature="e#31618#31704#0" />
             <element signature="e#31747#31876#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SematicSearch/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="15" selection-start-line="15" selection-end-line="15" selection-end-column="13" />
-          <folding>
-            <element signature="e#0#53#0" expanded="true" />
           </folding>
         </state>
       </provider>

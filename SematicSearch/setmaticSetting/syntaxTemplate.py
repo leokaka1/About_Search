@@ -3,11 +3,11 @@ from SematicSearch.utils import *
 
 lexicon = Lexicon()
 
-
 """
 崩溃的句子
 2020年项目的投标的单位是
 """
+
 
 class Template:
     def __init__(self, model: SematicAnalysisModel):
@@ -24,32 +24,14 @@ class Template:
         self.attribute = self.model.attribute
         self.head_list = self.model.vertexModel.head_list
         self.word_list = self.model.vertexModel.word_list
+
+        self.preprocess()
         self.entities = self.final_action_dict["entities"]
         self.attributes = self.final_action_dict["attributes"]
+        self.instances = self.final_action_dict["instances"]
 
-        # 把找出来的实例给终极字典
-        self.instances = self.findInstanceWords()
-        for instances in self.instances:
-            index = self.model.vertexModel.word_list.index(instances)
-            self.final_action_dict["instances"].append(index)
-
-        # 判断句子中是否有属性或者属性值的存在，如果有就必须要处理实例或者实体
-        if self.model.isContainAmountOrTime():
-            # 如果属性值修饰的词是entitiy或者修饰词的target是entitiy，那么就存入entity中
-            r_list = self.model.findAmountOrTimeWordIndex()
-            for attribute_value_index in r_list:
-                target_word_index = self.model.vertexModel.wordForTargetIndex(attribute_value_index)
-                target_plus_word_index = self.model.vertexModel.wordForTargetIndex(target_word_index)
-
-                if self.model.isWordInEntitiesList(target_word_index) \
-                        and target_word_index not in self.entities:
-                    self.entities.append(target_word_index)
-
-                if self.model.isWordInEntitiesList(target_plus_word_index) \
-                        and target_plus_word_index not in self.entities:
-                    self.entities.append(target_plus_word_index)
-
-
+    # 预处理
+    def preprocess(self):
         # 是否有次数,count
         for word in self.model.vertexModel.word_list:
             if countWord(word):
@@ -60,6 +42,30 @@ class Template:
             # 如果一句话里面含有属性词或者含有一些金额，日期等词，就判断包含属性
             if lexicon.isContainAtrributeWord(word) or self.model.isValueWord(word):
                 self.final_action_dict["isContainValue"] = True
+
+        # 把找出来的实例给终极字典
+        instances_list = self.findInstanceWords()
+        for instances in instances_list:
+            # print("instances===>",instances)
+            index = self.model.vertexModel.word_list.index(instances)
+            self.final_action_dict["instances"].append(index)
+
+        # 判断句子中是否有属性或者属性值的存在，如果有就必须要处理实例或者实体
+        if self.final_action_dict["isContainValue"]:
+            entities = self.final_action_dict["entities"]
+            # 如果属性值修饰的词是entitiy或者修饰词的target是entitiy，那么就存入entity中
+            r_list = self.model.findAmountOrTimeWordIndex()
+            for attribute_value_index in r_list:
+                target_word_index = self.model.vertexModel.wordForTargetIndex(attribute_value_index)
+                target_plus_word_index = self.model.vertexModel.wordForTargetIndex(target_word_index)
+
+                if self.model.isWordInEntitiesList(target_word_index) \
+                        and target_word_index not in entities:
+                    entities.append(target_word_index)
+
+                if self.model.isWordInEntitiesList(target_plus_word_index) \
+                        and target_plus_word_index not in entities:
+                    entities.append(target_plus_word_index)
 
         # FIXME: 执行属性
         self.isAttributeSequence()
@@ -253,15 +259,16 @@ class Template:
                 # 不是HED动词
                 if not self.model.isHedWord(verb):
                     # 如果target_word是entity，就不添加,并且将动词插入到第一位
-                    if target_word_index not in self.entities:
+                    if target_word_index not in self.instances:
                         self.sequence.append(position)
-                        if target_word_index not in self.instances \
+                        if target_word_index not in self.entities \
                                 and target_word_index not in self.sequence \
                                 and not self.model.isSkipWordsIndex(target_word_index):
                             self.sequence.append(target_word_index)
                     else:
                         self.sequence.insert(0, position)
                 else:
+                    # print(self.instances)
                     # 是HED动词
                     # 如果是HED词，修饰的target不是vob修饰词，如哪些，什么之类的就添加
                     for modi_index in modified_word_index:
@@ -271,6 +278,7 @@ class Template:
                                 and modi_index not in self.sequence \
                                 and modi_index not in self.instances:
                             # iscontainValue = True情况，并且modi_word = sbv
+                            print(modi_index)
                             self.sequence.append(modi_index)
 
                     # 如果中心词不是有，是，这种词，就添加
@@ -286,15 +294,17 @@ class Template:
                         and position not in self.entities \
                         and position not in self.instances:
                     # 如果是目标的sbv就插入目标词之前
-                    if self.model.vertexModel.wordForDeprel(noun) == "SBV":
+                    if self.model.vertexModel.wordForDeprel(noun) == "SBV" \
+                            and noun_target_index in self.sequence:
                         self.sequence.insert(self.sequence.index(noun_target_index), position)
                     # 如果是目标的VOB就插到目标词后面
-                    elif self.model.vertexModel.wordForDeprel(noun) == "VOB":
+                    elif self.model.vertexModel.wordForDeprel(noun) == "VOB" \
+                            and noun_target_index in self.sequence:
                         self.sequence.insert(self.sequence.index(noun_target_index) + 1, position)
                     # 如果啥都不是就直接拼接
                     else:
                         if position not in self.sequence:
-                            if noun_target_index in self.entities \
+                            if noun_target_index in self.instances \
                                     and self.model.indexOfTimeWord(position) \
                                     and not self.model.indexOfTimeWord(position):
                                 self.sequence.insert(0, position)
@@ -306,7 +316,6 @@ class Template:
                                 else:
                                     self.sequence.append(position)
         else:
-            print("有属性的情况")
             # 有属性值的情况
             # 遍历动词
             for verb in self.verbs:
@@ -355,6 +364,8 @@ class Template:
                         if not isVerbContainedSkipHEDwords(verb):
                             self.sequence.append(position)
                             self.sequence.append(target_word_index)
+                    else:
+                        self.sequence.append(position)
 
             # 补充名词
             for noun in self.nouns:
@@ -629,30 +640,6 @@ class Template:
     def hasValues(self, charge):
         self.final_action_dict["values"] = charge
 
-    # 清理疑问词
-    def clearQuestionWord(self):
-        for index in self.sequence:
-            # print(index)
-            word = self.model.vertexModel.indexForWord(index)
-            # print(word)
-            if isQuestionWord(word):
-                self.sequence.remove(index)
-
-    # 清除重复的词
-    def clearRepeatWord(self):
-        for x in self.sequence:
-            while self.sequence.count(x) > 1:
-                del self.sequence[self.sequence.index(x)]
-
-    # 处理结尾
-    def dealWithEnd(self, sequences):
-        # 清除重复词
-        self.clearRepeatWord()
-        # 清理疑问词
-        self.clearQuestionWord()
-        # 将sequences赋值给最终字典
-        self.final_action_dict["sequences"] = sequences
-
     # 处理实体
     def dealWithEntities(self, entity):
         if entity not in self.entities:
@@ -673,6 +660,8 @@ class Template:
     #      eg: 中标日期为2020年并且合同总价为100万的项目是
     #       eg:2020年合同总价为100万的项目    中标日期2020年的项目
     def isAttributeSequence(self):
+        entities = self.final_action_dict["entities"]
+        instances = self.final_action_dict["instances"]
         # 首先判断居中是否有时间或者金额
         if self.model.isContainAmountOrTime():
             r_list = self.model.findAmountOrTimeWordIndex()
@@ -693,8 +682,8 @@ class Template:
                             if not self.model.indexOfTimeWord(modi_index):
                                 temp_list.append(modi_index)
                                 if target_word_index not in temp_list \
-                                        and target_word_index not in self.entities \
-                                        and target_word_index not in self.instances:
+                                        and target_word_index not in entities \
+                                        and target_word_index not in instances:
                                     temp_list.append(target_word_index)
                             else:
                                 # 有时间的情况
@@ -717,7 +706,50 @@ class Template:
                                         if time not in temp_list:
                                             temp_list.append(time)
                 # print(temp_list)
-                self.attributes.append(temp_list)
+                self.final_action_dict["attributes"].append(temp_list)
+
+    # 清理疑问词
+    def clearQuestionWord(self):
+        for index in self.sequence:
+            # print(index)
+            word = self.model.vertexModel.indexForWord(index)
+            # print(word)
+            if isQuestionWord(word):
+                self.sequence.remove(index)
+
+    # 清除重复的词
+    def clearRepeatWord(self):
+        for x in self.sequence:
+            while self.sequence.count(x) > 1:
+                del self.sequence[self.sequence.index(x)]
+
+    # 清理sequence中与attribute中重复的词
+    def clearSequenceRepeatWord(self):
+        temp_all_attribute_word = []
+        for atri in self.attributes:
+            for word in atri:
+                temp_all_attribute_word.append(word)
+
+        # 遍历sequence
+        temp_record_index = []
+        for index, word in enumerate(self.sequence):
+            if word in self.entities or word in temp_all_attribute_word or word in self.instances:
+                temp_record_index.append(index)
+
+        # sequence 删除
+        for index in temp_record_index[::-1]:
+            del self.sequence[index]
+
+    # 处理结尾
+    def dealWithEnd(self, sequences):
+        # 清除重复词
+        self.clearRepeatWord()
+        # 清理疑问词
+        self.clearQuestionWord()
+        # 清理sequence中包含的多余词
+        self.clearSequenceRepeatWord()
+        # 将sequences赋值给最终字典
+        self.final_action_dict["sequences"] = sequences
 
 
 # 分解word和index
