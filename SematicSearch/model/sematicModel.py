@@ -105,3 +105,6 @@ class SemanticModel:
 
     def indexForDeprel(self,index):
         return self.deprel_list[index]
+
+    def indexForPos(self,index):
+        return self.pos_list[index]
