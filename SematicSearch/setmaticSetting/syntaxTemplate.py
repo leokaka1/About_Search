@@ -141,7 +141,7 @@ class Template:
 
                     # print(self.sequence)
 
-            # 处理剩余名词
+            # # 处理剩余名词
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
                 target_word_index = self.model.vertexModel.wordForTargetIndex(position)
@@ -189,11 +189,13 @@ class Template:
             # 处理剩下的名词
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
+                noun_deprel = self.model.vertexModel.wordForDeprel(noun)
                 # target_word_index = self.model.vertexModel.wordForTargetIndex(position)
                 if position not in self.sequence \
                         and position not in self.entities \
                         and not countWord(noun):
-                    self.sequence.append(position)
+                    if self.makeEntityWord(noun_deprel, word=noun):
+                        self.dealWithEntities(position)
 
             # 处理剩下的属性词
             if self.attribute:
@@ -272,7 +274,7 @@ class Template:
                                 and not self.model.isSkipWordsIndex(target_word_index) \
                                 and not isVerbContainedSkipHEDwords(verb):
                             self.sequence.append(target_word_index)
-                    else:
+                    elif not isVerbContainedSkipHEDwords(verb):
                         self.sequence.insert(0, position)
 
                     # print("self.sequence", self.sequence)
@@ -281,6 +283,7 @@ class Template:
                     # 是HED动词
                     # 如果是HED词，修饰的target不是vob修饰词，如哪些，什么之类的就添加
                     for modi_index in modified_word_index:
+                        modi_word = self.model.vertexModel.indexForWord(modi_index)
                         # 条件，如果修饰动词的词不是疑问词或者不是实体词，就添加进去
                         if modi_index not in self.entities \
                                 and not self.model.isSkipWordsIndex(modi_index) \
@@ -288,7 +291,11 @@ class Template:
                                 and modi_index not in self.instances:
                             # iscontainValue = True情况，并且modi_word = sbv
                             # print(modi_index)
-                            self.sequence.append(modi_index)
+                            if self.instances:
+                                for instance in self.instances:
+                                    instance_type = lexicon.getInstanceType(self.model.vertexModel.indexForWord(instance))
+                                    if not instance_type == modi_word:
+                                        self.sequence.append(modi_index)
 
                     # 如果中心词不是有，是，这种词，就添加
                     if not isVerbContainedSkipHEDwords(verb):
@@ -507,7 +514,22 @@ class Template:
         # 处理名词
         for noun in self.nouns:
             noun, position = wordAndIndex(noun)
-            if position not in self.sequence and position not in self.entities:
+            noun_deprel = self.model.vertexModel.wordForDeprel(noun)
+            if self.makeEntityWord(noun_deprel, word=noun):
+                self.dealWithEntities(position)
+
+        # 处理形容词
+        for adj in self.adjs:
+            adj, position = wordAndIndex(adj)
+            modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+            # 如果形容词是HED - （那家招标代理机构招标次数最多？）一般句尾是形容词
+            if self.model.isHedIndex(position):
+                for modi_index in modified_word_index:
+                    modi_word = self.model.vertexModel.indexForWord(modi_index)
+                    if modi_index not in self.sequence and not countWord(modi_word):
+                        self.sequence.append(modi_index)
+                self.sequence.append(position)
+            else:
                 self.sequence.append(position)
 
         self.dealWithEnd()
@@ -777,7 +799,7 @@ class Template:
                                 temp_list.append(time)
                 else:
                     # 如果是没有时间的状态
-                    print("没有时间的index>>>>",index,modi_word_index)
+                    # print("没有时间的index>>>>",index,modi_word_index)
                     if modi_word_index:
                         for modi_index in modi_word_index:
                             modi_word = self.model.vertexModel.indexForWord(modi_index)

@@ -75,6 +75,14 @@ class Lexicon:
             instances_type.append(instance_type)
         return instances, instances_type
 
+    def getInstanceType(self, word):
+        for instance_word in self.instances_lines:
+            instance = instance_word.split("-")[0].strip()
+            instance_type = instance_word.split("-")[1].strip()
+            if word == instance:
+                return instance_type
+        return ""
+
     # 获取实例的名称和type列表
     def receiveAttributeInfo(self):
         attributes = []
@@ -110,7 +118,8 @@ class Lexicon:
 
         return False
 
+
 if __name__ == '__main__':
-    lexion =Lexicon()
+    lexion = Lexicon()
     # lexion.receiveInstanceInfo()
     lexion.receiveAttributeInfo()
