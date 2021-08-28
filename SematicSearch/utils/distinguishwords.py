@@ -1,7 +1,7 @@
 # 是否包含程度词
 def degreeWord(word):
     # print("进来的词是i>>>>>",word)
-    degree_word = ["超过", "大于", "越过", "少于", "小于", "等于", "第一", "最后", "相同", "仅次于", "最多","最少","最大","最小"]
+    degree_word = ["超过", "大于", "越过", "少于", "小于", "等于", "第一", "最后", "相同", "仅次于", "最多", "最少", "最大", "最小"]
     if word in degree_word:
         return True
 
@@ -12,7 +12,6 @@ def degreeWord(word):
 def degreeSymbol(word):
     big = ["超过", "大于", "越过"]
     small = ["少于", "小于"]
-    equal = ["为", "等于", "是"]
     biggest = ["最高", "最大", "第一", "最多"]
     smallest = ["最少", "最小", "最后"]
 
@@ -20,12 +19,10 @@ def degreeSymbol(word):
         chargeSymbol = ">"
     elif word in small:
         chargeSymbol = "<"
-    elif word in equal:
-        chargeSymbol = "="
     elif word in biggest:
-        chargeSymbol = "desc limit 1"
+        chargeSymbol = "max"
     elif word in smallest:
-        chargeSymbol = "limit 1"
+        chargeSymbol = "min"
     else:
         chargeSymbol = ""
     return chargeSymbol
@@ -76,7 +73,7 @@ def isAdjWord(pos):
 
 # 是否包含一些HED的虚拟动词
 def isVerbContainedSkipHEDwords(word):
-    hed_ver_list = ["有", "是", "包含", "为", "与", "跟", "和", "都", "是不是", "要", "开", "的", "并且","有没有","被","签"]
+    hed_ver_list = ["有", "是", "包含", "为", "与", "跟", "和", "都", "是不是", "要", "开", "的", "并且", "有没有", "被", "叫"]
     if word in hed_ver_list:
         return True
     else:
@@ -92,16 +89,28 @@ def isSkipNounWord(word):
 
 
 def countWord(word):
-    countwords = ['次数', "排", "最多", "最少", "仅次于"]
+    countwords = ['次数', "数量","最多","最少"]
     if word in countwords:
         return True
     return False
 
 
+def rankingWord(word):
+    rankingwords = ["排", "列", "名列", "排名"]
+    if word in rankingwords:
+        return True
+    return False
+
+def queryRanking(word):
+    queryrankingWord = ["第几", "第几位", "哪一名"]
+    if word in queryrankingWord:
+        return True
+    return False
+
 # 疑问词结尾
 def isQuestionWord(word):
     # print(word)
-    question_word = ["哪些", "什么", "那些", "哪", "那", "吗", "么", "呢","哪个","那个","哪类","那类"]
+    question_word = ["哪些", "什么", "那些", "哪", "那", "吗", "么", "呢", "哪个", "那个", "哪类", "那类"]
     if word in question_word:
         return True
 

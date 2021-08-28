@@ -35,6 +35,17 @@ class Lexicon:
                 return True
         return False
 
+    def wordInTypes(self,word):
+        temp_word_list = []
+        for line in self.types_lines:
+            type_word = line.split("-")[0].strip()
+            word_type = line.split("-")[1].strip()
+            temp_word_list.append(type_word)
+        if word in temp_word_list:
+            return True
+
+        return False
+
     def findDisWord(self):
         word_list = []
         type_list = []

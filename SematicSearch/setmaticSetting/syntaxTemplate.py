@@ -13,7 +13,7 @@ class Template:
     def __init__(self, model: SematicAnalysisModel):
         self.model = model
         self.final_action_dict = {"instances": [], "entities": [], "sequences": [], "attributes": [], "count": False,
-                                  "isContainValue": False}
+                                  "ranking": "", "isContainValue": False}
 
         self.degrees = ""
         self.values_str = ""
@@ -31,12 +31,14 @@ class Template:
         self.attributes = self.final_action_dict["attributes"]
         self.instances = self.final_action_dict["instances"]
         self.containValue = self.final_action_dict["isContainValue"]
+        self.count = self.final_action_dict["count"]
+        self.ranking = self.final_action_dict["ranking"]
 
     # 预处理
     def preprocess(self):
         # 是否有次数,count
         for word in self.model.vertexModel.word_list:
-            if countWord(word):
+            if degreeWord(word):
                 self.final_action_dict["count"] = True
 
         # 判断句子中是否含有属性词，如果含有就把isContainValue置为True
@@ -54,7 +56,7 @@ class Template:
 
         # 判断句子中是否有属性或者属性值的存在，如果有就必须要处理实例或者实体
         if self.final_action_dict["isContainValue"]:
-            entities = self.final_action_dict["entities"]
+            # entities = self.final_action_dict["entities"]
             # 如果属性值修饰的词是entitiy或者修饰词的target是entitiy，那么就存入entity中
             r_list = self.model.findAmountOrTimeWordIndex()
             for attribute_value_index in r_list:
@@ -62,12 +64,35 @@ class Template:
                 target_plus_word_index = self.model.vertexModel.wordForTargetIndex(target_word_index)
 
                 if self.model.isWordInEntitiesList(target_word_index) \
-                        and target_word_index not in entities:
-                    entities.append(target_word_index)
+                        and target_word_index not in self.final_action_dict["entities"]:
+                    self.final_action_dict["entities"].append(target_word_index)
 
                 if self.model.isWordInEntitiesList(target_plus_word_index) \
-                        and target_plus_word_index not in entities:
-                    entities.append(target_plus_word_index)
+                        and target_plus_word_index not in self.final_action_dict["entities"]:
+                    self.final_action_dict["entities"].append(target_plus_word_index)
+
+        # 判断句子中是否有ranking的词，如果有，那么就显示排名第几
+        # 找最多，最少等程度词
+        temp_degree_str = ""
+        for index, word in enumerate(self.model.vertexModel.word_list):
+            if degreeWord(word):
+                symbol = degreeSymbol(word)
+                if symbol:
+                    temp_degree_str += symbol
+                    self.final_action_dict["ranking"] = temp_degree_str
+
+            elif rankingWord(word):
+                if self.word_list[index + 1]:
+                    next_count_word = self.word_list[index + 1]
+                    if queryRanking(next_count_word):
+                        temp_degree_str += "query"
+                        self.final_action_dict["ranking"] = temp_degree_str
+                    else:
+                        if self.model.vertexModel.wordForPos(next_count_word) == "m":
+                            temp_degree_str += next_count_word
+                        elif self.model.vertexModel.wordForPos(self.word_list[index + 2]) and self.word_list[index + 2]:
+                            temp_degree_str += self.word_list[index + 2]
+                        self.final_action_dict["ranking"] = temp_degree_str
 
         # FIXME: 执行属性
         self.isAttributeSequence()
@@ -139,8 +164,6 @@ class Template:
                         if not isVerbContainedSkipHEDwords(verb):
                             self.sequence.append(position)
 
-                    # print(self.sequence)
-
             # # 处理剩余名词
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
@@ -167,7 +190,8 @@ class Template:
                 target_word_index = self.model.vertexModel.wordForTargetIndex(position)
                 target_word = self.model.vertexModel.wordForTargetIndexWord(position)
                 if position not in self.sequence:
-                    self.sequence.append(position)
+                    if not isVerbContainedSkipHEDwords(verb):
+                        self.sequence.append(position)
                     if target_word_index not in self.sequence \
                             and not countWord(target_word):
                         self.sequence.append(target_word_index)
@@ -272,7 +296,8 @@ class Template:
                         if target_word_index not in self.entities \
                                 and target_word_index not in self.sequence \
                                 and not self.model.isSkipWordsIndex(target_word_index) \
-                                and not isVerbContainedSkipHEDwords(verb):
+                                and not isVerbContainedSkipHEDwords(verb) \
+                                and not degreeWord(self.model.vertexModel.indexForWord(target_word_index)):
                             self.sequence.append(target_word_index)
                     elif not isVerbContainedSkipHEDwords(verb):
                         self.sequence.insert(0, position)
@@ -293,7 +318,8 @@ class Template:
                             # print(modi_index)
                             if self.instances:
                                 for instance in self.instances:
-                                    instance_type = lexicon.getInstanceType(self.model.vertexModel.indexForWord(instance))
+                                    instance_type = lexicon.getInstanceType(
+                                        self.model.vertexModel.indexForWord(instance))
                                     if not instance_type == modi_word:
                                         self.sequence.append(modi_index)
 
@@ -418,58 +444,59 @@ class Template:
         # 2020年远光软件股份有限公司投标的项目
         # 施工标的类项目都有哪些公司中标？
         # 遍历动词
-        for verb in self.verbs:
-            verb, position = wordAndIndex(verb)
-            # print("test in ")
-            modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+        if self.count:
+            pass
+            for attribute_word in self.adjs:
+                adj, position = wordAndIndex(attribute_word)
+                # print(position)
+                attribute_word = self.model.vertexModel.indexForWord(position)
+                modi_word_index = self.model.vertexModel.modifiedWordIndex(position)
+                if countWord(attribute_word):
+                    for modi_index in modi_word_index:
+                        if modi_index not in self.entities and modi_index not in self.instances:
+                            self.sequence.append(modi_index)
 
+        else:
+            for verb in self.verbs:
+                verb, position = wordAndIndex(verb)
+                # print("test in ")
+                modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+                verb_target_index = self.model.vertexModel.wordForTargetIndex(position)
 
-            # 有时间状语的句子 ，因为时间一般self.containValue = true的情况
+                # 有时间状语的句子 ，因为时间一般self.containValue = true的情况
+                if self.containValue:
+                    for modi_index in modified_word_index:
+                        modi_pos = self.model.vertexModel.indexForPos(modi_index)
+                        modi_deprel = self.model.vertexModel.indexForDeprel(modi_index)
+
+                        if modi_pos == "n" and (modi_deprel == "SBV" or modi_deprel == "VOB"):
+                            print("modi_pos", modi_index)
+                            self.dealWithEntities(modi_index)
+                        else:
+                            self.sequence.append(modi_index)
+                # 处理动词
+                if not self.model.isHedIndex(position):
+                    if self.entities:
+                        for entity in self.entities:
+                            entity_target_word_index = self.model.vertexModel.wordForTargetIndex(entity)
+                            # print("entity target")
+                            if entity_target_word_index == verb_target_index:
+                                self.entities.append(position)
+
+                    self.sequence.append(position)
+
+            # 找到序列中有没有词跟entity有关系
+            temp = 0
             if self.containValue:
-                for modi_index in modified_word_index:
-                    modi_pos = self.model.vertexModel.indexForPos(modi_index)
-                    modi_deprel = self.model.vertexModel.indexForDeprel(modi_index)
-
-                    if modi_pos == "n" and (modi_deprel == "SBV" or modi_deprel == "VOB"):
-                        print("modi_pos",modi_index)
-                        self.dealWithEntities(modi_index)
-                    else:
-                        self.sequence.append(modi_index)
-
-            # print("self.entitiy12312312",self.entities)
-            # 处理动词
-            if not self.model.isHedIndex(position):
-                self.sequence.append(position)
-
-
-            # if not self.model.isHedIndex(position) \
-            #         and not isVerbContainedSkipHEDwords(verb):
-            #     # print("self test in in ")
-            #     self.sequence.append(position)
-            #     for modi_index in modified_word_index:
-            #         modi_deprel = self.model.vertexModel.wordForDeprel(self.model.vertexModel.indexForWord(modi_index))
-            #         if modi_index not in self.sequence \
-            #                 and modi_index not in self.entities \
-            #                 and not self.model.isSkipWordsIndex(modi_index):
-            #
-            #             if self.makeEntityWord(modi_deprel,word_index=modi_index):
-            #                 print("modi=====>",modi_index)
-            #                 self.dealWithEntities(modi_index)
-            #             else:
-            #                 self.sequence.append(modi_index)
-
-        # 找到序列中有没有词跟entity有关系
-        temp = 0
-        if self.containValue:
-            for index in self.sequence:
-                target_word_index = self.model.vertexModel.wordForTargetIndex(index)
-                for entity_index in self.entities:
-                    entity_target_word_index = self.model.vertexModel.wordForTargetIndex(entity_index)
-                    if target_word_index == entity_target_word_index:
-                        temp = index
-            # print("temp===",temp)
-            self.sequence.insert(0,temp)
-            # print(self.sequence)
+                for index in self.sequence:
+                    target_word_index = self.model.vertexModel.wordForTargetIndex(index)
+                    for entity_index in self.entities:
+                        entity_target_word_index = self.model.vertexModel.wordForTargetIndex(entity_index)
+                        if target_word_index == entity_target_word_index:
+                            temp = index
+                # print("temp===",temp)
+                self.sequence.insert(0, temp)
+                # print(self.sequence)
 
         self.dealWithEnd()
         return self.final_action_dict
@@ -567,18 +594,24 @@ class Template:
         for verb in self.verbs:
             verb, position = wordAndIndex(verb)
             target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+            target_word = self.model.vertexModel.indexForWord(target_word_index)
             modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
+
             if not self.model.isHedIndex(position):
                 if not isVerbContainedSkipHEDwords(verb):
                     self.sequence.append(position)
-                if target_word_index not in self.entities:
+                if target_word_index not in self.entities and not countWord(target_word):
+                    # print(target_word)
                     self.sequence.append(target_word_index)
             else:
                 for modified_index in modified_word_index:
+
                     if modified_index not in self.sequence:
                         self.sequence.append(modified_index)
                     if position not in self.sequence and not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
+
+        # print(self.sequence)
         # # 如果有属性
         # for attribute_word in self.attribute:
         #     attribute, position = wordAndIndex(attribute_word)
@@ -716,6 +749,11 @@ class Template:
 
     # 处理剩下的的名词
     def dealWithNouns(self):
+
+        # print("self.entities",self.entities)
+        # print("self.instance",self.instances)
+        # print("self sequence",self.sequence)
+
         # 补充名词
         for noun in self.nouns:
             noun, position = wordAndIndex(noun)
@@ -729,7 +767,6 @@ class Template:
                 if self.makeEntityWord(noun_deprel, word=noun) and self.containValue:
                     # print(noun)
                     self.dealWithEntities(position)
-                    # pass
                 else:
                     if not self.model.isSkipWordsIndex(position):
                         # 有一种情况是实体词和形容词分离（服务类有超过一千万的项目吗）
@@ -737,7 +774,21 @@ class Template:
                         if position not in self.sequence \
                                 and position not in self.entities \
                                 and not countWord(noun):
-                            self.sequence.append(position)
+                            target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                            if target_word_index in self.sequence:
+                                self.sequence.insert(self.sequence.index(target_word_index) + 1, position)
+                            elif target_word_index in self.entities:
+                                self.entities.append(target_word_index)
+                            else:
+                                self.sequence.append(position)
+
+        # 去年那种类型项目投资最多
+        # 如果sequence中有名词在entities中，说明可能是修饰作用，例如，项目-类型
+        for word_index in self.sequence:
+            target_word_index = self.model.vertexModel.wordForTargetIndex(word_index)
+            if target_word_index in self.entities:
+                self.entities.insert(self.entities.index(target_word_index) + 1, word_index)
+                self.sequence.remove(word_index)
 
     # 处理实体词
     def makeEntityWord(self, word_deprel, word_index=0, word=""):
@@ -806,7 +857,7 @@ class Template:
                             if not isVerbContainedSkipHEDwords(self.model.vertexModel.indexForWord(modi_index)):
                                 # 有time和么有time区分处理
                                 if not self.model.indexOfTimeWord(modi_index):
-                                    print(modi_index)
+                                    # print(modi_index)
                                     if degreeWord(modi_word) \
                                             or lexicon.isAttributeWords(modi_word) \
                                             or self.model.isValueWord(modi_word):
@@ -821,59 +872,12 @@ class Template:
                                         if instances:
                                             for instance in instances:
                                                 if self.model.vertexModel.wordForTargetIndex(
-                                                        instance) != target_word_index:
+                                                        instance) != target_word_index \
+                                                        and not degreeWord(target_word):
                                                     temp_list.append(target_word_index)
                                         else:
-                                            # if not degreeWord(target_word):
-                                            temp_list.append(target_word_index)
-
-                # if modi_word_index:
-                #     for modi_index in modi_word_index:
-                #         modi_word = self.model.vertexModel.indexForWord(modi_index)
-                #         if not isVerbContainedSkipHEDwords(self.model.vertexModel.indexForWord(modi_index)):
-                #             # 有time和么有time区分处理
-                #             if not self.model.indexOfTimeWord(modi_index):
-                #                 print(modi_index)
-                #                 if degreeWord(modi_word) \
-                #                         or lexicon.isAttributeWords(modi_word) \
-                #                         or self.model.isValueWord(modi_word):
-                #                     temp_list.append(modi_index)
-                #                 if target_word_index not in temp_list \
-                #                         and target_word_index not in entities \
-                #                         and target_word_index not in instances \
-                #                         and not isVerbContainedSkipHEDwords(target_word):
-                #                     # FIXME: 如果实例的对象词不等于目标词，就加入
-                #                     #   eg: 2020年远光软件股份有限公司投标的项目
-                #                     #  2020年招标金额为100万的是 ※
-                #                     if instances:
-                #                         for instance in instances:
-                #                             if self.model.vertexModel.wordForTargetIndex(instance) != target_word_index:
-                #                                 temp_list.append(target_word_index)
-                #                     else:
-                #                         # if not degreeWord(target_word):
-                #                         temp_list.append(target_word_index)
-                #
-                #             else:
-                #                 # 有时间的情况
-                #                 # 中标日期是2020年的项目有哪些
-                #                 # 2020年公司投标有哪些项目
-                #                 time_index_list = self.model.findTimeIndex()
-                #                 for time in time_index_list:
-                #                     # 判断word_list中有没有带日期的字段
-                #                     time_word_index = self.model.findTimeWordIndexFromWordList()
-                #                     if time_word_index != "":
-                #                         time_word_target_index = self.model.vertexModel.wordForTargetIndex(
-                #                             time_word_index)
-                #                         time_word_target_word = self.model.vertexModel.indexForWord(time_word_target_index)
-                #                         if time_word_index not in temp_list:
-                #                             temp_list.append(time_word_index)
-                #                             if degreeWord(time_word_target_word):
-                #                                 temp_list.append(time_word_target_index)
-                #                         if time not in temp_list:
-                #                             temp_list.append(time)
-                #                     else:
-                #                         if time not in temp_list:
-                #                             temp_list.append(time)
+                                            if not degreeWord(target_word):
+                                                temp_list.append(target_word_index)
 
                 self.final_action_dict["attributes"].append(temp_list)
 
@@ -920,6 +924,7 @@ class Template:
 
     # 处理结尾
     def dealWithEnd(self):
+        print("self entities", self.entities)
         # 清除重复词
         self.clearRepeatWord()
         # 清理疑问词
