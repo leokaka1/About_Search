@@ -117,22 +117,10 @@ class Template:
                     self.sequence.append(position)
                 if targetWord_index not in self.sequence and targetWord_index not in self.entities:
                     self.sequence.append(targetWord_index)
-
-            # 判断HED在不在句子中，如果不在就添加到末尾targetWordIndex
-            # hed_word, hed_index = self.model.getHEDWord()
-            # if hed_index and hed_index not in self.sequence:
-            #     self.sequence.append(hed_index)
-
-        # self.dealWithNouns()
-        # # 处理剩余的名词(如果词不在序列中并且不是问句词就添加)
-        # for noun in self.nouns:
-        #     noun, position = wordAndIndex(noun)
-        #     # targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
-        #     if position not in self.sequence \
-        #             and not isQuestionWord(noun) \
-        #             and position not in self.entities \
-        #             and position not in self.instances:
-        #         self.sequence.append(position)
+        else:
+            for noun in self.nouns:
+                noun, position = wordAndIndex(noun)
+                self.sequence.append(position)
 
         self.dealWithEnd()
         return self.final_action_dict
@@ -333,7 +321,7 @@ class Template:
                     # 如果中心词不是有，是，这种词，就添加
                     if not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
-            # print("sequence>>>>>>>", self.sequence)
+
             # FIXME:有可能出现的情况，还有名词修饰名词的时候，必须把名词遍历统计完
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
@@ -363,7 +351,9 @@ class Template:
                                         and noun_target_index in self.sequence:
                                     self.sequence.insert(self.sequence.index(noun_target_index), position)
                                 else:
+                                    # if noun_target_index
                                     self.sequence.append(position)
+            # print("sequence>>>>>>>", self.sequence)
         else:
             # 有属性值的情况
             # 遍历动词
@@ -915,30 +905,30 @@ class Template:
             del self.sequence[index]
 
     def clearSequenceCountWord(self):
-        print(self.sequence)
+        # print(self.sequence)
         temp_index = []
         for index,sequence_word in enumerate(self.sequence):
             word = self.model.vertexModel.indexForWord(sequence_word)
             if countWord(word):
                 temp_index.append(index)
 
-        print(temp_index)
+        # print(temp_index)
         for i in temp_index[::-1]:
             del self.sequence[i]
 
     # 处理结尾
     def dealWithEnd(self):
-        print("self entities", self.entities)
-        # 清除重复词
-        self.clearRepeatWord()
-        # 清理疑问词
-        self.clearQuestionWord()
+        # print("self entities", self.entities)
         # 处理剩下的名词
         self.dealWithNouns()
         # 清理sequence中包含的多余词
         self.clearSequenceRepeatWord()
         # 清理sequence中的count词
         self.clearSequenceCountWord()
+        # 清除重复词
+        self.clearRepeatWord()
+        # 清理疑问词
+        self.clearQuestionWord()
         # 将sequences赋值给最终字典
         self.final_action_dict["sequences"] = self.sequence
 

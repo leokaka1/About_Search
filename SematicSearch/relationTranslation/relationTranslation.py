@@ -37,7 +37,7 @@ class RelationTranslation:
         # sequence组关系
         sequences = self.res_dict["sequences"].copy()
         temp_sequence_list = []
-        if len(sequences) > 1:
+        if len(sequences) > 1 and len(sequences) != 2:
             for index,sequence_index in enumerate(sequences):
                 sequence_word = self.model.vertexModel.indexForWord(sequence_index)
                 # print(sequence_word)
@@ -51,15 +51,29 @@ class RelationTranslation:
                     else:
                         temp_sequence_list.append(sequence_word)
                         temp_sequence_list.append(self.model.vertexModel.indexForWord(sequences[index+1]))
-                elif index == len(sequences)-1:
-                    if sequence_word not in temp_sequence_list:
-                        temp_sequence_list.append(sequence_word)
+                elif index % 2 ==0 and index == len(sequences)-1:
+                    temp_sequence_list.append(sequence_word)
+
 
             self.res_dict["sequences"] = temp_sequence_list
-        else:
+        elif len(sequences) == 1:
             for sequence_index in sequences:
                 sequence_word = self.model.vertexModel.indexForWord(sequence_index)
                 temp_sequence_list.append(sequence_word)
+            self.res_dict["sequences"] = temp_sequence_list
+
+        elif len(sequences) == 2:
+            for index,sequence_index in enumerate(sequences):
+                if index < 1:
+                    sequence_word = self.model.vertexModel.indexForWord(sequence_index)
+                    temp_str = sequence_word + self.model.vertexModel.indexForWord(sequences[index + 1])
+                    print(temp_str)
+                    if lexion.wordInTypes(temp_str):
+                        # print("final>>>>",temp_str)
+                        temp_sequence_list.append(temp_str)
+                    else:
+                        temp_sequence_list.append(sequence_word)
+                        temp_sequence_list.append(self.model.vertexModel.indexForWord(sequences[index+1]))
             self.res_dict["sequences"] = temp_sequence_list
 
     def indexToRealWord(self):
