@@ -51,6 +51,9 @@ class RelationTranslation:
                     else:
                         temp_sequence_list.append(sequence_word)
                         temp_sequence_list.append(self.model.vertexModel.indexForWord(sequences[index+1]))
+                elif index == len(sequences)-1:
+                    if sequence_word not in temp_sequence_list:
+                        temp_sequence_list.append(sequence_word)
 
             self.res_dict["sequences"] = temp_sequence_list
         else:

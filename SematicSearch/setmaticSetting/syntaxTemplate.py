@@ -74,11 +74,16 @@ class Template:
         # 判断句子中是否有ranking的词，如果有，那么就显示排名第几
         # 找最多，最少等程度词
         temp_degree_str = ""
+        num_flag = 0
         for index, word in enumerate(self.model.vertexModel.word_list):
             if degreeWord(word):
+                num_flag += 1
                 symbol = degreeSymbol(word)
                 if symbol:
-                    temp_degree_str += symbol
+                    if num_flag > 1:
+                        temp_degree_str += "," + symbol
+                    else:
+                        temp_degree_str = symbol
                     self.final_action_dict["ranking"] = temp_degree_str
 
             elif rankingWord(word):
@@ -286,6 +291,7 @@ class Template:
                 modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
                 # 被动词修饰的词
                 target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                target_word = self.model.vertexModel.indexForWord(target_word_index)
                 # print("target_word_index",target_word_index)
                 # step 1.1 判断是否是HED动词
                 # 不是HED动词
@@ -297,7 +303,8 @@ class Template:
                                 and target_word_index not in self.sequence \
                                 and not self.model.isSkipWordsIndex(target_word_index) \
                                 and not isVerbContainedSkipHEDwords(verb) \
-                                and not degreeWord(self.model.vertexModel.indexForWord(target_word_index)):
+                                and not degreeWord(target_word) \
+                                and not countWord(target_word):
                             self.sequence.append(target_word_index)
                     elif not isVerbContainedSkipHEDwords(verb):
                         self.sequence.insert(0, position)
@@ -605,32 +612,17 @@ class Template:
                     self.sequence.append(target_word_index)
             else:
                 for modified_index in modified_word_index:
-
                     if modified_index not in self.sequence:
                         self.sequence.append(modified_index)
                     if position not in self.sequence and not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
 
-        # print(self.sequence)
-        # # 如果有属性
-        # for attribute_word in self.attribute:
-        #     attribute, position = wordAndIndex(attribute_word)
-        #     target_word_index = self.model.vertexModel.wordForTargetIndex(position)
-        #
-        #     if target_word_index not in self.sequence:
-        #         self.sequence.append(position)
-        #         self.sequence.append(target_word_index)
-        #     else:
-        #         self.sequence.insert(self.sequence.index(target_word_index) + 1, position)
-        #
-        # # 处理名词
-        # for noun in self.nouns:
-        #     noun, position = wordAndIndex(noun)
-        #     target_word_index = self.model.vertexModel.wordForTargetIndex(position)
-        #     if target_word_index and target_word_index in self.sequence:
-        #         self.sequence.insert(self.sequence.index(target_word_index), position)
-        #     elif self.model.isHedIndex(position) and not isVerbContainedSkipHEDwords(position):
-        #         self.sequence.append(position)
+        # 处理名词
+        for noun in self.nouns:
+            noun, position = wordAndIndex(noun)
+            noun_deprel = self.model.vertexModel.wordForDeprel(noun)
+            if not countWord(noun) and noun_deprel == "COO":
+                self.dealWithEntities(position)
 
         self.dealWithEnd()
         return self.final_action_dict
@@ -922,6 +914,18 @@ class Template:
         for index in temp_record_index[::-1]:
             del self.sequence[index]
 
+    def clearSequenceCountWord(self):
+        print(self.sequence)
+        temp_index = []
+        for index,sequence_word in enumerate(self.sequence):
+            word = self.model.vertexModel.indexForWord(sequence_word)
+            if countWord(word):
+                temp_index.append(index)
+
+        print(temp_index)
+        for i in temp_index[::-1]:
+            del self.sequence[i]
+
     # 处理结尾
     def dealWithEnd(self):
         print("self entities", self.entities)
@@ -933,6 +937,8 @@ class Template:
         self.dealWithNouns()
         # 清理sequence中包含的多余词
         self.clearSequenceRepeatWord()
+        # 清理sequence中的count词
+        self.clearSequenceCountWord()
         # 将sequences赋值给最终字典
         self.final_action_dict["sequences"] = self.sequence
 
