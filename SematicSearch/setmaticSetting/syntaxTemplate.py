@@ -24,6 +24,7 @@ class Template:
         self.attribute = self.model.attribute
         self.head_list = self.model.vertexModel.head_list
         self.word_list = self.model.vertexModel.word_list
+        self.sortFlag = True
 
         self.preprocess()
         self.sequence = self.final_action_dict["sequences"]
@@ -118,19 +119,11 @@ class Template:
                 if targetWord_index not in self.sequence and targetWord_index not in self.entities:
                     self.sequence.append(targetWord_index)
         else:
+            # 处理剩下的名词
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
-                self.sequence.append(position)
-
-        # 处理剩下的名词
-        for noun in self.nouns:
-            noun, position = wordAndIndex(noun)
-            if position not in self.sequence:
-                self.sequence.append(position)
-
-        temp_arr = bubbleSort(self.sequence)
-        # print(temp_arr)
-        self.sequence = temp_arr
+                if position not in self.sequence:
+                    self.sequence.append(position)
 
         self.dealWithEnd()
         return self.final_action_dict
@@ -456,6 +449,8 @@ class Template:
     # 如果有状语，介宾和动宾
     # 第⑥种情况
     def has_ADV_SBV_VOB_HED_Words(self):
+        # 不需要排序
+        self.sortFlag = False
         # 2020年远光软件股份有限公司投标的项目
         # 施工标的类项目都有哪些公司中标？
         # 遍历动词
@@ -485,7 +480,7 @@ class Template:
                         modi_deprel = self.model.vertexModel.indexForDeprel(modi_index)
 
                         if modi_pos == "n" and (modi_deprel == "SBV" or modi_deprel == "VOB"):
-                            print("modi_pos", modi_index)
+                            # print("modi_pos", modi_index)
                             self.dealWithEntities(modi_index)
                         else:
                             self.sequence.append(modi_index)
@@ -554,11 +549,12 @@ class Template:
                 self.sequence.insert(self.sequence.index(target_word_index), position)
 
         # 处理名词
-        for noun in self.nouns:
-            noun, position = wordAndIndex(noun)
-            noun_deprel = self.model.vertexModel.wordForDeprel(noun)
-            if self.makeEntityWord(noun_deprel, word=noun):
-                self.dealWithEntities(position)
+        if self.ranking or self.attributes:
+            for noun in self.nouns:
+                noun, position = wordAndIndex(noun)
+                noun_deprel = self.model.vertexModel.wordForDeprel(noun)
+                if self.makeEntityWord(noun_deprel, word=noun):
+                    self.dealWithEntities(position)
 
         # 处理形容词
         for adj in self.adjs:
@@ -593,7 +589,8 @@ class Template:
                     if modi_index not in self.entities \
                         and modi_index not in self.instances \
                             and modi_index not in self.sequence \
-                            and not self.model.isSkipWordsIndex(modi_index):
+                            and not self.model.isSkipWordsIndex(modi_index)\
+                            and not isVerbContainedSkipHEDwords(self.model.vertexModel.indexForWord(modi_index)):
                         self.sequence.append(modi_index)
                         # self.sequence.append(target_word_index)
 
@@ -610,9 +607,6 @@ class Template:
             if position not in self.sequence:
                 self.sequence.append(position)
 
-        # 做排序
-        temp_arr = bubbleSort(self.sequence)
-        self.sequence = temp_arr
 
         # 如果有属性的情况
         for attribute in self.attribute:
@@ -803,14 +797,10 @@ class Template:
                                 self.sequence.append(position)
 
         # print("self sequence",self.sequence)
-        # 去年那种类型项目投资最多
-        # 如果sequence中有名词在entities中，说明可能是修饰作用，例如，项目-类型
-        for word_index in self.sequence:
-            # print("word_index>>>>",word_index)
-            target_word_index = self.model.vertexModel.wordForTargetIndex(word_index)
-            if target_word_index in self.entities:
-                self.entities.insert(self.entities.index(target_word_index) + 1, word_index)
-                self.sequence.remove(word_index)
+        # 排序
+        if self.sortFlag:
+            temp_arr = bubbleSort(self.sequence)
+            self.sequence = temp_arr
 
     # 处理实体词
     def makeEntityWord(self, word_deprel, word_index=0, word=""):
@@ -914,16 +904,26 @@ class Template:
 
     # 清除重复的词
     def clearRepeatWord(self):
-        # for x in self.sequence:
-        #     while self.sequence.count(x) > 1:
-        #         del self.sequence[self.sequence.index(x)]
+        for x in self.entities:
+            while self.entities.count(x) > 1:
+                del self.entities[self.entities.index(x)]
+
+
         data = self.sequence
         new_data = []
         for i in range(len(data)):
             if data[i] not in new_data:
                 new_data.append(data[i])
-        # print(new_data)
+
+        # data1 = self.entities
+        # new_data1 = []
+        # for i in range(len(data1)):
+        #     if data1[i] not in new_data1:
+        #         new_data1.append(data1[i])
+        #
+        # print(self.entities)
         self.sequence = new_data
+        # self.entities = new_data1
 
     # 清理sequence中与attribute中重复的词
     def clearSequenceRepeatWord(self):
@@ -956,6 +956,29 @@ class Template:
         for i in temp_index[::-1]:
             del self.sequence[i]
 
+    def clearDegreeWord(self):
+        temp = []
+        for index,word_index in enumerate(self.sequence):
+            word = self.model.vertexModel.indexForWord(word_index)
+            if degreeWord(word):
+                temp.append(index)
+
+        for i in temp[::-1]:
+            del self.sequence[i]
+
+    def addWordIntoEntities(self):
+        # 去年那种类型项目投资最多
+        # 如果sequence中有名词在entities中，说明可能是修饰作用，例如，项目-类型
+        # print(self.sequence)
+        for word_index in self.sequence:
+            word_pos = self.model.vertexModel.wordForPos(self.model.vertexModel.indexForWord(word_index))
+            target_word_index = self.model.vertexModel.wordForTargetIndex(word_index)
+            # print("word_pos", word_pos)
+            if target_word_index in self.entities:
+                if word_pos != "v" and word_pos != "vn":
+                    self.entities.insert(self.entities.index(target_word_index) + 1, word_index)
+                    self.sequence.remove(word_index)
+
     # 处理结尾
     def dealWithEnd(self):
         # print("self entities", self.entities)
@@ -969,6 +992,10 @@ class Template:
         self.clearRepeatWord()
         # 清理疑问词
         self.clearQuestionWord()
+        # 清理最后的程度词
+        self.clearDegreeWord()
+        # 判断是否将sequence中的词添加到entity中
+        self.addWordIntoEntities()
         # 将sequences赋值给最终字典
         self.final_action_dict["sequences"] = self.sequence
 
