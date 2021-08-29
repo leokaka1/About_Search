@@ -130,6 +130,7 @@ class Template:
     def has_SBV_HED_Words(self):
         # FIXME: situation 2.1：有ATT，SBV和HED
         #   eg:中标最多的单位？ - 刘德华老婆出生于 中标最多的单位？
+        # bug : 远光软件股份有限公司的投标的项目的招标人的投标项目的招标代理机构是
         # 中标最多的单位？
         # 没有形容词的时候
         if not self.adjs:
@@ -137,17 +138,18 @@ class Template:
             for verb in self.verbs:
                 verb, position = wordAndIndex(verb)
                 if not self.model.isHedWord(verb):
-                    target_word = self.model.vertexModel.headIndexForWord(position)
-                    modified_word = self.model.vertexModel.modifiedWord(verb)
-                    self.sequence.append(verb)
-                    if target_word:
-                        self.sequence.append(target_word)
-                    self.sequence = modified_word + self.sequence
+                    target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+
+                    self.sequence.append(position)
+                    self.sequence.append(target_word_index)
+                    # if target_word:
+                    #     self.sequence.append(target_word)
+                    # self.sequence = modified_word + self.sequence
 
                     # 判断HED在不在句子中，如果不在就添加到末尾
-                    hed = self.model.getHEDWord()
+                    hed,index = self.model.getHEDWord()
                     if hed and hed not in self.sequence and not isVerbContainedSkipHEDwords(hed):
-                        self.sequence.append(hed)
+                        self.sequence.append(index)
                 else:
                     # 如果是HED词 (刘德华老婆出生于)
                     modified_word_index = self.model.vertexModel.modifiedWordIndex(position)
@@ -158,7 +160,7 @@ class Template:
                             self.sequence.append(position)
 
             # # 处理剩余名词
-            for noun in self.nouns:
+            for noun in self.nouns[::-1]:
                 noun, position = wordAndIndex(noun)
                 target_word_index = self.model.vertexModel.wordForTargetIndex(position)
                 # print(noun,position,target_word_index)
@@ -176,6 +178,7 @@ class Template:
                         self.sequence.append(target_word_index)
         else:
             # FIXME: 2.2 有形容词，比如最多，一般用于排序
+
             # 中标最多的单位？
             # 遍历动词
             for verb in self.verbs:
@@ -223,6 +226,7 @@ class Template:
                             and target_word_index in self.sequence:
                         self.sequence.insert(self.sequence.index(target_word_index), position)
 
+        # print("self. situation 2 ",self.sequence)
         self.dealWithEnd()
         return self.final_action_dict
 
@@ -317,32 +321,36 @@ class Template:
                                         self.model.vertexModel.indexForWord(instance))
                                     if not instance_type == modi_word:
                                         self.sequence.append(modi_index)
-
+                    # print("self sequence",self.sequence)
                     # 如果中心词不是有，是，这种词，就添加
                     if not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
 
+
+            print("verb sequence",self.sequence)
             # FIXME:有可能出现的情况，还有名词修饰名词的时候，必须把名词遍历统计完
-            for noun in self.nouns:
+            for noun in self.nouns[::-1]:
                 noun, position = wordAndIndex(noun)
                 noun_target_index = self.model.vertexModel.wordForTargetIndex(position)
                 # print("target word", noun_target_index)
                 if position not in self.sequence \
                         and position not in self.entities \
-                        and position not in self.instances:
+                        and position not in self.instances\
+                        and not self.model.isSkipWordsIndex(position):
                     # 如果是目标的sbv就插入目标词之前
                     if self.model.vertexModel.wordForDeprel(noun) == "SBV" \
                             and noun_target_index in self.sequence:
                         self.sequence.insert(self.sequence.index(noun_target_index), position)
                     # 如果是目标的VOB就插到目标词后面
                     elif self.model.vertexModel.wordForDeprel(noun) == "VOB" \
-                            and noun_target_index in self.sequence:
+                            and noun_target_index in self.sequence \
+                            and not self.model.isSkipWordsIndex(position):
                         self.sequence.insert(self.sequence.index(noun_target_index) + 1, position)
                     # 如果啥都不是就直接拼接
                     else:
+                        # print(position)
                         if position not in self.sequence:
-                            if noun_target_index in self.instances \
-                                    and self.model.indexOfTimeWord(position) \
+                            if noun_target_index in self.instances\
                                     and not self.model.indexOfTimeWord(position):
                                 self.sequence.insert(0, position)
                             else:
@@ -764,9 +772,11 @@ class Template:
                             else:
                                 self.sequence.append(position)
 
+        # print("self sequence",self.sequence)
         # 去年那种类型项目投资最多
         # 如果sequence中有名词在entities中，说明可能是修饰作用，例如，项目-类型
         for word_index in self.sequence:
+            # print("word_index>>>>",word_index)
             target_word_index = self.model.vertexModel.wordForTargetIndex(word_index)
             if target_word_index in self.entities:
                 self.entities.insert(self.entities.index(target_word_index) + 1, word_index)
