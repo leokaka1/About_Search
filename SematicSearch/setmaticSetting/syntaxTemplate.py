@@ -122,6 +122,16 @@ class Template:
                 noun, position = wordAndIndex(noun)
                 self.sequence.append(position)
 
+        # 处理剩下的名词
+        for noun in self.nouns:
+            noun, position = wordAndIndex(noun)
+            if position not in self.sequence:
+                self.sequence.append(position)
+
+        temp_arr = bubbleSort(self.sequence)
+        # print(temp_arr)
+        self.sequence = temp_arr
+
         self.dealWithEnd()
         return self.final_action_dict
 
@@ -570,19 +580,39 @@ class Template:
     # 并列关系
     # 第⑧种情况
     def has_COO_HED(self):
+        # 远光软件股份有限公司的投标的项目的中标的单位的招标人的中标单位的招标代理机构
+        temp_list = []
         for verb in self.verbs:
             verb, position = wordAndIndex(verb)
             target_word_index = self.model.vertexModel.wordForTargetIndex(position)
-            if not isVerbContainedSkipHEDwords(verb):
-                self.sequence.append(position)
-            if target_word_index not in self.entities:
-                self.sequence.append(target_word_index)
+            modi_word_index = self.model.vertexModel.modifiedWordIndex(target_word_index)
+            temp_list.append(modi_word_index)
+
+            for modi in temp_list:
+                for modi_index in modi:
+                    if modi_index not in self.entities \
+                        and modi_index not in self.instances \
+                            and modi_index not in self.sequence \
+                            and not self.model.isSkipWordsIndex(modi_index):
+                        self.sequence.append(modi_index)
+                        # self.sequence.append(target_word_index)
+
+        # print("大健康",self.sequence)
+
+            # if not isVerbContainedSkipHEDwords(verb):
+            #     self.sequence.append(position)
+            # if target_word_index not in self.entities:
+            #     self.sequence.append(target_word_index)
 
         # 处理剩下的名词
         for noun in self.nouns:
             noun, position = wordAndIndex(noun)
             if position not in self.sequence:
                 self.sequence.append(position)
+
+        # 做排序
+        temp_arr = bubbleSort(self.sequence)
+        self.sequence = temp_arr
 
         # 如果有属性的情况
         for attribute in self.attribute:
@@ -956,3 +986,15 @@ def wordListwithoutIndex(wordList):
         word, _ = wordAndIndex(word)
         word_list.append(word)
     return word_list
+
+# 冒泡排序
+def bubbleSort(arr):
+    n = len(arr)
+    # 遍历所有数组元素
+    for i in range(n):
+        # Last i elements are already in place
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+
+    return arr
