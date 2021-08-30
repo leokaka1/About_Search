@@ -122,6 +122,12 @@ class SematicAnalysisModel:
 
         return False
 
+    def indexOfMoneyWord(self,index):
+        pos = self.vertexModel.pos_list[index]
+        word = self.vertexModel.word_list[index]
+        if pos == "m" or "金额" in word or "总价" in word or "总金额" in word:
+            return True
+
     # 判断整个句子中是否含有时间或者金额的词汇
     def isContainAmountOrTime(self):
         if "TIME" or "m" in self.vertexModel.pos_list:
@@ -154,6 +160,23 @@ class SematicAnalysisModel:
             if "日期" in word:
                 temp_list.append(word)
                 # return self.vertexModel.word_list.index(word)
+
+        return temp_list
+
+    # 找到日期对应的index
+    def findMoneyIndex(self):
+        temp_index_list = []
+        for index, pos in enumerate(self.vertexModel.pos_list):
+            if pos == "m":
+                temp_index_list.append(index)
+
+        return temp_index_list
+
+    def findMoneyWordIndexFromWordList(self):
+        temp_list = []
+        for word in self.vertexModel.word_list:
+            if "金额" in word or "总价" in word or "总金额" in word:
+                temp_list.append(word)
 
         return temp_list
 

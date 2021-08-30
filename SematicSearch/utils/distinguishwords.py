@@ -81,7 +81,7 @@ def isVerbContainedSkipHEDwords(word):
 
 
 def isSkipNounWord(word):
-    skip_word_list = ["哪家", "那家", "什么", "那种","在哪里"]
+    skip_word_list = ["哪家", "那家", "什么", "那种","在哪里","什么时候"]
     if word in skip_word_list:
         return True
     else:
@@ -110,7 +110,7 @@ def queryRanking(word):
 # 疑问词结尾
 def isQuestionWord(word):
     # print(word)
-    question_word = ["哪些", "什么", "那些", "哪", "那", "吗", "么", "呢", "哪个", "那个", "哪类", "那类"]
+    question_word = ["哪些", "什么", "那些", "哪", "那", "吗", "么", "呢", "哪个", "那个", "哪类", "那类","什么时候","什么地方"]
     if word in question_word:
         return True
 

@@ -882,58 +882,52 @@ class Template:
                                 temp_list.append(time_list)
 
                     self.final_action_dict["attributes"] = temp_list
-
-
-                    # for time in time_index_list:
-                    #     # 判断word_list中有没有带日期的字段
-                    #     time_word_index = self.model.findTimeWordIndexFromWordList()
-                    #     if time_word_index != "":
-                    #         time_word_target_index = self.model.vertexModel.wordForTargetIndex(
-                    #             time_word_index)
-                    #         time_word_target_word = self.model.vertexModel.indexForWord(time_word_target_index)
-                    #         if time_word_index not in temp_list:
-                    #             temp_list.append(time_word_index)
-                    #             if degreeWord(time_word_target_word):
-                    #                 temp_list.append(time_word_target_index)
-                    #         if time not in temp_list:
-                    #             temp_list.append(time)
-                    #     else:
-                    #         if time not in temp_list:
-                    #             temp_list.append(time)
                 else:
                     # 如果是没有时间的状态
                     # print("没有时间的index>>>>",index,modi_word_index)
-                    if modi_word_index:
-                        for modi_index in modi_word_index:
-                            modi_word = self.model.vertexModel.indexForWord(modi_index)
-                            if not isVerbContainedSkipHEDwords(self.model.vertexModel.indexForWord(modi_index)):
-                                # 有time和么有time区分处理
-                                if not self.model.indexOfTimeWord(modi_index):
-                                    # print(modi_index)
-                                    if degreeWord(modi_word) \
-                                            or lexicon.isAttributeWords(modi_word) \
-                                            or self.model.isValueWord(modi_word):
-                                        temp_list.append(modi_index)
-                                    if target_word_index not in temp_list \
-                                            and target_word_index not in entities \
-                                            and target_word_index not in instances \
-                                            and not isVerbContainedSkipHEDwords(target_word):
-                                        # FIXME: 如果实例的对象词不等于目标词，就加入
-                                        #   eg: 2020年远光软件股份有限公司投标的项目
-                                        #  2020年招标金额为100万的是 ※
-                                        if instances:
-                                            for instance in instances:
-                                                if self.model.vertexModel.wordForTargetIndex(
-                                                        instance) != target_word_index \
-                                                        and not degreeWord(target_word):
-                                                    temp_list.append(target_word_index)
-                                        else:
-                                            if not degreeWord(target_word):
-                                                temp_list.append(target_word_index)
+                    # 合同金额和招标金额大于100万的项目有哪些
+                    # print(self.model.indexOfMoneyWord(index),"1231231")
 
-                    self.final_action_dict["attributes"].append(temp_list)
-                # print(temp_list)
-                #
+                    money_index = self.model.findMoneyIndex()
+                    money_word_index = self.model.findMoneyWordIndexFromWordList()
+
+                    # 跟日期一样的处理
+                    # 两个相同
+                    if len(money_index) == len(money_word_index):
+                        for index, money_word in enumerate(money_word_index):
+                            money_word_index = self.model.vertexModel.wordForId(money_word)
+                            money_list = []
+                            money_list.append(money_word_index)
+                            money_list.append(money_index[index])
+                            if money_list not in temp_list:
+                                temp_list.append(money_list)
+                    # 两个不相同，其中日期为1个，形容日期为多个
+                    # 投标日期和招标日期为2020年的项目有哪些
+                    elif len(money_index) == 1 and len(money_word_index) > 1:
+                        for index, money_word in enumerate(money_word_index):
+                            money_word_index = self.model.vertexModel.wordForId(money_word)
+                            money_list = []
+                            money_list.append(money_word_index)
+                            money_list.append(money_index[0])
+                            if money_list not in temp_list:
+                                temp_list.append(money_list)
+                    # 两个不相同，其中形容日期的为1个，其他为多个
+                    elif len(money_word_index) == 1 and len(money_index) > 1:
+                        for index, money_index in enumerate(money_index):
+                            money_word_index = self.model.vertexModel.wordForId(money_word_index[0])
+                            money_list = []
+                            money_list.append(money_word_index)
+                            money_list.append(money_index)
+                            if money_list not in temp_list:
+                                temp_list.append(money_list)
+                    else:
+                        for index, time_index in enumerate(money_index):
+                            money_list = []
+                            money_list.append(time_index)
+                            if money_list not in temp_list:
+                                temp_list.append(money_list)
+
+                    self.final_action_dict["attributes"] = temp_list
 
     # 清理疑问词
     def clearQuestionWord(self):
