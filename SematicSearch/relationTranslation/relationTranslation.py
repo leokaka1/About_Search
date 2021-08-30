@@ -12,10 +12,11 @@ class RelationTranslation:
 
     def relationTranslate(self):
         print("Step:5 组成关系:>>>>>>\n")
-        self.merge()
-        self.indexToRealWord()
+        if self.res_dict:
+            self.merge()
+            self.indexToRealWord()
         print(self.res_dict)
-
+    #
     def merge(self):
         # entity组关系
         entities = self.res_dict["entities"].copy()

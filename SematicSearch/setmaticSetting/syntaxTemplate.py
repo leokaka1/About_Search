@@ -39,7 +39,7 @@ class Template:
     def preprocess(self):
         # 是否有次数,count
         for word in self.model.vertexModel.word_list:
-            if degreeWord(word):
+            if degreeWord(word) or rankingWord(word):
                 self.final_action_dict["count"] = True
 
         # 判断句子中是否含有属性词，如果含有就把isContainValue置为True
@@ -142,15 +142,15 @@ class Template:
                 verb, position = wordAndIndex(verb)
                 if not self.model.isHedWord(verb):
                     target_word_index = self.model.vertexModel.wordForTargetIndex(position)
-
-                    self.sequence.append(position)
+                    if not rankingWord(verb):
+                        self.sequence.append(position)
                     self.sequence.append(target_word_index)
                     # if target_word:
                     #     self.sequence.append(target_word)
                     # self.sequence = modified_word + self.sequence
 
                     # 判断HED在不在句子中，如果不在就添加到末尾
-                    hed,index = self.model.getHEDWord()
+                    hed, index = self.model.getHEDWord()
                     if hed and hed not in self.sequence and not isVerbContainedSkipHEDwords(hed):
                         self.sequence.append(index)
                 else:
@@ -171,14 +171,17 @@ class Template:
                     # 如果在实例库中就添加到第一个位置
                     if target_word_index in self.entities:
                         self.sequence.insert(0, position)
-                    elif target_word_index in self.sequence:
+                    elif target_word_index in self.sequence \
+                            and not rankingWord(self.model.vertexModel.indexForWord(target_word_index)):
                         # 如果目标词不在实例对象中，就添加到对应修饰的词后面 -（张学友老婆出生于）
                         self.sequence.insert(self.sequence.index(target_word_index), position)
                     elif target_word_index not in self.sequence:
                         # 如果没有动词的情况
                         # eg:小王的笔记本在哪里
                         self.sequence.append(position)
-                        self.sequence.append(target_word_index)
+                        if not isSkipNounWord(self.model.vertexModel.indexForWord(target_word_index)) \
+                                and not rankingWord(self.model.vertexModel.indexForWord(target_word_index)):
+                            self.sequence.append(target_word_index)
         else:
             # FIXME: 2.2 有形容词，比如最多，一般用于排序
 
@@ -292,7 +295,7 @@ class Template:
                 # 不是HED动词
                 if not self.model.isHedWord(verb):
                     # 如果target_word是entity，就不添加,并且将动词插入到第一位
-                    if target_word_index not in self.instances:
+                    if target_word_index not in self.instances and not rankingWord(verb):
                         self.sequence.append(position)
                         if target_word_index not in self.entities \
                                 and target_word_index not in self.sequence \
@@ -301,6 +304,7 @@ class Template:
                                 and not degreeWord(target_word) \
                                 and not countWord(target_word):
                             self.sequence.append(target_word_index)
+                            print(self.sequence)
                     elif not isVerbContainedSkipHEDwords(verb):
                         self.sequence.insert(0, position)
 
@@ -329,8 +333,7 @@ class Template:
                     if not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
 
-
-            print("verb sequence",self.sequence)
+            # print("verb sequence", self.sequence)
             # FIXME:有可能出现的情况，还有名词修饰名词的时候，必须把名词遍历统计完
             for noun in self.nouns[::-1]:
                 noun, position = wordAndIndex(noun)
@@ -338,7 +341,7 @@ class Template:
                 # print("target word", noun_target_index)
                 if position not in self.sequence \
                         and position not in self.entities \
-                        and position not in self.instances\
+                        and position not in self.instances \
                         and not self.model.isSkipWordsIndex(position):
                     # 如果是目标的sbv就插入目标词之前
                     if self.model.vertexModel.wordForDeprel(noun) == "SBV" \
@@ -353,7 +356,7 @@ class Template:
                     else:
                         # print(position)
                         if position not in self.sequence:
-                            if noun_target_index in self.instances\
+                            if noun_target_index in self.instances \
                                     and not self.model.indexOfTimeWord(position):
                                 self.sequence.insert(0, position)
                             else:
@@ -482,7 +485,7 @@ class Template:
                         if modi_pos == "n" and (modi_deprel == "SBV" or modi_deprel == "VOB"):
                             # print("modi_pos", modi_index)
                             self.dealWithEntities(modi_index)
-                        else:
+                        elif modi_pos != "a" and modi_pos != "u":
                             self.sequence.append(modi_index)
                 # 处理动词
                 if not self.model.isHedIndex(position):
@@ -492,8 +495,8 @@ class Template:
                             # print("entity target")
                             if entity_target_word_index == verb_target_index:
                                 self.entities.append(position)
-
-                    self.sequence.append(position)
+                    if not isVerbContainedSkipHEDwords(self.model.vertexModel.indexForWord(position)):
+                        self.sequence.append(position)
 
             # 找到序列中有没有词跟entity有关系
             temp = 0
@@ -587,26 +590,17 @@ class Template:
             for modi in temp_list:
                 for modi_index in modi:
                     if modi_index not in self.entities \
-                        and modi_index not in self.instances \
+                            and modi_index not in self.instances \
                             and modi_index not in self.sequence \
-                            and not self.model.isSkipWordsIndex(modi_index)\
+                            and not self.model.isSkipWordsIndex(modi_index) \
                             and not isVerbContainedSkipHEDwords(self.model.vertexModel.indexForWord(modi_index)):
                         self.sequence.append(modi_index)
-                        # self.sequence.append(target_word_index)
-
-        # print("大健康",self.sequence)
-
-            # if not isVerbContainedSkipHEDwords(verb):
-            #     self.sequence.append(position)
-            # if target_word_index not in self.entities:
-            #     self.sequence.append(target_word_index)
 
         # 处理剩下的名词
         for noun in self.nouns:
             noun, position = wordAndIndex(noun)
             if position not in self.sequence:
                 self.sequence.append(position)
-
 
         # 如果有属性的情况
         for attribute in self.attribute:
@@ -777,7 +771,7 @@ class Template:
                     and position not in self.entities \
                     and position not in self.instances:
                 # print("来这里没有")
-                # print(self.containValue)
+                # print(position)
                 if self.makeEntityWord(noun_deprel, word=noun) and self.containValue:
                     # print(noun)
                     self.dealWithEntities(position)
@@ -785,14 +779,13 @@ class Template:
                     if not self.model.isSkipWordsIndex(position):
                         # 有一种情况是实体词和形容词分离（服务类有超过一千万的项目吗）
                         # 做一个拼接然后判断拼接了的词是否在实体词中，如果在就保存，如果不在就放弃直接添加
-                        if position not in self.sequence \
-                                and position not in self.entities \
-                                and not countWord(noun):
+                        if not countWord(noun):
                             target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                            # print(target_word_index,position)
                             if target_word_index in self.sequence:
                                 self.sequence.insert(self.sequence.index(target_word_index) + 1, position)
                             elif target_word_index in self.entities:
-                                self.entities.append(target_word_index)
+                                self.entities.append(position)
                             else:
                                 self.sequence.append(position)
 
@@ -908,7 +901,6 @@ class Template:
             while self.entities.count(x) > 1:
                 del self.entities[self.entities.index(x)]
 
-
         data = self.sequence
         new_data = []
         for i in range(len(data)):
@@ -947,7 +939,7 @@ class Template:
     def clearSequenceCountWord(self):
         # print(self.sequence)
         temp_index = []
-        for index,sequence_word in enumerate(self.sequence):
+        for index, sequence_word in enumerate(self.sequence):
             word = self.model.vertexModel.indexForWord(sequence_word)
             if countWord(word):
                 temp_index.append(index)
@@ -958,9 +950,28 @@ class Template:
 
     def clearDegreeWord(self):
         temp = []
-        for index,word_index in enumerate(self.sequence):
+        for index, word_index in enumerate(self.sequence):
             word = self.model.vertexModel.indexForWord(word_index)
             if degreeWord(word):
+                temp.append(index)
+
+        for i in temp[::-1]:
+            del self.sequence[i]
+
+        temp1 = []
+        for index, word_index in enumerate(self.sequence):
+            word = self.model.vertexModel.indexForWord(word_index)
+            if rankingWord(word):
+                temp1.append(index)
+
+        for i in temp1[::-1]:
+            del self.sequence[i]
+
+    def clearSkipVerb(self):
+        temp = []
+        for index, word_index in enumerate(self.sequence):
+            word = self.model.vertexModel.indexForWord(word_index)
+            if isVerbContainedSkipHEDwords(word):
                 temp.append(index)
 
         for i in temp[::-1]:
@@ -994,6 +1005,8 @@ class Template:
         self.clearQuestionWord()
         # 清理最后的程度词
         self.clearDegreeWord()
+        # 清理最后的不需要的动词
+        self.clearSkipVerb()
         # 判断是否将sequence中的词添加到entity中
         self.addWordIntoEntities()
         # 将sequences赋值给最终字典
@@ -1013,6 +1026,7 @@ def wordListwithoutIndex(wordList):
         word, _ = wordAndIndex(word)
         word_list.append(word)
     return word_list
+
 
 # 冒泡排序
 def bubbleSort(arr):

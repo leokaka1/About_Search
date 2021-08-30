@@ -69,3 +69,5 @@ class WordPosttag:
             print("--------------------------------------------")
 
             return col_res[0]
+        else:
+            return []

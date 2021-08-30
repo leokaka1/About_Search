@@ -81,7 +81,7 @@ def isVerbContainedSkipHEDwords(word):
 
 
 def isSkipNounWord(word):
-    skip_word_list = ["哪家", "那家", "什么", "那种"]
+    skip_word_list = ["哪家", "那家", "什么", "那种","在哪里"]
     if word in skip_word_list:
         return True
     else:
