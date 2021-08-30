@@ -119,7 +119,7 @@ class Template:
                 if not isVerbContainedSkipHEDwords(verb):
                     self.sequence.append(position)
                 if targetWord_index not in self.sequence and targetWord_index not in self.entities:
-                    if self.ranking !="":
+                    if self.ranking != "":
                         if self.makeEntityWord(target_word_deprel, word=target_word):
                             self.dealWithEntities(targetWord_index)
                     else:
@@ -193,7 +193,25 @@ class Template:
         elif self.ranking != "":
             # 基于NLP的商务数据清洗项目的招标代理机构的中标次数最多
             # 中标排名第一的单位
-            print("到这里来了")
+            # print("到这里来了")
+            # 中标次数最少的公司
+            for verb in self.verbs:
+                verb, position = wordAndIndex(verb)
+                if position not in self.sequence \
+                        and not isVerbContainedSkipHEDwords(verb) \
+                        and not countWord(verb):
+                    self.sequence.append(position)
+
+                # 处理剩下的名词
+                for noun in self.nouns:
+                    noun, position = wordAndIndex(noun)
+                    noun_deprel = self.model.vertexModel.wordForDeprel(noun)
+                    # target_word_index = self.model.vertexModel.wordForTargetIndex(position)
+                    if position not in self.sequence \
+                            and position not in self.entities \
+                            and not countWord(noun):
+                        if self.makeEntityWord(noun_deprel, word=noun):
+                            self.dealWithEntities(position)
 
         else:
             # FIXME: 2.2 有形容词，比如最多，一般用于排序
@@ -838,7 +856,7 @@ class Template:
                     # 分三种情况，如果两个日期值相同，如果其中一个为1，另一个为多
                     # 两个相同
                     if len(time_index_list) == len(time_word_list):
-                        for index,time_word in enumerate(time_word_list):
+                        for index, time_word in enumerate(time_word_list):
                             time_word_index = self.model.vertexModel.wordForId(time_word)
                             time_list = []
                             time_list.append(time_word_index)
@@ -849,7 +867,7 @@ class Template:
                     # 两个不相同，其中日期为1个，形容日期为多个
                     # 投标日期和招标日期为2020年的项目有哪些
                     elif len(time_index_list) == 1 and len(time_word_list) > 1:
-                        for index,time_word in enumerate(time_word_list):
+                        for index, time_word in enumerate(time_word_list):
                             time_word_index = self.model.vertexModel.wordForId(time_word)
                             time_list = []
                             time_list.append(time_word_index)
@@ -859,7 +877,7 @@ class Template:
                                 # self.final_action_dict["attributes"]=temp_list
                     # 两个不相同，其中形容日期的为1个，其他为多个
                     elif len(time_word_list) == 1 and len(time_index_list) > 1:
-                        for index,time_index in enumerate(time_index_list):
+                        for index, time_index in enumerate(time_index_list):
                             time_word_index = self.model.vertexModel.wordForId(time_word_list[0])
                             time_list = []
                             time_list.append(time_word_index)
@@ -868,7 +886,7 @@ class Template:
                                 temp_list.append(time_list)
                                 # self.final_action_dict["attributes"]=temp_list
                     else:
-                        for index,time_index in enumerate(time_index_list):
+                        for index, time_index in enumerate(time_index_list):
                             time_list = []
                             time_list.append(time_index)
                             if time_list not in temp_list:
