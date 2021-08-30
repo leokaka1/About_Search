@@ -16,11 +16,14 @@ class RelationTranslation:
             self.merge()
             self.indexToRealWord()
         print(self.res_dict)
+
     #
     def merge(self):
         # entity组关系
         entities = self.res_dict["entities"].copy()
         temp_entities_list = []
+        count = self.res_dict["count"]
+        ranking = self.res_dict["ranking"]
 
         for index, entity_index in enumerate(entities):
             entity_word = self.model.vertexModel.indexForWord(entity_index)
@@ -38,6 +41,7 @@ class RelationTranslation:
                     self.res_dict["entities"] = temp_entities_list
 
         # sequence组关系
+        # 远光软件股份有限公司的投标的项目的合同的总价
         sequences = self.res_dict["sequences"].copy()
         temp_sequence_list = []
         if len(sequences) > 1 and len(sequences) != 2:
@@ -56,6 +60,9 @@ class RelationTranslation:
                         temp_sequence_list.append(self.model.vertexModel.indexForWord(sequences[index + 1]))
                 elif index % 2 == 0 and index == len(sequences) - 1:
                     temp_sequence_list.append(sequence_word)
+                #
+                # else:
+                #     temp_sequence_list.append(self.model.vertexModel.indexForWord(sequences[index + 1]))
 
             self.res_dict["sequences"] = temp_sequence_list
         elif len(sequences) == 1:

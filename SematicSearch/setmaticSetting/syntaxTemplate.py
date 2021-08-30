@@ -46,7 +46,7 @@ class Template:
         # 判断句子中是否含有属性词，如果含有就把isContainValue置为True
         for word in self.model.vertexModel.word_list:
             # 如果一句话里面含有属性词或者含有一些金额，日期等词，就判断包含属性
-            if lexicon.isContainAtrributeWord(word) or self.model.isValueWord(word):
+            if lexicon.isContainAtrributeWord(word) and self.model.isValueWord(word):
                 self.final_action_dict["isContainValue"] = True
 
         # 把找出来的实例给终极字典
@@ -110,6 +110,7 @@ class Template:
         # FIXME: situation 1.1：只有ATT和HED，一般最后是HED结尾，结尾的词是名词
         #   eg:远光软件股份有限公司投标项目的中标人。
         # 有verb的时候
+        # print(self.count)
         if self.verbs:
             for index, verb in enumerate(self.verbs):
                 verb, position = wordAndIndex(verb)
@@ -120,12 +121,12 @@ class Template:
                 if not isVerbContainedSkipHEDwords(verb):
                     self.sequence.append(position)
                 if targetWord_index not in self.sequence and targetWord_index not in self.entities:
-                    if self.ranking != "":
+                    if self.count:
                         if self.makeEntityWord(target_word_deprel, word=target_word):
                             self.dealWithEntities(targetWord_index)
                     else:
                         self.sequence.append(targetWord_index)
-
+            # print(self.sequence)
         else:
             # 处理剩下的名词
             for noun in self.nouns:
@@ -133,12 +134,12 @@ class Template:
                 if position not in self.sequence:
                     self.sequence.append(position)
 
-            # 如果有属性就继续处理属性
-            print(self.attrs)
-            for attri_word_index in self.attrs:
-                attri,position = wordAndIndex(attri_word_index)
-                if position not in self.sequence:
-                    self.sequence.append(position)
+        # 如果有属性就继续处理属性
+        # print(self.attrs)
+        for attri_word_index in self.attrs:
+            attri,position = wordAndIndex(attri_word_index)
+            if position not in self.sequence:
+                self.sequence.append(position)
 
         self.dealWithEnd()
         return self.final_action_dict
