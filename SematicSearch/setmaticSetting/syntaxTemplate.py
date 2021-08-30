@@ -21,6 +21,7 @@ class Template:
         self.verbs = self.model.verbs
         self.adjs = self.model.adjs
         self.coos = self.model.coos
+        self.attrs = self.model.attribute
         self.attribute = self.model.attribute
         self.head_list = self.model.vertexModel.head_list
         self.word_list = self.model.vertexModel.word_list
@@ -129,6 +130,13 @@ class Template:
             # 处理剩下的名词
             for noun in self.nouns:
                 noun, position = wordAndIndex(noun)
+                if position not in self.sequence:
+                    self.sequence.append(position)
+
+            # 如果有属性就继续处理属性
+            print(self.attrs)
+            for attri_word_index in self.attrs:
+                attri,position = wordAndIndex(attri_word_index)
                 if position not in self.sequence:
                     self.sequence.append(position)
 
