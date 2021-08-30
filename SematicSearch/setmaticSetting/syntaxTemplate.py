@@ -46,7 +46,7 @@ class Template:
         # 判断句子中是否含有属性词，如果含有就把isContainValue置为True
         for word in self.model.vertexModel.word_list:
             # 如果一句话里面含有属性词或者含有一些金额，日期等词，就判断包含属性
-            if lexicon.isContainAtrributeWord(word) and self.model.isValueWord(word):
+            if self.model.isValueWord(word):
                 self.final_action_dict["isContainValue"] = True
 
         # 把找出来的实例给终极字典
@@ -460,6 +460,7 @@ class Template:
                     else:
                         if not isVerbContainedSkipHEDwords(verb):
                             self.sequence.append(position)
+            # print(self.sequence)
 
         self.dealWithEnd()
         return self.final_action_dict
