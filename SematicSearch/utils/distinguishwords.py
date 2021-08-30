@@ -1,7 +1,9 @@
 # 是否包含程度词
 def degreeWord(word):
     # print("进来的词是i>>>>>",word)
-    degree_word = ["超过", "大于", "越过", "少于", "小于", "等于", "第一", "最后", "相同", "仅次于", "最多", "最少", "最大", "最小"]
+    degree_word = ["超过", "大于", "越过", "少于", "小于",
+                   "等于", "第一", "最后", "相同", "仅次于", "最多", "最少",
+                   "最大", "最小", "倒数第一", "倒数", "排名第一"]
     if word in degree_word:
         return True
 
@@ -12,8 +14,8 @@ def degreeWord(word):
 def degreeSymbol(word):
     big = ["超过", "大于", "越过"]
     small = ["少于", "小于"]
-    biggest = ["最高", "最大", "第一", "最多"]
-    smallest = ["最少", "最小", "最后"]
+    biggest = ["最高", "最大", "第一", "最多", "排名第一"]
+    smallest = ["最少", "最小", "最后", "倒数第一", "末尾", "末位"]
 
     if word in big:
         chargeSymbol = ">"
@@ -81,7 +83,7 @@ def isVerbContainedSkipHEDwords(word):
 
 
 def isSkipNounWord(word):
-    skip_word_list = ["哪家", "那家", "什么", "那种","在哪里","什么时候"]
+    skip_word_list = ["哪家", "那家", "什么", "那种", "在哪里", "什么时候"]
     if word in skip_word_list:
         return True
     else:
@@ -89,7 +91,7 @@ def isSkipNounWord(word):
 
 
 def countWord(word):
-    countwords = ['次数', "数量","最多","最少"]
+    countwords = ['次数', "数量", "最多", "最少"]
     if word in countwords:
         return True
     return False
@@ -101,16 +103,18 @@ def rankingWord(word):
         return True
     return False
 
+
 def queryRanking(word):
     queryrankingWord = ["第几", "第几位", "哪一名"]
     if word in queryrankingWord:
         return True
     return False
 
+
 # 疑问词结尾
 def isQuestionWord(word):
     # print(word)
-    question_word = ["哪些", "什么", "那些", "哪", "那", "吗", "么", "呢", "哪个", "那个", "哪类", "那类","什么时候","什么地方"]
+    question_word = ["哪些", "什么", "那些", "哪", "那", "吗", "么", "呢", "哪个", "那个", "哪类", "那类", "什么时候", "什么地方"]
     if word in question_word:
         return True
 

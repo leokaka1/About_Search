@@ -114,10 +114,17 @@ class Template:
                 verb, position = wordAndIndex(verb)
                 # 找到这个verb对应的target_word的index然后拼接到sequence中
                 targetWord_index = self.model.vertexModel.wordForTargetIndex(position)
+                target_word = self.model.vertexModel.indexForWord(targetWord_index)
+                target_word_deprel = self.model.vertexModel.wordForDeprel(target_word)
                 if not isVerbContainedSkipHEDwords(verb):
                     self.sequence.append(position)
                 if targetWord_index not in self.sequence and targetWord_index not in self.entities:
-                    self.sequence.append(targetWord_index)
+                    if self.ranking !="":
+                        if self.makeEntityWord(target_word_deprel, word=target_word):
+                            self.dealWithEntities(targetWord_index)
+                    else:
+                        self.sequence.append(targetWord_index)
+
         else:
             # 处理剩下的名词
             for noun in self.nouns:
@@ -182,6 +189,12 @@ class Template:
                         if not isSkipNounWord(self.model.vertexModel.indexForWord(target_word_index)) \
                                 and not rankingWord(self.model.vertexModel.indexForWord(target_word_index)):
                             self.sequence.append(target_word_index)
+
+        elif self.ranking != "":
+            # 基于NLP的商务数据清洗项目的招标代理机构的中标次数最多
+            # 中标排名第一的单位
+            print("到这里来了")
+
         else:
             # FIXME: 2.2 有形容词，比如最多，一般用于排序
 
@@ -420,26 +433,6 @@ class Template:
                     else:
                         if not isVerbContainedSkipHEDwords(verb):
                             self.sequence.append(position)
-
-            # print(self.sequence)
-            # # 补充名词
-            # for noun in self.nouns:
-            #     noun, position = wordAndIndex(noun)
-            #     noun_deprel = self.model.vertexModel.wordForDeprel(noun)
-            #     # print(lexicon.isEntityWords(noun))
-            #     if position not in self.sequence \
-            #             and position not in self.entities \
-            #             and position not in self.instances:
-            #
-            #         if self.makeEntityWord(noun_deprel, word=noun):
-            #             self.dealWithEntities(position)
-            #         else:
-            #             if not self.model.isSkipWordsIndex(position):
-            #                 # 有一种情况是实体词和形容词分离（服务类有超过一千万的项目吗）
-            #                 # 做一个拼接然后判断拼接了的词是否在实体词中，如果在就保存，如果不在就放弃直接添加
-            #                 if position not in self.sequence \
-            #                         and position not in self.entities:
-            #                     self.sequence.append(position)
 
         self.dealWithEnd()
         return self.final_action_dict
