@@ -837,22 +837,69 @@ class Template:
                     # 中标日期是2020年的项目有哪些
                     # 2020年公司投标有哪些项目
                     time_index_list = self.model.findTimeIndex()
-                    for time in time_index_list:
-                        # 判断word_list中有没有带日期的字段
-                        time_word_index = self.model.findTimeWordIndexFromWordList()
-                        if time_word_index != "":
-                            time_word_target_index = self.model.vertexModel.wordForTargetIndex(
-                                time_word_index)
-                            time_word_target_word = self.model.vertexModel.indexForWord(time_word_target_index)
-                            if time_word_index not in temp_list:
-                                temp_list.append(time_word_index)
-                                if degreeWord(time_word_target_word):
-                                    temp_list.append(time_word_target_index)
-                            if time not in temp_list:
-                                temp_list.append(time)
-                        else:
-                            if time not in temp_list:
-                                temp_list.append(time)
+                    time_word_list = self.model.findTimeWordIndexFromWordList()
+                    # 招标日期为2021年和投标日期为2020年的项目有哪些
+                    # print("time_list",time_index_list)
+                    # print("time_word_list",time_word_list)
+
+                    # 分三种情况，如果两个日期值相同，如果其中一个为1，另一个为多
+                    # 两个相同
+                    if len(time_index_list) == len(time_word_list):
+                        for index,time_word in enumerate(time_word_list):
+                            time_word_index = self.model.vertexModel.wordForId(time_word)
+                            time_list = []
+                            time_list.append(time_word_index)
+                            time_list.append(time_index_list[index])
+                            if time_list not in temp_list:
+                                temp_list.append(time_list)
+                                # self.final_action_dict["attributes"]=temp_list
+                    # 两个不相同，其中日期为1个，形容日期为多个
+                    # 投标日期和招标日期为2020年的项目有哪些
+                    elif len(time_index_list) == 1 and len(time_word_list) > 1:
+                        for index,time_word in enumerate(time_word_list):
+                            time_word_index = self.model.vertexModel.wordForId(time_word)
+                            time_list = []
+                            time_list.append(time_word_index)
+                            time_list.append(time_index_list[0])
+                            if time_list not in temp_list:
+                                temp_list.append(time_list)
+                                # self.final_action_dict["attributes"]=temp_list
+                    # 两个不相同，其中形容日期的为1个，其他为多个
+                    elif len(time_word_list) == 1 and len(time_index_list) > 1:
+                        for index,time_index in enumerate(time_index_list):
+                            time_word_index = self.model.vertexModel.wordForId(time_word_list[0])
+                            time_list = []
+                            time_list.append(time_word_index)
+                            time_list.append(time_index)
+                            if time_list not in temp_list:
+                                temp_list.append(time_list)
+                                # self.final_action_dict["attributes"]=temp_list
+                    else:
+                        for index,time_index in enumerate(time_index_list):
+                            time_list = []
+                            time_list.append(time_index)
+                            if time_list not in temp_list:
+                                temp_list.append(time_list)
+
+                    self.final_action_dict["attributes"] = temp_list
+
+
+                    # for time in time_index_list:
+                    #     # 判断word_list中有没有带日期的字段
+                    #     time_word_index = self.model.findTimeWordIndexFromWordList()
+                    #     if time_word_index != "":
+                    #         time_word_target_index = self.model.vertexModel.wordForTargetIndex(
+                    #             time_word_index)
+                    #         time_word_target_word = self.model.vertexModel.indexForWord(time_word_target_index)
+                    #         if time_word_index not in temp_list:
+                    #             temp_list.append(time_word_index)
+                    #             if degreeWord(time_word_target_word):
+                    #                 temp_list.append(time_word_target_index)
+                    #         if time not in temp_list:
+                    #             temp_list.append(time)
+                    #     else:
+                    #         if time not in temp_list:
+                    #             temp_list.append(time)
                 else:
                     # 如果是没有时间的状态
                     # print("没有时间的index>>>>",index,modi_word_index)
@@ -884,7 +931,9 @@ class Template:
                                             if not degreeWord(target_word):
                                                 temp_list.append(target_word_index)
 
-                self.final_action_dict["attributes"].append(temp_list)
+                    self.final_action_dict["attributes"].append(temp_list)
+                # print(temp_list)
+                #
 
     # 清理疑问词
     def clearQuestionWord(self):
@@ -907,15 +956,7 @@ class Template:
             if data[i] not in new_data:
                 new_data.append(data[i])
 
-        # data1 = self.entities
-        # new_data1 = []
-        # for i in range(len(data1)):
-        #     if data1[i] not in new_data1:
-        #         new_data1.append(data1[i])
-        #
-        # print(self.entities)
         self.sequence = new_data
-        # self.entities = new_data1
 
     # 清理sequence中与attribute中重复的词
     def clearSequenceRepeatWord(self):
@@ -977,6 +1018,16 @@ class Template:
         for i in temp[::-1]:
             del self.sequence[i]
 
+    def clearEntities(self):
+        temp = []
+        for index, word_index in enumerate(self.entities):
+            word = self.model.vertexModel.indexForWord(word_index)
+            if self.model.isValueWord(word):
+                temp.append(index)
+
+        for i in temp[::-1]:
+            del self.entities[i]
+
     def addWordIntoEntities(self):
         # 去年那种类型项目投资最多
         # 如果sequence中有名词在entities中，说明可能是修饰作用，例如，项目-类型
@@ -1007,6 +1058,8 @@ class Template:
         self.clearDegreeWord()
         # 清理最后的不需要的动词
         self.clearSkipVerb()
+        # 清理entities中的杂词
+        self.clearEntities()
         # 判断是否将sequence中的词添加到entity中
         self.addWordIntoEntities()
         # 将sequences赋值给最终字典

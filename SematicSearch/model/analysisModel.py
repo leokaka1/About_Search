@@ -149,11 +149,13 @@ class SematicAnalysisModel:
 
     # 判断wordlist中有没有带“日期”的字段
     def findTimeWordIndexFromWordList(self):
+        temp_list = []
         for word in self.vertexModel.word_list:
             if "日期" in word:
-                return self.vertexModel.word_list.index(word)
+                temp_list.append(word)
+                # return self.vertexModel.word_list.index(word)
 
-        return ""
+        return temp_list
 
     # 获取动词的SBV主语
     def getverbSBV(self, verb):
