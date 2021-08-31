@@ -509,15 +509,17 @@ class Template:
                             self.sequence.append(modi_index)
                 # 处理动词
                 if not self.model.isHedIndex(position):
+                    print("来这个没有",position)
                     if self.entities:
                         for entity in self.entities:
                             entity_target_word_index = self.model.vertexModel.wordForTargetIndex(entity)
                             # print("entity target")
                             if entity_target_word_index == verb_target_index:
                                 self.entities.append(position)
-                        if not isVerbContainedSkipHEDwords(verb):
-                            self.sequence.append(position)
+                    if not isVerbContainedSkipHEDwords(verb):
+                        self.sequence.append(position)
                 else:
+                    print("来这里没有",position)
                     if not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
 
@@ -534,7 +536,7 @@ class Template:
                 self.sequence.insert(0, temp)
                 # print(self.sequence)
 
-        # print("⑥这里的sequence",self.sequence)
+        print("⑥这里的sequence",self.sequence)
         self.dealWithEnd()
         return self.final_action_dict
 
