@@ -40,7 +40,7 @@ class Template:
     def preprocess(self):
         # 是否有次数,count
         for word in self.model.vertexModel.word_list:
-            if degreeWord(word) or rankingWord(word):
+            if rankingWord(word):
                 self.final_action_dict["count"] = True
 
         # 判断句子中是否含有属性词，如果含有就把isContainValue置为True
@@ -462,6 +462,7 @@ class Template:
                             self.sequence.append(position)
             # print(self.sequence)
 
+        # print("④ sequence",self.sequence)
         self.dealWithEnd()
         return self.final_action_dict
 
@@ -479,7 +480,6 @@ class Template:
         # 施工标的类项目都有哪些公司中标？
         # 遍历动词
         if self.count:
-            pass
             for attribute_word in self.adjs:
                 adj, position = wordAndIndex(attribute_word)
                 # print(position)
@@ -489,7 +489,6 @@ class Template:
                     for modi_index in modi_word_index:
                         if modi_index not in self.entities and modi_index not in self.instances:
                             self.sequence.append(modi_index)
-
         else:
             for verb in self.verbs:
                 verb, position = wordAndIndex(verb)
@@ -516,7 +515,10 @@ class Template:
                             # print("entity target")
                             if entity_target_word_index == verb_target_index:
                                 self.entities.append(position)
-                    if not isVerbContainedSkipHEDwords(self.model.vertexModel.indexForWord(position)):
+                        if not isVerbContainedSkipHEDwords(verb):
+                            self.sequence.append(position)
+                else:
+                    if not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
 
             # 找到序列中有没有词跟entity有关系
@@ -532,6 +534,7 @@ class Template:
                 self.sequence.insert(0, temp)
                 # print(self.sequence)
 
+        # print("⑥这里的sequence",self.sequence)
         self.dealWithEnd()
         return self.final_action_dict
 
@@ -658,9 +661,10 @@ class Template:
         for noun in self.nouns:
             noun, position = wordAndIndex(noun)
             noun_deprel = self.model.vertexModel.wordForDeprel(noun)
-            if not countWord(noun) and noun_deprel == "COO":
+            if not countWord(noun) and noun_deprel == "COO" and self.ranking:
                 self.dealWithEntities(position)
 
+        # print("这里的sequence",self.sequence)
         self.dealWithEnd()
         return self.final_action_dict
 
@@ -811,6 +815,7 @@ class Template:
                                 self.sequence.append(position)
 
         # print("self sequence",self.sequence)
+        # print("self.entity",self.entities)
         # 排序
         if self.sortFlag:
             temp_arr = bubbleSort(self.sequence)
@@ -831,8 +836,9 @@ class Template:
         return False
 
     # FIXME: eg:2020年合同总价为100万的项目的投标人是谁
-    #      eg: 中标日期为2020年并且合同总价为100万的项目是
-    #       eg:2020年合同总价为100万的项目    中标日期2020年的项目
+    #        eg:中标日期为2020年并且合同总价为100万的项目是
+    #        eg:2020年合同总价为100万的项目
+    #        eg:中标日期2020年的项目
     def isAttributeSequence(self):
         entities = self.final_action_dict["entities"]
         instances = self.final_action_dict["instances"]
@@ -845,6 +851,8 @@ class Template:
             # 找到对应的修饰词
             for index in r_list:
                 temp_list = []
+                time_temp_list = []
+                money_temp_list = []
                 target_word_index = self.model.vertexModel.wordForTargetIndex(index)
                 target_word = self.model.vertexModel.indexForWord(target_word_index)
                 # 找到modified_word
@@ -853,6 +861,7 @@ class Template:
 
                 # 如果有时间的状态
                 if self.model.indexOfTimeWord(index):
+
                     # print("有时间的index>>>>",index)
                     # 有时间的情况
                     # 中标日期是2020年的项目有哪些
@@ -902,8 +911,11 @@ class Template:
                             if time_list not in temp_list:
                                 temp_list.append(time_list)
 
-                    self.final_action_dict["attributes"] = temp_list
-                else:
+                    time_temp_list = temp_list
+
+                    # self.final_action_dict["attributes"] = temp_list
+                elif self.model.indexOfMoneyWord(index):
+
                     # 如果是没有时间的状态
                     # print("没有时间的index>>>>",index,modi_word_index)
                     # 合同金额和招标金额大于100万的项目有哪些
@@ -948,7 +960,19 @@ class Template:
                             if money_list not in temp_list:
                                 temp_list.append(money_list)
 
-                    self.final_action_dict["attributes"] = temp_list
+                    money_temp_list = temp_list
+
+                # print("time_temp_list>>>>>>", time_temp_list)
+                # print("money_temp_list>>>>>", money_temp_list)
+
+                for time_index in time_temp_list:
+                    if time_index not in self.final_action_dict["attributes"]:
+                        self.final_action_dict["attributes"].append(time_index)
+
+                for money_index in money_temp_list:
+                    # print("money_index",money_index)
+                    if money_index not in self.final_action_dict["attributes"]:
+                        self.final_action_dict["attributes"].append(money_index)
 
     # 清理疑问词
     def clearQuestionWord(self):
@@ -1043,6 +1067,16 @@ class Template:
         for i in temp[::-1]:
             del self.entities[i]
 
+    def clearSequenceOtherWords(self):
+        temp = []
+        for index,word_index in enumerate(self.sequence):
+            word = self.model.vertexModel.indexForWord(word_index)
+            if isOtherWord(word):
+                temp.append(index)
+
+        for i in temp[::-1]:
+            del self.sequence[i]
+
     def addWordIntoEntities(self):
         # 去年那种类型项目投资最多
         # 如果sequence中有名词在entities中，说明可能是修饰作用，例如，项目-类型
@@ -1075,6 +1109,9 @@ class Template:
         self.clearSkipVerb()
         # 清理entities中的杂词
         self.clearEntities()
+        # 清理sequence最后的杂词
+        # 远光软件股份有限公司是否投标了金额大于100万的项目有哪些
+        self.clearSequenceOtherWords()
         # 判断是否将sequence中的词添加到entity中
         self.addWordIntoEntities()
         # 将sequences赋值给最终字典

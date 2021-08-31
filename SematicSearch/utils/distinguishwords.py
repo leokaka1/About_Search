@@ -83,7 +83,15 @@ def isVerbContainedSkipHEDwords(word):
 
 
 def isSkipNounWord(word):
-    skip_word_list = ["哪家", "那家", "什么", "那种", "在哪里", "什么时候"]
+    skip_word_list = ["哪家", "那家", "什么", "那种", "在哪里", "什么时候", "是否"]
+    if word in skip_word_list:
+        return True
+    else:
+        return False
+
+
+def isOtherWord(word):
+    skip_word_list = ["是否", "了"]
     if word in skip_word_list:
         return True
     else:
@@ -98,7 +106,7 @@ def countWord(word):
 
 
 def rankingWord(word):
-    rankingwords = ["排", "列", "名列", "排名"]
+    rankingwords = ["排", "列", "名列", "排名", "最多", "最少", "最大", "最小", "倒数第一", "倒数", "排名第一", "第一", "最后"]
     if word in rankingwords:
         return True
     return False
