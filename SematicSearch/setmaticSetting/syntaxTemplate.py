@@ -509,7 +509,7 @@ class Template:
                             self.sequence.append(modi_index)
                 # 处理动词
                 if not self.model.isHedIndex(position):
-                    print("来这个没有",position)
+                    # print("来这个没有",position)
                     if self.entities:
                         for entity in self.entities:
                             entity_target_word_index = self.model.vertexModel.wordForTargetIndex(entity)
@@ -519,7 +519,7 @@ class Template:
                     if not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
                 else:
-                    print("来这里没有",position)
+                    # print("来这里没有",position)
                     if not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
 
@@ -536,7 +536,7 @@ class Template:
                 self.sequence.insert(0, temp)
                 # print(self.sequence)
 
-        print("⑥这里的sequence",self.sequence)
+        # print("⑥这里的sequence",self.sequence)
         self.dealWithEnd()
         return self.final_action_dict
 
@@ -1060,10 +1060,16 @@ class Template:
             del self.sequence[i]
 
     def clearEntities(self):
+        #FIXME:且
+        attri_list = []
+        for attri_word in self.attrs:
+            word,index = wordAndIndex(attri_word)
+            attri_list.append(word)
+
         temp = []
         for index, word_index in enumerate(self.entities):
             word = self.model.vertexModel.indexForWord(word_index)
-            if self.model.isValueWord(word):
+            if self.model.isValueWord(word) or word in attri_list:
                 temp.append(index)
 
         for i in temp[::-1]:
@@ -1135,7 +1141,7 @@ def wordListwithoutIndex(wordList):
     return word_list
 
 
-# 冒泡排序
+# 排序
 def bubbleSort(arr):
     n = len(arr)
     # 遍历所有数组元素

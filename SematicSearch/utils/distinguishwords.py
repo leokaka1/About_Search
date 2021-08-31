@@ -91,7 +91,7 @@ def isSkipNounWord(word):
 
 
 def isOtherWord(word):
-    skip_word_list = ["是否", "了"]
+    skip_word_list = ["是否", "了", "且"]
     if word in skip_word_list:
         return True
     else:

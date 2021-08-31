@@ -85,6 +85,17 @@ class RelationTranslation:
                         temp_sequence_list.append(self.model.vertexModel.indexForWord(sequences[index + 1]))
             self.res_dict["sequences"] = temp_sequence_list
 
+        # FIXME:这里估计有重大bug
+        # 远光软件股份有限公司的投标项目的中标时间是什么时候
+        elif len(sequences) == 3:
+            for index, sequence_index in enumerate(sequences):
+                sequence_word = self.model.vertexModel.indexForWord(sequence_index)
+                if sequences[index + 1]:
+                    temp_str = sequence_word + self.model.vertexModel.indexForWord(sequences[index + 1])
+                    if lexion.wordInTypes(temp_str):
+                        temp_sequence_list.append(temp_str)
+            self.res_dict["sequences"] = temp_sequence_list
+
     def indexToRealWord(self):
         if self.res_dict:
             instances = self.res_dict["instances"].copy()

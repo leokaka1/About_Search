@@ -232,10 +232,10 @@ class SematicAnalysisModel:
 
     # FIXME: 这里是判断句子中有没有包含一些类别的词
     def sentenceSematicSituations(self):
-        # 只有主语中心词 eg：2020年（ATT）招标文件（HED)
+        # 只有主语中心词
         if self.sentenceContainWhichDeqrel(["HED"]):
             return 1
-        # 有主谓宾完整 eg:哪些单位(SBV)有(HED)投标 基于NLP的商务数据清洗项目(VOB)
+        # 有主谓宾完整
         elif self.sentenceContainWhichDeqrel(["HED", "SBV"]):
             return 2
         elif self.sentenceContainWhichDeqrel(["HED", "VOB"]):
@@ -243,13 +243,13 @@ class SematicAnalysisModel:
         # 有动HED和动词的SBV主语
         elif self.sentenceContainWhichDeqrel(["HED", "SBV", "VOB"]):
             return 4
-        # 有状语和中心语 eg:2020年 (时间状语)招标那些类型的 项目(HED)主语
+        # 有状语和中心语
         elif self.sentenceContainWhichDeqrel(["ADV", "HED"]):
             return 5
-        # 状语，主,谓，宾 eg:2020年(ADV)远光股份有限公司(SBV)有(HED)投标服务类项目(VOB)吗
+        # 状语，主,谓，宾
         elif self.sentenceContainWhichDeqrel(["ADV", "SBV", "HED", "VOB"]):
             return 6
-        # 状，介宾，主，谓，宾 eg:与(ADV)远光软件股份有限公司(POB)签订合同(VOB)的企业(SBV)有哪些
+        # 状，介宾，主，谓，宾
         elif self.sentenceContainWhichDeqrel(["ADV", "POB", "VOB", "SBV", "HED"]):
             return 7
         # 并列结构 主
