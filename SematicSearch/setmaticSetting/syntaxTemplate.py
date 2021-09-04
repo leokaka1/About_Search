@@ -394,19 +394,26 @@ class Template:
                         self.sequence.insert(self.sequence.index(noun_target_index) + 1, position)
                     # 如果啥都不是就直接拼接
                     else:
-                        # print(position)
-                        if position not in self.sequence:
-                            if noun_target_index in self.instances \
-                                    and not self.model.indexOfTimeWord(position):
-                                self.sequence.insert(0, position)
-                            else:
-                                # 插入到修饰词前面 / 如果不是时间词(时间词放最后)
-                                if not self.model.indexOfTimeWord(position) \
-                                        and noun_target_index in self.sequence:
-                                    self.sequence.insert(self.sequence.index(noun_target_index), position)
+                        # print("到这里来了")
+                        # 如果count是False
+                        if not self.count:
+                            if position not in self.sequence:
+                                if noun_target_index in self.instances \
+                                        and not self.model.indexOfTimeWord(position):
+                                    self.sequence.insert(0, position)
                                 else:
-                                    # if noun_target_index
-                                    self.sequence.append(position)
+                                    # 插入到修饰词前面 / 如果不是时间词(时间词放最后)
+                                    if not self.model.indexOfTimeWord(position) \
+                                            and noun_target_index in self.sequence:
+                                        self.sequence.insert(self.sequence.index(noun_target_index), position)
+                                    else:
+                                        # if noun_target_index
+                                        self.sequence.append(position)
+                        else:
+                            # 中标次数最多的单位是哪个
+                            if position not in self.entities and lexicon.isEntityWords(noun):
+                                self.dealWithEntities(position)
+
             # print("sequence>>>>>>>", self.sequence)
         else:
             # 有属性值的情况
