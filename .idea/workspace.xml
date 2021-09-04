@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="43e13196-3b90-4094-90df-beddaa7a1642" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SematicSearch/setmaticSetting/syntaxTemplate.py" beforeDir="false" afterPath="$PROJECT_DIR$/SematicSearch/setmaticSetting/syntaxTemplate.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -16,15 +15,15 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SematicSearch/setmaticSetting/syntaxTemplate.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="414" column="62" selection-start-line="414" selection-start-column="62" selection-end-line="414" selection-end-column="62" />
+            <state relative-caret-position="305">
+              <caret line="683" lean-forward="true" selection-start-line="683" selection-end-line="683" />
               <folding>
                 <element signature="e#0#66#0" expanded="true" />
+                <element signature="e#14591#22722#0" />
                 <element signature="e#22874#26114#0" />
                 <element signature="e#23020#23570#0" />
                 <element signature="e#26196#28876#0" />
                 <element signature="e#28936#30284#0" />
-                <element signature="e#30353#31778#0" />
               </folding>
             </state>
           </provider>
@@ -140,7 +139,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>总价</find>
       <find>dealWithEnd</find>
       <find>投标总价</find>
       <find>投标金额</find>
@@ -170,6 +168,7 @@
       <find>投标项目</find>
       <find>⑥这里的sequence</find>
       <find>中标日期</find>
+      <find>makeEntityWord</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -495,12 +494,12 @@
       <workItem from="1630311420615" duration="7551000" />
       <workItem from="1630370356040" duration="16741000" />
       <workItem from="1630554965550" duration="6476000" />
-      <workItem from="1630739502996" duration="983000" />
+      <workItem from="1630739502996" duration="2048000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="699222000" />
+    <option name="totallyTimeSpent" value="700287000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -513,13 +512,14 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49833333" visible="true" weight="0.12941177" />
       <window_info id="Structure" order="1" sideWeight="0.50166667" side_tool="true" weight="0.1882353" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32968238" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946523" visible="true" weight="0.32201535" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49946523" visible="true" weight="0.39868566" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3603505" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -565,7 +565,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/About_Search$tools__1_.coverage" NAME="tools (1) Coverage Results" MODIFIED="1629771380638" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SematicSearch/utils" />
-    <SUITE FILE_PATH="coverage/About_Search$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1630740480273" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SematicSearch" />
+    <SUITE FILE_PATH="coverage/About_Search$main__1_.coverage" NAME="main (1) Coverage Results" MODIFIED="1630741160783" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SematicSearch" />
     <SUITE FILE_PATH="coverage/About_Search$wordSegmentation.coverage" NAME="wordSegmentation Coverage Results" MODIFIED="1628232343084" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Code/seg" />
     <SUITE FILE_PATH="coverage/About_Search$lexicon.coverage" NAME="lexicon Coverage Results" MODIFIED="1629899853946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SematicSearch/utils" />
     <SUITE FILE_PATH="coverage/About_Search$config.coverage" NAME="config Coverage Results" MODIFIED="1629899546127" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/SematicSearch" />
@@ -862,15 +862,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SematicSearch/setmaticSetting/syntaxTemplate.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="414" column="62" selection-start-line="414" selection-start-column="62" selection-end-line="414" selection-end-column="62" />
+        <state relative-caret-position="305">
+          <caret line="683" lean-forward="true" selection-start-line="683" selection-end-line="683" />
           <folding>
             <element signature="e#0#66#0" expanded="true" />
+            <element signature="e#14591#22722#0" />
             <element signature="e#22874#26114#0" />
             <element signature="e#23020#23570#0" />
             <element signature="e#26196#28876#0" />
             <element signature="e#28936#30284#0" />
-            <element signature="e#30353#31778#0" />
           </folding>
         </state>
       </provider>

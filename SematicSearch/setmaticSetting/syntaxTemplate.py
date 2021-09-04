@@ -666,11 +666,16 @@ class Template:
                     if position not in self.sequence and not isVerbContainedSkipHEDwords(verb):
                         self.sequence.append(position)
 
+
+        # print("情况⑨的sequence",self.sequence)
+
         # 处理名词
         for noun in self.nouns:
             noun, position = wordAndIndex(noun)
             noun_deprel = self.model.vertexModel.wordForDeprel(noun)
             if not countWord(noun) and noun_deprel == "COO" and self.ranking:
+                self.dealWithEntities(position)
+            elif self.count and lexicon.isEntityWords(noun):
                 self.dealWithEntities(position)
 
         # print("这里的sequence",self.sequence)
